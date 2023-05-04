@@ -8,7 +8,10 @@ dotenv.config();
 
 const server = express();
 
-server.use(cors());
+//configura quem pode acessar a api
+server.use(cors({
+    origin: '*'
+}));
 
 server.use(express.static(path.join(__dirname, '../public')));
 server.use(express.urlencoded({ extended: true }));
