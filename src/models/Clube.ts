@@ -1,6 +1,6 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../instances/mysql';
-import {Lider, Aluno} from '../models/Pessoa';
+import {Lider, Aluno} from './Pessoa';
 
 //CLUBE
 export interface ClubeInstace extends Model {
