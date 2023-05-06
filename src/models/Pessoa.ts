@@ -1,6 +1,6 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../instances/mysql';
-import { Clube, Manual } from './Clube';
+import { Capitulo, Clube, Manual } from './Clube';
 
 //PESSOA GENERICA
 export interface PessoaInstace extends Model {
@@ -177,3 +177,70 @@ Lider.belongsTo(Pessoa, { foreignKey: 'id_pessoa' });
 
 Clube.hasMany(Lider, { foreignKey: 'id_clube' });
 Lider.belongsTo(Clube, { foreignKey: 'id_clube' });
+
+
+
+//SECOES DOS ALUNOS
+export interface SecoesInstace extends Model{
+    id_secao: number;
+    id_aluno: number;
+    data: Date;
+    id_lider: number;
+    num_secao: number;
+    id_capitulo: number;
+}
+
+export const HistoricoSecao= sequelize.define<SecoesInstace>('HistoricoSecao', {
+    id_secao: {
+        primaryKey: true,
+        autoIncrement: true,
+        type: DataTypes.INTEGER
+    },
+    id_aluno:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        unique: false,
+        references: {
+            model: Aluno,
+            key: 'id_aluno'
+        }
+    },
+    data: {
+        type: DataTypes.DATE
+    },
+    id_lider:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        unique: false,
+        references: {
+            model: Lider,
+            key: 'id_lider'
+        }
+    },
+    num_secao: {
+        type: DataTypes.INTEGER
+    },
+    id_capitulo:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        unique: false,
+        references: {
+            model: Capitulo,
+            key: 'id_capitulo'
+        }
+    },
+}, {
+    tableName: 'HistoricoSecao',
+    timestamps: false
+});
+  
+
+
+Aluno.hasMany(HistoricoSecao, { foreignKey: 'id_aluno' });
+HistoricoSecao.belongsTo(Aluno, { foreignKey: 'id_aluno' });
+
+Lider.hasMany(HistoricoSecao, { foreignKey: 'id_lider' });
+HistoricoSecao.belongsTo(Lider, { foreignKey: 'id_lider' });
+
+Capitulo.hasMany(HistoricoSecao, { foreignKey: 'id_capitulo' });
+HistoricoSecao.belongsTo(Capitulo, { foreignKey: 'id_capitulo' });
