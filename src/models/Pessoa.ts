@@ -8,6 +8,7 @@ export interface PessoaInstace extends Model {
     genero: string;
     nascimento: Date;
     nome: string;
+    sobrenome: string;
 }
 
 export const Pessoa = sequelize.define<PessoaInstace>('Pessoa', {
@@ -17,15 +18,26 @@ export const Pessoa = sequelize.define<PessoaInstace>('Pessoa', {
         type: DataTypes.INTEGER
     },
     genero: {
-        type: DataTypes.STRING
+        type: DataTypes.ENUM('M', 'F'),
+        allowNull: false
     },
     nascimento: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        allowNull: true
     },
     nome: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    sobrenome: {
+        type: DataTypes.STRING,
+        allowNull: false
     }
 }, {
+    indexes: [{
+      unique: true,
+      fields: ['nome', 'sobrenome']
+    }],
     tableName: 'Pessoa',
     timestamps: false
 });
@@ -53,7 +65,9 @@ export const Responsavel= sequelize.define<ResponsavelInstace>('Responsavel', {
         }
     },
     contato: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        allowNull: true,
+        unique: true
     },
 }, {
     tableName: 'Responsavel',
@@ -98,7 +112,7 @@ export const Aluno= sequelize.define<AlunoInstace>('Aluno', {
     },
     id_responsavel:{
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
             model: Responsavel,
             key: 'id_responsavel'
@@ -106,7 +120,7 @@ export const Aluno= sequelize.define<AlunoInstace>('Aluno', {
     },
     id_manual:{
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
             model: Manual,
             key: 'id_manual'
@@ -163,10 +177,12 @@ export const Lider= sequelize.define<LiderInstace>('Lider', {
         }
     },
     login: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        allowNull: false
     },
     senha: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        allowNull: false
     }
 }, {
     tableName: 'Lider',
@@ -206,7 +222,8 @@ export const HistoricoSecao= sequelize.define<SecoesInstace>('HistoricoSecao', {
         }
     },
     data: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        allowNull: false
     },
     id_lider:{
         type: DataTypes.INTEGER,
@@ -218,7 +235,8 @@ export const HistoricoSecao= sequelize.define<SecoesInstace>('HistoricoSecao', {
         }
     },
     num_secao: {
-        type: DataTypes.INTEGER
+        type: DataTypes.INTEGER,
+        allowNull: false
     },
     id_capitulo:{
         type: DataTypes.INTEGER,
