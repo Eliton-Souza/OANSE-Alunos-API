@@ -1,20 +1,23 @@
 import { Router } from 'express';
-
-import * as ApiController from '../controllers/pessoaController';
+import * as PessoaController from '../controllers/pessoaController';
+import * as ClubeController from '../controllers/clubeController';
 
 const router = Router();
+
+
+//router.get('/', PessoaController.
 /*
-router.post('/register', ApiController.register);
-router.post('/login', ApiController.login);
+router.get('/pessoas', PessoaController.rotapessoa);
+router.get('/consulta', PessoaController.consulta);
+router.get('/aluno', PessoaController.criaAluno);
+router.get('/lider', PessoaController.criaLider);
+router.get('/consultalider', PessoaController.consultaLider);
 
 
-router.get('/list', ApiController.list);
+router.get('/clube', ClubeController.clube);
+router.get('/manual', ClubeController.manual);
 */
-router.get('/', ApiController.ping);
-router.get('/pessoas', ApiController.rotapessoa);
-router.get('/consulta', ApiController.consulta);
-router.get('/aluno', ApiController.criaAluno);
-router.get('/lider', ApiController.criaLider);
-router.get('/consultalider', ApiController.consultaLider);
 
+
+router.post('/aluno', PessoaController.criaAluno);
 export default router;
