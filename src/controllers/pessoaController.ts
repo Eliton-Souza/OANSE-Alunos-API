@@ -3,21 +3,19 @@ import { Pessoa, Aluno, Lider, PessoaInstace, AlunoInstace, ResponsavelInstace }
 
 export const criaAluno = async (req: Request, res: Response) => {
 
- 
-    if (req.body.nome && req.body.sobrenome && req.body.genero) {
+    if (req.body.nome && req.body.sobrenome && req.body.genero && req.body.id_clube) {
         try {
         const pessoa = await Pessoa.create({
             genero: req.body.genero,
             nome: req.body.nome,
             sobrenome: req.body.sobrenome,
-            // nascimento: new Date(req.body.nascimento),
+            nascimento: new Date(req.body.nascimento),
         })
     
         const aluno = await Aluno.create({
             id_pessoa: pessoa.id_pessoa,
             id_clube: req.body.id_clube,
-            //  id_clube: req.body.id_clube,
-            //  id_manual: req.body.id_manual,
+            id_manual: req.body.id_manual,
         });
     
         console.log('Pessoa inserida com sucesso');
