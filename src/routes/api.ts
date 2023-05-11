@@ -20,7 +20,8 @@ router.get('/manual', ClubeController.manual);
 
 
 
-router.post('/aluno', PessoaController.criaAluno);
+router.post('/criarAluno', PessoaController.criarAluno);
+router.post('/criarResponsavel', PessoaController.criarResponsavel);
 router.get('/clube', ClubeController.clube);
 router.get('/manual', ClubeController.manual);
 export default router;
