@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
-import { Pessoa, Aluno, Lider, Responsavel, PessoaInstace } from '../models/Pessoa';
+import { Pessoa, Aluno, Lider, Responsavel } from '../models/Pessoa';
 import { sequelize } from '../instances/mysql';
+import { Clube, Manual } from '../models/Clube';
 
 
 const criarPessoa = async (body: any, transaction: any) => {
@@ -26,6 +27,7 @@ export const criarAluno = async (req: Request, res: Response) => {
             id_pessoa: pessoa.id_pessoa,
             id_clube: req.body.id_clube,
             id_manual: req.body.id_manual,
+            id_responsavel: req.body.id_responsavel,
         }, { transaction });
     
         console.log('Pessoa e Aluno inseridos com sucesso');
@@ -42,6 +44,51 @@ export const criarAluno = async (req: Request, res: Response) => {
         res.status(500).json(error.errors[0].value + " ja existe cadastrado no banco");
     }
 };
+
+
+export const alunos = async (req: Request, res: Response) => {
+
+    const alunos = await Aluno.findAll({
+        include: [
+            {
+              model: Pessoa,
+              attributes: ['nome', 'sobrenome']
+            },
+            {
+              model: Clube,
+              attributes: ['nome']
+            },
+            {
+              model: Manual,
+              attributes: ['nome']
+            },
+            {
+              model: Responsavel,
+              attributes: ['contato'],
+              include: [
+                {
+                  model: Pessoa,
+                  attributes: ['nome', 'sobrenome'],
+                }
+                ]
+            }
+          ],
+        attributes: { 
+            exclude: ['id_aluno', 'id_pessoa','id_clube', 'id_manual', 'id_responsavel'] 
+        },
+        raw: true
+    });
+
+    res.json({alunos});
+}
+
+
+
+
+
+
+
+
 
 
 export const criarResponsavel = async (req: Request, res: Response) => {
