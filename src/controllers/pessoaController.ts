@@ -46,35 +46,39 @@ export const criarAluno = async (req: Request, res: Response) => {
 };
 
 
-export const alunos = async (req: Request, res: Response) => {
+export const listarAlunos = async (req: Request, res: Response) => {
 
     const alunos = await Aluno.findAll({
         include: [
             {
               model: Pessoa,
-              attributes: ['nome', 'sobrenome']
-            },
-            {
-              model: Clube,
-              attributes: ['nome']
+              attributes: { 
+                exclude: ['id_pessoa']
+              }
             },
             {
               model: Manual,
-              attributes: ['nome']
+              attributes: ['nome'],
+              include: [{
+                    model: Clube,
+                    attributes: { 
+                        exclude: ['id_clube', 'id_manual'] 
+                    },
+                }]
             },
             {
               model: Responsavel,
               attributes: ['contato'],
-              include: [
-                {
-                  model: Pessoa,
-                  attributes: ['nome', 'sobrenome'],
-                }
-                ]
-            }
+              include: [{
+                    model: Pessoa,
+                    attributes: { 
+                      exclude: ['id_pessoa']
+                    }
+                }]
+            },
           ],
         attributes: { 
-            exclude: ['id_aluno', 'id_pessoa','id_clube', 'id_manual', 'id_responsavel'] 
+            exclude: ['id_pessoa','id_clube', 'id_manual', 'id_responsavel'] 
         },
         raw: true
     });
@@ -83,6 +87,52 @@ export const alunos = async (req: Request, res: Response) => {
 }
 
 
+export const pegarAluno = async (req: Request, res: Response) => {
+
+    let id= req.params.id;
+
+    const aluno= await Aluno.findByPk(id,{
+        include: [
+            {
+              model: Pessoa,
+              attributes: { 
+                exclude: ['id_pessoa']
+              }
+            },
+            {
+              model: Manual,
+              attributes: ['nome'],
+              include: [{
+                    model: Clube,
+                    attributes: { 
+                        exclude: ['id_clube', 'id_manual'] 
+                    },
+                }]
+            },
+            {
+              model: Responsavel,
+              attributes: ['contato'],
+              include: [{
+                    model: Pessoa,
+                    attributes: { 
+                      exclude: ['id_pessoa']
+                    }
+                }]
+            },
+          ],
+        attributes: { 
+            exclude: ['id_pessoa', 'id_manual', 'id_responsavel'] 
+        },
+        raw: true
+    });
+
+    if(aluno){
+        res.json({aluno});
+    }
+    else{
+        res.json({error: 'Aluno nao encontrado'});
+    }
+}
 
 
 

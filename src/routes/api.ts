@@ -21,7 +21,8 @@ router.get('/manual', ClubeController.manual);
 
 
 router.post('/criarAluno', PessoaController.criarAluno);
-router.get('/alunos', PessoaController.alunos);
+router.get('/alunos', PessoaController.listarAlunos);
+router.get('/aluno/:id', PessoaController.pegarAluno);
 
 
 router.post('/criarResponsavel', PessoaController.criarResponsavel);
