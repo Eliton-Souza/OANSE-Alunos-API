@@ -135,6 +135,25 @@ export const pegarAluno = async (req: Request, res: Response) => {
 }
 
 
+export const atualizarAluno = async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const { id_pessoa, id_manual, id_responsavel } = req.body;
+    // validar e sanitizar os dados antes de fazer a atualização
+    try {
+      const [rowsUpdated, [updatedAluno]] = await Aluno.update(
+        { id_pessoa, id_manual, id_responsavel },
+        { returning: true, where: { id } }
+      );
+      if (rowsUpdated === 0) {
+        return res.status(404).json({ error: 'Aluno não encontrado' });
+      }
+      res.json({ aluno: updatedAluno });
+    } catch (erro) {
+      console.error(erro);
+      res.status(500).json({ error: 'Erro ao atualizar o aluno' });
+    }
+  }
+  
 
 
 

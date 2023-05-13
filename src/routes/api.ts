@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import * as PessoaController from '../controllers/pessoaController';
 import * as ClubeController from '../controllers/clubeController';
+import { validaAluno, validaPessoa } from '../middlewares/validaPessoa';
 
 const router = Router();
 
@@ -20,7 +21,7 @@ router.get('/manual', ClubeController.manual);
 
 
 
-router.post('/criarAluno', PessoaController.criarAluno);
+router.post('/criarAluno', validaPessoa, validaAluno, PessoaController.criarAluno);
 router.get('/alunos', PessoaController.listarAlunos);
 router.get('/aluno/:id', PessoaController.pegarAluno);
 
