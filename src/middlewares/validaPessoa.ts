@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { alunoSchema, pessoaSchema } from '../schemas/pessoaSchema';
+import { alunoSchema, pessoaSchema, updateAlunoSchema } from '../schemas/pessoaSchema';
 
 export const validaSchema = (schema: any) => async (
   req: Request,
@@ -14,5 +14,6 @@ export const validaSchema = (schema: any) => async (
   }
 };
 
-export const validaPessoa = validaSchema(pessoaSchema);
+//export const validaPessoa = validaSchema(pessoaSchema);
 export const validaAluno = validaSchema(alunoSchema);
+export const updateValidaAluno = validaSchema(updateAlunoSchema);
