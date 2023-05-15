@@ -122,7 +122,7 @@ export const Aluno= sequelize.define<AlunoInstace>('Aluno', {
     timestamps: false
 });
 Pessoa.hasOne(Aluno, { foreignKey: 'id_pessoa' });
-Aluno.belongsTo(Pessoa, { foreignKey: 'id_pessoa' });
+Aluno.belongsTo(Pessoa, { foreignKey: 'id_pessoa',  onDelete: 'CASCADE' });
 
 Responsavel.hasMany(Aluno, { foreignKey: 'id_responsavel' });
 Aluno.belongsTo(Responsavel, { foreignKey: 'id_responsavel' });

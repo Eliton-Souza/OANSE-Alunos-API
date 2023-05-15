@@ -25,6 +25,7 @@ router.post('/criarAluno', validaAluno, PessoaController.criarAluno);
 router.get('/alunos', PessoaController.listarAlunos);
 router.get('/aluno/:id', PessoaController.pegarAluno);
 router.put('/atualizarAluno/:id', updateValidaAluno, PessoaController.atualizarAluno);
+router.delete('/deletarAluno/:id', PessoaController.deletarAluno);
 
 
 router.post('/criarResponsavel', PessoaController.criarResponsavel);

@@ -162,7 +162,6 @@ export const atualizarAluno = async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Aluno não encontrado' });
     }
 
-  
     // Salvar as alterações no banco de dados
     try {
       await aluno.save();
@@ -177,6 +176,23 @@ export const atualizarAluno = async (req: Request, res: Response) => {
     res.json({ aluno: aluno, pessoa: pessoaAluno });
   } catch (error:any) {
     res.status(500).json({ error: 'Erro ao atualizar o aluno'});
+  }
+};
+
+
+export const deletarAluno = async (req: Request, res: Response) => {
+
+  const id_aluno= req.params.id;
+  const aluno= await Aluno.findByPk(id_aluno)
+
+  if(aluno){
+    const id_pessoa= aluno.id_pessoa;
+    
+    await Pessoa.destroy({where:{id_pessoa}});
+    res.json({});
+  }
+  else{
+    res.json({ error: 'Aluno não encontrado'});
   }
 };
 
