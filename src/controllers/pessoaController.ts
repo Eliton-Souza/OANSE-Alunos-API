@@ -134,25 +134,53 @@ export const pegarAluno = async (req: Request, res: Response) => {
     }
 }
 
-
 export const atualizarAluno = async (req: Request, res: Response) => {
-    const id = req.params.id;
-    const { id_pessoa, id_manual, id_responsavel } = req.body;
-    // validar e sanitizar os dados antes de fazer a atualização
-    try {
-      const [rowsUpdated, [updatedAluno]] = await Aluno.update(
-        { id_pessoa, id_manual, id_responsavel },
-        { returning: true, where: { id } }
-      );
-      if (rowsUpdated === 0) {
-        return res.status(404).json({ error: 'Aluno não encontrado' });
-      }
-      res.json({ aluno: updatedAluno });
-    } catch (erro) {
-      console.error(erro);
-      res.status(500).json({ error: 'Erro ao atualizar o aluno' });
+  const id = req.params.id;
+
+  try {
+    const { nome, sobrenome, genero, nascimento, id_responsavel, id_manual } = req.body;
+
+    // Recuperar dados do aluno do banco
+    const aluno = await Aluno.findByPk(id);
+    if (aluno) {
+      aluno.id_responsavel= id_responsavel ?? aluno.id_responsavel,
+      aluno.id_manual= id_manual ?? aluno.id_manual
     }
+    else{
+      return res.status(404).json({ error: 'Aluno não encontrado' });
+    }
+
+    // Recuperar dados da pessoa aluno do banco
+    const pessoaAluno = await Pessoa.findByPk(aluno.id_pessoa);
+    if (pessoaAluno) {
+      pessoaAluno.nome = nome ?? pessoaAluno.nome 
+      pessoaAluno.sobrenome= sobrenome ?? pessoaAluno.sobrenome,
+      pessoaAluno.genero= genero ?? pessoaAluno.genero,
+      pessoaAluno.nascimento= nascimento ?? pessoaAluno.nascimento
+    }
+    else{
+      return res.status(404).json({ error: 'Aluno não encontrado' });
+    }
+
+  
+    // Salvar as alterações no banco de dados
+    try {
+      await aluno.save();
+      await pessoaAluno.save();
+    } catch (error: any) {
+      if (error.name === 'SequelizeUniqueConstraintError') {
+        return res.status(400).json({ error: 'Já existe uma pessoa ' + error.errors[0].value + ' cadastrada no banco' });
+      }
+      throw error;
+    }
+    
+    res.json({ aluno: aluno, pessoa: pessoaAluno });
+  } catch (error:any) {
+    res.status(500).json({ error: 'Erro ao atualizar o aluno'});
   }
+};
+
+  
   
 
 
