@@ -82,7 +82,6 @@ Responsavel.belongsTo(Pessoa, { foreignKey: 'id_pessoa' });
 export interface AlunoInstace extends Model{
     id_aluno: number;
     id_pessoa: number;
-    id_clube: number;
     id_responsavel: number;
     id_manual: number;
 }
@@ -100,14 +99,6 @@ export const Aluno= sequelize.define<AlunoInstace>('Aluno', {
         references: {
             model: Pessoa,
             key: 'id_pessoa'
-        }
-    },
-    id_clube: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: Clube,
-            key: 'id_clube'
         }
     },
     id_responsavel:{
@@ -131,10 +122,7 @@ export const Aluno= sequelize.define<AlunoInstace>('Aluno', {
     timestamps: false
 });
 Pessoa.hasOne(Aluno, { foreignKey: 'id_pessoa' });
-Aluno.belongsTo(Pessoa, { foreignKey: 'id_pessoa' });
-
-Clube.hasMany(Aluno, { foreignKey: 'id_clube' });
-Aluno.belongsTo(Clube, { foreignKey: 'id_clube' });
+Aluno.belongsTo(Pessoa, { foreignKey: 'id_pessoa',  onDelete: 'CASCADE' });
 
 Responsavel.hasMany(Aluno, { foreignKey: 'id_responsavel' });
 Aluno.belongsTo(Responsavel, { foreignKey: 'id_responsavel' });
