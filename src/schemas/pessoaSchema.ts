@@ -8,7 +8,8 @@ export const pessoaSchema = Joi.object({
   }).options({ allowUnknown: true });
 
 
-export const alunoSchema = Joi.object({
-  id_responsavel: Joi.number().integer().min(0).optional(),
-  id_manual: Joi.number().integer().min(0).optional()
-}).options({ allowUnknown: true });
+  export const alunoSchema = pessoaSchema.concat(Joi.object({
+    id_responsavel: Joi.number().integer().min(0).optional(),
+    id_manual: Joi.number().integer().min(0).optional()
+  }).options({ allowUnknown: true }));
+  

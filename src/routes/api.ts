@@ -21,9 +21,10 @@ router.get('/manual', ClubeController.manual);
 
 
 
-router.post('/criarAluno', validaPessoa, validaAluno, PessoaController.criarAluno);
+router.post('/criarAluno', validaAluno, PessoaController.criarAluno);
 router.get('/alunos', PessoaController.listarAlunos);
 router.get('/aluno/:id', PessoaController.pegarAluno);
+router.put('/atualizarAluno/:id', PessoaController.atualizarAluno);
 
 
 router.post('/criarResponsavel', PessoaController.criarResponsavel);
