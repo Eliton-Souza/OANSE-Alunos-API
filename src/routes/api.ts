@@ -1,37 +1,32 @@
 import { Router } from 'express';
-import * as PessoaController from '../controllers/pessoaController';
+import * as PessoaController from '../controllers/atores/pessoaController';
+import * as AlunoController from '../controllers/atores/alunoController';
+import * as ResponsavelController from '../controllers/atores/responsavelController';
 import * as ClubeController from '../controllers/clubeController';
-import { updateValidaAluno, validaAluno } from '../middlewares/validaPessoa';
+import { updateValidaAluno, updateValidaResponsavel, validaAluno, validaResponsavel } from '../middlewares/validaPessoa';
 
 const router = Router();
 
-
-//router.get('/', PessoaController.
-/*
-router.get('/pessoas', PessoaController.rotapessoa);
-router.get('/consulta', PessoaController.consulta);
-router.get('/aluno', PessoaController.criaAluno);
-router.get('/lider', PessoaController.criaLider);
-router.get('/consultalider', PessoaController.consultaLider);
+//CRUD ALUNO
+router.post('/criarAluno', validaAluno, AlunoController.criarAluno);
+router.get('/alunos', AlunoController.listarAlunos);
+router.get('/aluno/:id', AlunoController.pegarAluno);
+router.put('/atualizarAluno/:id', updateValidaAluno, AlunoController.atualizarAluno);
+router.delete('/deletarAluno/:id', AlunoController.deletarAluno);
 
 
-router.get('/clube', ClubeController.clube);
-router.get('/manual', ClubeController.manual);
-*/
+router.post('/criarResponsavel', validaResponsavel, ResponsavelController.criarResponsavel);
+router.get('/listarResponsaveis', ResponsavelController.listarResponsaveis);
+router.get('/pegarResponsavel/:id', ResponsavelController.pegarResponsavel);
+router.put('/atualizarResponsavel/:id', updateValidaResponsavel, ResponsavelController.atualizarResponsavel);
+router.delete('/deletarResponsavel/:id', ResponsavelController.deletarResponsavel);
 
 
 
-router.post('/criarAluno', validaAluno, PessoaController.criarAluno);
-router.get('/alunos', PessoaController.listarAlunos);
-router.get('/aluno/:id', PessoaController.pegarAluno);
-router.put('/atualizarAluno/:id', updateValidaAluno, PessoaController.atualizarAluno);
-router.delete('/deletarAluno/:id', PessoaController.deletarAluno);
-
-
-router.post('/criarResponsavel', PessoaController.criarResponsavel);
-router.post('/criarLider', PessoaController.criarLider);
+//router.post('/criarLider', ResponsavelController.criarLider);
 
 
 router.get('/clube', ClubeController.clube);
 router.get('/manual', ClubeController.manual);
+
 export default router;
