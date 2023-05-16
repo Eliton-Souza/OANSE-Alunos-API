@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
-import { Pessoa, Aluno, Lider, Responsavel } from '../../models/Pessoa';
+import { Pessoa, Responsavel } from '../../models/Pessoa';
 import { sequelize } from '../../instances/mysql';
-import { Clube, Manual } from '../../models/Clube';
 import { criarPessoa } from './pessoaController';
 
 
