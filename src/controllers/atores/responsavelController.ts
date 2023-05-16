@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
-import { Pessoa, Aluno, Lider, Responsavel } from '../../models/Pessoa';
+import { Pessoa, Responsavel } from '../../models/Pessoa';
 import { sequelize } from '../../instances/mysql';
-import { Clube, Manual } from '../../models/Clube';
-import { criarPessoa } from './pessoaController';
+import { atualizarPessoa, criarPessoa, salvarPessoa } from './pessoaController';
 
 
 export const criarResponsavel = async (req: Request, res: Response) => {
@@ -102,25 +101,14 @@ export const atualizarResponsavel = async (req: Request, res: Response) => {
     // Recuperar dados da pessoa responsavel do banco
     const pessoaResponsavel = await Pessoa.findByPk(responsavel.id_pessoa);
     if (pessoaResponsavel) {
-      pessoaResponsavel.nome = nome ?? pessoaResponsavel.nome 
-      pessoaResponsavel.sobrenome= sobrenome ?? pessoaResponsavel.sobrenome,
-      pessoaResponsavel.genero= genero ?? pessoaResponsavel.genero,
-      pessoaResponsavel.nascimento= nascimento ?? pessoaResponsavel.nascimento
+      atualizarPessoa(pessoaResponsavel, req.body);
     }
     else{
       return res.status(404).json({ error: 'Responsavel não encontrado' });
     }
 
     // Salvar as alterações no banco de dados
-    try {
-      await responsavel.save();
-      await pessoaResponsavel.save();
-    } catch (error: any) {
-      if (error.name === 'SequelizeUniqueConstraintError') {
-        return res.status(400).json({ error: 'Já existe uma pessoa ' + error.errors[0].value + ' cadastrada no banco' });
-      }
-      throw error;
-    }
+    await salvarPessoa(responsavel, pessoaResponsavel, res);
     
     res.json({ responsavel: responsavel, pessoa: pessoaResponsavel });
   } catch (error:any) {
