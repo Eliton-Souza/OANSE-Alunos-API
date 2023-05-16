@@ -37,7 +37,7 @@ export const updateAlunoSchema = pessoaSchema("optional").concat(alunoBase);    
 export const responsavelSchema = pessoaSchema("required").concat(responsavelbase);          //criar
 export const updateResponsavelSchema = pessoaSchema("optional").concat(responsavelbase);    //atualizar
 
-//Responsavel
+//Lider
 export const liderSchema = pessoaSchema("required").concat(liderBase);          //criar
 export const updateLiderSchema = pessoaSchema("optional").concat(liderBase);    //atualizar
 

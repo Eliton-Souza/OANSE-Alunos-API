@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { Pessoa, Aluno, Responsavel } from '../../models/Pessoa';
 import { sequelize } from '../../instances/mysql';
 import { Clube, Manual } from '../../models/Clube';
-import { criarPessoa } from './pessoaController';
+import { atualizarPessoa, criarPessoa, salvarPessoa } from './pessoaController';
 
 
 export const criarAluno = async (req: Request, res: Response) => {
@@ -142,25 +142,14 @@ export const atualizarAluno = async (req: Request, res: Response) => {
     // Recuperar dados da pessoa aluno do banco
     const pessoaAluno = await Pessoa.findByPk(aluno.id_pessoa);
     if (pessoaAluno) {
-      pessoaAluno.nome = nome ?? pessoaAluno.nome 
-      pessoaAluno.sobrenome= sobrenome ?? pessoaAluno.sobrenome,
-      pessoaAluno.genero= genero ?? pessoaAluno.genero,
-      pessoaAluno.nascimento= nascimento ?? pessoaAluno.nascimento
+      atualizarPessoa(pessoaAluno, req.body);
     }
     else{
       return res.status(404).json({ error: 'Aluno não encontrado' });
     }
 
     // Salvar as alterações no banco de dados
-    try {
-      await aluno.save();
-      await pessoaAluno.save();
-    } catch (error: any) {
-      if (error.name === 'SequelizeUniqueConstraintError') {
-        return res.status(400).json({ error: 'Já existe uma pessoa ' + error.errors[0].value + ' cadastrada no banco' });
-      }
-      throw error;
-    }
+    await salvarPessoa(aluno, pessoaAluno, res);
     
     res.json({ aluno: aluno, pessoa: pessoaAluno });
   } catch (error:any) {
