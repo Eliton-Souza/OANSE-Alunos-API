@@ -16,7 +16,9 @@ router.delete('/deletarAluno/:id', AlunoController.deletarAluno);
 
 
 router.post('/criarResponsavel', ResponsavelController.criarResponsavel);
-router.post('/criarLider', ResponsavelController.criarLider);
+
+
+//router.post('/criarLider', ResponsavelController.criarLider);
 
 
 router.get('/clube', ClubeController.clube);
