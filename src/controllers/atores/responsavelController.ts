@@ -33,34 +33,114 @@ export const criarResponsavel = async (req: Request, res: Response) => {
 };
 
 
-export const criarLider = async (req: Request, res: Response) => {
 
-    const transaction = await sequelize.transaction();
+export const listarResponsaveis = async (req: Request, res: Response) => {
 
+  const responsavel = await Responsavel.findAll({
+      include: [
+          {
+            model: Pessoa,
+            attributes: { 
+              exclude: ['id_pessoa']
+            }
+          },
+        ],
+      attributes: { 
+          exclude: ['id_pessoa', 'id_responsavel'] 
+      },
+      raw: true
+  });
+
+  res.json({responsavel});
+}
+
+
+export const pegarResponsavel = async (req: Request, res: Response) => {
+  
+  let id= req.params.id;
+
+  const responsavel = await Responsavel.findByPk(id, {
+      include: [
+          {
+            model: Pessoa,
+            attributes: { 
+              exclude: ['id_pessoa']
+            }
+          },
+        ],
+      attributes: { 
+          exclude: ['id_pessoa', 'id_responsavel'] 
+      },
+      raw: true
+  });
+
+  if(responsavel){
+    res.json({responsavel});
+  }
+  else{
+    res.json({error: 'Responsavel nao encontrado'});
+  }
+}
+
+
+
+export const atualizarResponsavel = async (req: Request, res: Response) => {
+  const id = req.params.id;
+
+  try {
+    const { nome, sobrenome, genero, nascimento, contato } = req.body;
+
+    // Recuperar dados do responsavel do banco
+    const responsavel = await Responsavel.findByPk(id);
+    if (responsavel) {
+        responsavel.contato= contato ?? responsavel.contato
+    }
+    else{
+      return res.status(404).json({ error: 'Responsavel não encontrado' });
+    }
+
+    // Recuperar dados da pessoa responsavel do banco
+    const pessoaResponsavel = await Pessoa.findByPk(responsavel.id_pessoa);
+    if (pessoaResponsavel) {
+      pessoaResponsavel.nome = nome ?? pessoaResponsavel.nome 
+      pessoaResponsavel.sobrenome= sobrenome ?? pessoaResponsavel.sobrenome,
+      pessoaResponsavel.genero= genero ?? pessoaResponsavel.genero,
+      pessoaResponsavel.nascimento= nascimento ?? pessoaResponsavel.nascimento
+    }
+    else{
+      return res.status(404).json({ error: 'Responsavel não encontrado' });
+    }
+
+    // Salvar as alterações no banco de dados
     try {
-        const pessoa = await criarPessoa(req.body, transaction);
-    
-        const lider = await Lider.create({
-            id_pessoa: pessoa.id_pessoa,
-            id_clube: req.body.id_clube,
-            login: req.body.login,
-            senha: req.body.senha,
-        }, { transaction });
-    
-        console.log('Pessoa e Lider inseridos com sucesso');
-        await transaction.commit();
-    
-        res.json({ Pessoa: pessoa, Lider: lider });
+      await responsavel.save();
+      await pessoaResponsavel.save();
     } catch (error: any) {
-        await transaction.rollback();
-        if (error.name === 'SequelizeUniqueConstraintError') {
-            console.log('Já existe uma pessoa ' + error.errors[0].value + ' cadastrada no banco');
-        } else {
-            console.log('Ocorreu um erro ao inserir a pessoa:', error);
-        }
-        res.status(500).json(error.errors[0].value + " ja existe cadastrado no banco");
+      if (error.name === 'SequelizeUniqueConstraintError') {
+        return res.status(400).json({ error: 'Já existe uma pessoa ' + error.errors[0].value + ' cadastrada no banco' });
+      }
+      throw error;
     }
     
+    res.json({ responsavel: responsavel, pessoa: pessoaResponsavel });
+  } catch (error:any) {
+    res.status(500).json({ error: 'Erro ao atualizar o responsavel'});
+  }
 };
-      
 
+
+export const deletarResponsavel = async (req: Request, res: Response) => {
+
+  const id_responsavel= req.params.id;
+  const responsavel= await Responsavel.findByPk(id_responsavel)
+
+  if(responsavel){
+    const id_pessoa= responsavel.id_pessoa;
+    
+    await Pessoa.destroy({where:{id_pessoa}});
+    res.json({});
+  }
+  else{
+    res.json({ error: 'Responsavel não encontrado'});
+  }
+};

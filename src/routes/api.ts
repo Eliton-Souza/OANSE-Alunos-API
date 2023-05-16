@@ -16,6 +16,11 @@ router.delete('/deletarAluno/:id', AlunoController.deletarAluno);
 
 
 router.post('/criarResponsavel', ResponsavelController.criarResponsavel);
+router.get('/listarResponsaveis', ResponsavelController.listarResponsaveis);
+router.get('/pegarResponsavel/:id', ResponsavelController.pegarResponsavel);
+router.put('/atualizarResponsavel/:id', ResponsavelController.atualizarResponsavel);
+router.delete('/deletarResponsavel/:id', ResponsavelController.deletarResponsavel);
+
 
 
 //router.post('/criarLider', ResponsavelController.criarLider);
