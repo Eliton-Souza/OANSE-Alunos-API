@@ -3,7 +3,7 @@ import * as LiderController from '../controllers/atores/liderController';
 import * as AlunoController from '../controllers/atores/alunoController';
 import * as ResponsavelController from '../controllers/atores/responsavelController';
 import * as ClubeController from '../controllers/clubeController';
-import { updateValidaAluno, updateValidaResponsavel, validaAluno, validaResponsavel } from '../middlewares/validaPessoa';
+import { updateValidaAluno, updateValidaLider, updateValidaResponsavel, validaAluno, validaLider, validaResponsavel } from '../middlewares/validaPessoa';
 
 const router = Router();
 
@@ -22,10 +22,10 @@ router.put('/atualizarResponsavel/:id', updateValidaResponsavel, ResponsavelCont
 router.delete('/deletarResponsavel/:id', ResponsavelController.deletarResponsavel);
 
 //CRUD LIDER
-router.post('/criarLider', LiderController.criarLider);
+router.post('/criarLider', validaLider, LiderController.criarLider);
 router.get('/listarLideres', LiderController.listarLideres);
 router.get('/pegarLider/:id', LiderController.pegarLider);
-router.put('/atualizarLider/:id', LiderController.atualizarLider);
+router.put('/atualizarLider/:id',updateValidaLider, LiderController.atualizarLider);
 router.delete('/deletarLider/:id', LiderController.deletarLider);
 
 

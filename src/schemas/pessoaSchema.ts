@@ -23,6 +23,12 @@ const responsavelbase = Joi.object({
     })
 });
 
+const liderBase = Joi.object({
+  id_clube: Joi.number().integer().min(0).optional(),
+  login: Joi.string().min(6).max(15),
+  senha: Joi.string().min(6).max(15)
+});
+
 //Aluno
 export const alunoSchema = pessoaSchema("required").concat(alunoBase);          //criar
 export const updateAlunoSchema = pessoaSchema("optional").concat(alunoBase);    //atualizar
@@ -31,4 +37,7 @@ export const updateAlunoSchema = pessoaSchema("optional").concat(alunoBase);    
 export const responsavelSchema = pessoaSchema("required").concat(responsavelbase);          //criar
 export const updateResponsavelSchema = pessoaSchema("optional").concat(responsavelbase);    //atualizar
 
+//Responsavel
+export const liderSchema = pessoaSchema("required").concat(liderBase);          //criar
+export const updateLiderSchema = pessoaSchema("optional").concat(liderBase);    //atualizar
 
