@@ -3,7 +3,7 @@ import * as PessoaController from '../controllers/atores/pessoaController';
 import * as AlunoController from '../controllers/atores/alunoController';
 import * as ResponsavelController from '../controllers/atores/responsavelController';
 import * as ClubeController from '../controllers/clubeController';
-import { updateValidaAluno, validaAluno } from '../middlewares/validaPessoa';
+import { updateValidaAluno, updateValidaResponsavel, validaAluno, validaResponsavel } from '../middlewares/validaPessoa';
 
 const router = Router();
 
@@ -15,10 +15,10 @@ router.put('/atualizarAluno/:id', updateValidaAluno, AlunoController.atualizarAl
 router.delete('/deletarAluno/:id', AlunoController.deletarAluno);
 
 
-router.post('/criarResponsavel', ResponsavelController.criarResponsavel);
+router.post('/criarResponsavel', validaResponsavel, ResponsavelController.criarResponsavel);
 router.get('/listarResponsaveis', ResponsavelController.listarResponsaveis);
 router.get('/pegarResponsavel/:id', ResponsavelController.pegarResponsavel);
-router.put('/atualizarResponsavel/:id', ResponsavelController.atualizarResponsavel);
+router.put('/atualizarResponsavel/:id', updateValidaResponsavel, ResponsavelController.atualizarResponsavel);
 router.delete('/deletarResponsavel/:id', ResponsavelController.deletarResponsavel);
 
 
