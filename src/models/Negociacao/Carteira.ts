@@ -1,6 +1,6 @@
 import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../instances/mysql';
-import {Lider} from './Pessoa/Lider';
+import { sequelize } from '../../instances/mysql';
+import {Lider} from '../Pessoa/Lider';
 
 //CARTEIRA
 export interface CarteiraInstace extends Model {

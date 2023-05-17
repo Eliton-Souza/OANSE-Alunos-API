@@ -5,23 +5,32 @@ import { Responsavel } from '../../models/Pessoa/Responsavel';
 import { sequelize } from '../../instances/mysql';
 import { Clube, Manual } from '../../models/Clube';
 import { atualizarPessoa, criarPessoa, salvarPessoa } from './pessoaController';
+import { Carteira } from '../../models/Negociacao/Carteira';
+import { criarCarteira } from '../negociacao/carteiraController';
 
 
 export const criarAluno = async (req: Request, res: Response) => {
 
     const transaction = await sequelize.transaction();
+   
 
     try {
         const pessoa = await criarPessoa(req.body, transaction);
+
+        let novaCarteira;
+        if (req.body.carteira) {
+          novaCarteira = await criarCarteira();
+        }
     
         const aluno = await Aluno.create({
             id_pessoa: pessoa.id_pessoa,
             id_clube: req.body.id_clube,
             id_manual: req.body.id_manual,
             id_responsavel: req.body.id_responsavel,
+            id_carteira: novaCarteira
         }, { transaction });
     
-        console.log('Pessoa e Aluno inseridos com sucesso');
+        console.log('Pessoa e Aluno e Carteira criados com sucesso');
         await transaction.commit();
     
         res.json({ Pessoa: pessoa, Aluno: aluno });
@@ -163,12 +172,14 @@ export const atualizarAluno = async (req: Request, res: Response) => {
 export const deletarAluno = async (req: Request, res: Response) => {
 
   const id_aluno= req.params.id;
-  const aluno= await Aluno.findByPk(id_aluno)
+  const aluno= await Aluno.findByPk(id_aluno);
 
   if(aluno){
     const id_pessoa= aluno.id_pessoa;
+    const id_carteira= aluno.id_carteira;
     
-    await Pessoa.destroy({where:{id_pessoa}});
+    await Pessoa.destroy({where:{ id_pessoa }});
+    await Carteira.destroy({ where: { id_carteira }});
     res.json({});
   }
   else{

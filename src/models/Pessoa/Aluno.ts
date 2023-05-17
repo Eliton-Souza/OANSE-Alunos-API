@@ -1,7 +1,7 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../../instances/mysql';
 import { Capitulo, Manual } from '../Clube';
-import { Carteira } from '../Carteira';
+import { Carteira } from '../Negociacao/Carteira';
 import { Pessoa } from './Pessoa';
 import { Responsavel } from './Responsavel';
 import { Lider } from './Lider';

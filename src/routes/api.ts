@@ -3,6 +3,7 @@ import * as LiderController from '../controllers/atores/liderController';
 import * as AlunoController from '../controllers/atores/alunoController';
 import * as ResponsavelController from '../controllers/atores/responsavelController';
 import * as ClubeController from '../controllers/clubeController';
+import * as CarteiraController from '../controllers/negociacao/carteiraController';
 import { updateValidaAluno, updateValidaLider, updateValidaResponsavel, validaAluno, validaLider, validaResponsavel } from '../middlewares/validaPessoa';
 
 const router = Router();
@@ -26,6 +27,13 @@ router.post('/criarLider', validaLider, LiderController.criarLider);
 router.get('/listarLideres', LiderController.listarLideres);
 router.get('/pegarLider/:id', LiderController.pegarLider);
 router.put('/atualizarLider/:id',updateValidaLider, LiderController.atualizarLider);
+router.delete('/deletarLider/:id', LiderController.deletarLider);
+
+//CRUD Carteira -- SO TESTE
+//router.post('/criarCarteira', CarteiraController.criarCarteira);
+router.get('/listarCarteiras', CarteiraController.listarCarteiras);
+router.get('/pegarCarteira/:id', CarteiraController.pegarCarteira);
+router.put('/atualizarSaldo/:id', CarteiraController.atualizarSaldo);
 router.delete('/deletarLider/:id', LiderController.deletarLider);
 
 

@@ -13,7 +13,8 @@ function pessoaSchema(metodo: 'optional' | 'required') {
 
 const alunoBase = Joi.object({
   id_responsavel: Joi.number().integer().min(0).optional(),
-  id_manual: Joi.number().integer().min(0).optional()
+  id_manual: Joi.number().integer().min(0).optional(),
+  carteira: Joi.boolean().optional()
 });
 
 const responsavelbase = Joi.object({
