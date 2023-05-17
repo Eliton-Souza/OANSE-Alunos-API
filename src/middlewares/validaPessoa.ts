@@ -15,14 +15,14 @@ export const validaSchema = (schema: any) => async (
 };
 
 //ALUNO
-export const validaAluno = validaSchema(alunoSchema);
-export const updateValidaAluno = validaSchema(updateAlunoSchema);
+export const aluno = validaSchema(alunoSchema);
+export const updateAluno = validaSchema(updateAlunoSchema);
 
 //RESPONSAVEL
-export const validaResponsavel = validaSchema(responsavelSchema);
-export const updateValidaResponsavel = validaSchema(updateResponsavelSchema);
+export const responsavel = validaSchema(responsavelSchema);
+export const updateResponsavel = validaSchema(updateResponsavelSchema);
 
 //LIDER
-export const validaLider = validaSchema(liderSchema);
-export const updateValidaLider = validaSchema(updateLiderSchema);
+export const lider = validaSchema(liderSchema);
+export const updateLider = validaSchema(updateLiderSchema);
 
