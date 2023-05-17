@@ -1,12 +1,12 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../instances/mysql';
-import {Lider, Aluno} from './Pessoa';
+import {Lider} from './Pessoa/Lider';
 
 //CARTEIRA
 export interface CarteiraInstace extends Model {
     id_carteira: number;
-    saldo: number
-    id_aluno: number;
+    saldo: number;
+    data_criacao: Date;
 }
 
 export const Carteira = sequelize.define<CarteiraInstace>('Carteira', {
@@ -16,22 +16,17 @@ export const Carteira = sequelize.define<CarteiraInstace>('Carteira', {
         type: DataTypes.INTEGER
     },
     saldo: {
-        type: DataTypes.FLOAT
+        type: DataTypes.FLOAT,
+        defaultValue: 0,
     },
-    id_aluno:{
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: Aluno,
-            key: 'id_aluno'
-        }
+    data_criacao: {
+        type: DataTypes.DATE,
+        allowNull: false
     },
 }, {
     tableName: 'Carteira',
     timestamps: false
 });
-Aluno.hasOne(Carteira, { foreignKey: 'id_aluno' });
-Carteira.belongsTo(Aluno, { foreignKey: 'id_aluno' });
 
 
 //TRANSACAO -- HISTORICO DE VENDAS NA FEIRINHA E ADICAO DE SALDO A CARTEIRA DO ALUNO

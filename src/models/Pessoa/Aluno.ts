@@ -1,82 +1,10 @@
 import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../instances/mysql';
-import { Capitulo, Clube, Manual } from './Clube';
-
-//PESSOA GENERICA
-export interface PessoaInstace extends Model {
-    id_pessoa: number;
-    genero: string;
-    nascimento: Date;
-    nome: string;
-    sobrenome: string;
-}
-
-export const Pessoa = sequelize.define<PessoaInstace>('Pessoa', {
-    id_pessoa: {
-        primaryKey: true,
-        autoIncrement: true,
-        type: DataTypes.INTEGER
-    },
-    genero: {
-        type: DataTypes.ENUM('M', 'F'),
-        allowNull: false
-    },
-    nascimento: {
-        type: DataTypes.DATE,
-        allowNull: true
-    },
-    nome: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    sobrenome: {
-        type: DataTypes.STRING,
-        allowNull: false
-    }
-}, {
-    indexes: [{
-      unique: true,
-      fields: ['nome', 'sobrenome']
-    }],
-    tableName: 'Pessoa',
-    timestamps: false
-});
-
-//RESPONSAVEL
-export interface ResponsavelInstace extends Model{
-    id_responsavel: number;
-    id_pessoa: number;
-    contato: string;
-}
-
-export const Responsavel= sequelize.define<ResponsavelInstace>('Responsavel', {
-    id_responsavel: {
-        primaryKey: true,
-        autoIncrement: true,
-        type: DataTypes.INTEGER
-    },
-    id_pessoa:{
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        unique: true,
-        references: {
-            model: Pessoa,
-            key: 'id_pessoa'
-        }
-    },
-    contato: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        unique: true
-    },
-}, {
-    tableName: 'Responsavel',
-    timestamps: false
-});
-Pessoa.hasOne(Responsavel, { foreignKey: 'id_pessoa' });
-Responsavel.belongsTo(Pessoa, { foreignKey: 'id_pessoa' });
-
-
+import { sequelize } from '../../instances/mysql';
+import { Capitulo, Manual } from '../Clube';
+import { Carteira } from '../Carteira';
+import { Pessoa } from './Pessoa';
+import { Responsavel } from './Responsavel';
+import { Lider } from './Lider';
 
 //ALUNO
 export interface AlunoInstace extends Model{
@@ -84,6 +12,7 @@ export interface AlunoInstace extends Model{
     id_pessoa: number;
     id_responsavel: number;
     id_manual: number;
+    id_carteira: number;
 }
 
 export const Aluno= sequelize.define<AlunoInstace>('Aluno', {
@@ -117,6 +46,14 @@ export const Aluno= sequelize.define<AlunoInstace>('Aluno', {
             key: 'id_manual'
         }
     },
+    id_carteira:{
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+            model: Carteira,
+            key: 'id_carteira'
+        }
+    },
 }, {
     tableName: 'Aluno',
     timestamps: false
@@ -130,57 +67,8 @@ Aluno.belongsTo(Responsavel, { foreignKey: 'id_responsavel' });
 Manual.hasMany(Aluno, { foreignKey: 'id_manual' });
 Aluno.belongsTo(Manual, { foreignKey: 'id_manual' });
 
-
-
-//LIDER
-export interface LiderInstace extends Model{
-    id_lider: number;
-    id_pessoa: number;
-    id_clube: number;
-    login: string;
-    senha: string;
-}
-
-export const Lider= sequelize.define<LiderInstace>('Lider', {
-    id_lider: {
-        primaryKey: true,
-        autoIncrement: true,
-        type: DataTypes.INTEGER
-    },
-    id_pessoa:{
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        unique: true,
-        references: {
-            model: Pessoa,
-            key: 'id_pessoa'
-        }
-    },
-    id_clube: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: Clube,
-            key: 'id_clube'
-        }
-    },
-    login: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    senha: {
-        type: DataTypes.STRING,
-        allowNull: false
-    }
-}, {
-    tableName: 'Lider',
-    timestamps: false
-});
-Pessoa.hasOne(Lider, { foreignKey: 'id_pessoa' });
-Lider.belongsTo(Pessoa, { foreignKey: 'id_pessoa' });
-
-Clube.hasMany(Lider, { foreignKey: 'id_clube' });
-Lider.belongsTo(Clube, { foreignKey: 'id_clube' });
+Carteira.hasOne(Aluno, { foreignKey: 'id_carteira' });
+Aluno.belongsTo(Carteira, { foreignKey: 'id_carteira',  onDelete: 'CASCADE' });
 
 
 

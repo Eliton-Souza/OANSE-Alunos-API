@@ -1,5 +1,8 @@
 import { Response } from 'express';
-import { AlunoInstace, LiderInstace, Pessoa, PessoaInstace, ResponsavelInstace, } from '../../models/Pessoa';
+import { Pessoa, PessoaInstace } from '../../models/Pessoa/Pessoa';
+import { AlunoInstace } from '../../models/Pessoa/Aluno';
+import { LiderInstace } from '../../models/Pessoa/Lider';
+import { ResponsavelInstace, } from '../../models/Pessoa/Responsavel';
 
 export const criarPessoa = async (body: any, transaction: any) => {
     const pessoa = await Pessoa.create({
