@@ -4,7 +4,7 @@ import { Aluno } from '../../models/Pessoa/Aluno';
 import { Responsavel } from '../../models/Pessoa/Responsavel';
 import { sequelize } from '../../instances/mysql';
 import { Clube, Manual } from '../../models/Clube';
-import { atualizarPessoa, criarPessoa, salvarPessoa } from './pessoaController';
+import { atualizarPessoa, criarPessoa, salvarPessoa } from '../../services/atores/servicePessoa';
 import { Carteira } from '../../models/Negociacao/Carteira';
 import { criarCarteira } from '../../services/Negociacao/serviceCarteira';
 

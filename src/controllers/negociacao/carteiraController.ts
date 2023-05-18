@@ -4,7 +4,6 @@ import { Carteira } from '../../models/Negociacao/Carteira';
 export const listarCarteiras = async (req: Request, res: Response) => {
 
     const carteiras = await Carteira.findAll();
-
     res.json({carteiras});
 }
 
@@ -12,7 +11,6 @@ export const listarCarteiras = async (req: Request, res: Response) => {
 export const pegarCarteira = async (req: Request, res: Response) => {
 
     let id= req.params.id;
-
     const carteira= await Carteira.findByPk(id);
 
     if(carteira){

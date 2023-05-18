@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { Pessoa } from '../../models/Pessoa/Pessoa';
 import { Responsavel } from '../../models/Pessoa/Responsavel';
 import { sequelize } from '../../instances/mysql';
-import { atualizarPessoa, criarPessoa, salvarPessoa } from './pessoaController';
+import { atualizarPessoa, criarPessoa, salvarPessoa } from '../../services/atores/servicePessoa';
 
 
 export const criarResponsavel = async (req: Request, res: Response) => {

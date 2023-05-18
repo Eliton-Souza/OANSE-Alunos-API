@@ -24,10 +24,17 @@ export const criarPessoa = async (body: any, transaction: any) => {
 }
 
 export const atualizarPessoa = (pessoa: PessoaInstace, dados: PessoaInstace) => {
-  pessoa.nome = dados.nome ?? pessoa.nome;
-  pessoa.sobrenome = dados.sobrenome ?? pessoa.sobrenome;
-  pessoa.genero = dados.genero ?? pessoa.genero;
-  pessoa.nascimento = dados.nascimento ?? pessoa.nascimento;
+  
+  try {
+    pessoa.nome = dados.nome ?? pessoa.nome;
+    pessoa.sobrenome = dados.sobrenome ?? pessoa.sobrenome;
+    pessoa.genero = dados.genero ?? pessoa.genero;
+    pessoa.nascimento = dados.nascimento ?? pessoa.nascimento;
+
+  } catch (error: any) {
+    console.log('Ocorreu um erro ao criar pessoa:', error);
+    return(error);
+  }
 };
 
 
