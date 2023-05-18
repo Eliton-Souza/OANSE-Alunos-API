@@ -3,33 +3,38 @@ import * as LiderController from '../controllers/atores/liderController';
 import * as AlunoController from '../controllers/atores/alunoController';
 import * as ResponsavelController from '../controllers/atores/responsavelController';
 import * as ClubeController from '../controllers/clubeController';
-import { updateValidaAluno, updateValidaLider, updateValidaResponsavel, validaAluno, validaLider, validaResponsavel } from '../middlewares/validaPessoa';
+import * as CarteiraController from '../controllers/negociacao/carteiraController';
+import * as valida from '../middlewares/validaSchema';
 
 const router = Router();
 
 //CRUD ALUNO
-router.post('/criarAluno', validaAluno, AlunoController.criarAluno);
+router.post('/criarAluno', valida.aluno, AlunoController.criarAluno);
 router.get('/alunos', AlunoController.listarAlunos);
 router.get('/aluno/:id', AlunoController.pegarAluno);
-router.put('/atualizarAluno/:id', updateValidaAluno, AlunoController.atualizarAluno);
+router.put('/atualizarAluno/:id', valida.updateAluno, AlunoController.atualizarAluno);
 router.delete('/deletarAluno/:id', AlunoController.deletarAluno);
 
 //CRUD RESPONSAVEL
-router.post('/criarResponsavel', validaResponsavel, ResponsavelController.criarResponsavel);
+router.post('/criarResponsavel', valida.responsavel, ResponsavelController.criarResponsavel);
 router.get('/listarResponsaveis', ResponsavelController.listarResponsaveis);
 router.get('/pegarResponsavel/:id', ResponsavelController.pegarResponsavel);
-router.put('/atualizarResponsavel/:id', updateValidaResponsavel, ResponsavelController.atualizarResponsavel);
+router.put('/atualizarResponsavel/:id', valida.updateResponsavel, ResponsavelController.atualizarResponsavel);
 router.delete('/deletarResponsavel/:id', ResponsavelController.deletarResponsavel);
 
 //CRUD LIDER
-router.post('/criarLider', validaLider, LiderController.criarLider);
+router.post('/criarLider', valida.lider, LiderController.criarLider);
 router.get('/listarLideres', LiderController.listarLideres);
 router.get('/pegarLider/:id', LiderController.pegarLider);
-router.put('/atualizarLider/:id',updateValidaLider, LiderController.atualizarLider);
+router.put('/atualizarLider/:id', valida.updateLider, LiderController.atualizarLider);
 router.delete('/deletarLider/:id', LiderController.deletarLider);
 
-
-//router.post('/criarLider', ResponsavelController.criarLider);
+//CRUD Carteira
+router.get('/listarCarteiras', CarteiraController.listarCarteiras);
+router.get('/pegarCarteira/:id', CarteiraController.pegarCarteira);
+router.put('/atualizarSaldo/:id', valida.transacao, CarteiraController.atualizarSaldo);
+//router.post('/criarCarteira', CarteiraController.criarCarteira);              //carteira so pode ser criada quando aluno for criado para garantir que cada carteira tem aluno
+//router.delete('/deletarCarteira/:id', CarteiraController.deletarCarteira);    //carteira so pode ser deletada quando aluno é deletado
 
 
 router.get('/clube', ClubeController.clube);

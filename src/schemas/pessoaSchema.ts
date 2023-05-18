@@ -13,7 +13,8 @@ function pessoaSchema(metodo: 'optional' | 'required') {
 
 const alunoBase = Joi.object({
   id_responsavel: Joi.number().integer().min(0).optional(),
-  id_manual: Joi.number().integer().min(0).optional()
+  id_manual: Joi.number().integer().min(0).optional(),
+  carteira: Joi.boolean().optional()
 });
 
 const responsavelbase = Joi.object({
@@ -30,14 +31,14 @@ const liderBase = Joi.object({
 });
 
 //Aluno
-export const alunoSchema = pessoaSchema("required").concat(alunoBase);          //criar
-export const updateAlunoSchema = pessoaSchema("optional").concat(alunoBase);    //atualizar
+export const aluno = pessoaSchema("required").concat(alunoBase);          //criar
+export const updateAluno = pessoaSchema("optional").concat(alunoBase);    //atualizar
 
 //Responsavel
-export const responsavelSchema = pessoaSchema("required").concat(responsavelbase);          //criar
-export const updateResponsavelSchema = pessoaSchema("optional").concat(responsavelbase);    //atualizar
+export const responsavel = pessoaSchema("required").concat(responsavelbase);          //criar
+export const updateResponsavel = pessoaSchema("optional").concat(responsavelbase);    //atualizar
 
 //Lider
-export const liderSchema = pessoaSchema("required").concat(liderBase);          //criar
-export const updateLiderSchema = pessoaSchema("optional").concat(liderBase);    //atualizar
+export const lider = pessoaSchema("required").concat(liderBase);          //criar
+export const updateLider = pessoaSchema("optional").concat(liderBase);    //atualizar
 
