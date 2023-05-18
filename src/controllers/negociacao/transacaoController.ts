@@ -1,10 +1,34 @@
 import { Request, Response } from 'express';
 import { Transacao } from '../../models/Negociacao/Transacao';
+import { Aluno } from '../../models/Pessoa/Aluno';
+import { Pessoa } from '../../models/Pessoa/Pessoa';
+import { Lider } from '../../models/Pessoa/Lider';
 
 
 export const listarTransacoes = async (req: Request, res: Response) => {
 
-    const transacoes = await Transacao.findAll();
+    const transacoes = await Transacao.findAll({
+        include: [
+            {
+              model: Aluno,
+              attributes: [],
+              include: [{
+                model: Pessoa,
+                attributes: ['nome', 'sobrenome'] 
+                }]
+            },
+            {
+              model: Lider,
+              attributes: [],
+              include: [{
+                    model: Pessoa,
+                    attributes: ['nome', 'sobrenome'] 
+                }]
+            },
+          ],
+        attributes: ['tipo','valor', 'data', 'novo_saldo', 'id_transacao'],
+        raw: true
+    });
     res.json({transacoes});
 }
 

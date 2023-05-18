@@ -1,7 +1,7 @@
 import { Transacao } from '../../models/Negociacao/Transacao';
 import { format } from 'date-fns'
 
-export const criarTransacao = async (id_lider:number, tipo: string, valor: number, descricao: string, id_aluno: number) => {
+export const criarTransacao = async (id_lider:number, tipo: string, valor: number, descricao: string, id_aluno: number, novo_saldo: number) => {
 
     try {
         const transacao = await Transacao.create({
@@ -11,6 +11,7 @@ export const criarTransacao = async (id_lider:number, tipo: string, valor: numbe
             descricao,
             id_aluno,
             data: format(new Date, 'yyyy-MM-dd'),
+            novo_saldo,
         });
     
         console.log('Transacao adicionada no Histórico');

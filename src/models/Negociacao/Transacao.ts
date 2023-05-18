@@ -12,6 +12,7 @@ export interface TransacaoInstace extends Model{
     descricao: string;
     id_aluno: number;
     data: Date;
+    novo_saldo: number;
 }
 
 export const Transacao= sequelize.define<TransacaoInstace>('Transacao', {
@@ -49,6 +50,10 @@ export const Transacao= sequelize.define<TransacaoInstace>('Transacao', {
     },
     data: {
         type: DataTypes.DATE,
+        allowNull: false
+    },
+    novo_saldo: {
+        type: DataTypes.FLOAT,
         allowNull: false
     },
 }, {

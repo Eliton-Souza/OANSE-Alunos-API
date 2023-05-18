@@ -43,7 +43,7 @@ export const alterarSaldo = async (req: Request, res: Response) => {
             }
 
             await carteira.save();
-            await criarTransacao(id_lider, tipo, valor, descricao, id_aluno);
+            await criarTransacao(id_lider, tipo, valor, descricao, id_aluno, carteira.saldo);
             res.json({ Carteira: carteira });
 
         } else {
