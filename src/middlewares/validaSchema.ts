@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import * as Schema from '../schemas/pessoaSchema';
-import { operacao } from '../schemas/carteiraSchema';
+import * as atorSchema from '../schemas/pessoaSchema';
+import * as negociacaoSchema from '../schemas/negociacaoSchema';
 
 export const validaSchema = (schema: any) => async (
   req: Request,
@@ -16,17 +16,18 @@ export const validaSchema = (schema: any) => async (
 };
 
 //ALUNO
-export const aluno = validaSchema(Schema.aluno);
-export const updateAluno = validaSchema(Schema.updateAluno);
+export const aluno = validaSchema(atorSchema.aluno);
+export const updateAluno = validaSchema(atorSchema.updateAluno);
 
 //RESPONSAVEL
-export const responsavel = validaSchema(Schema.responsavel);
-export const updateResponsavel = validaSchema(Schema.updateResponsavel);
+export const responsavel = validaSchema(atorSchema.responsavel);
+export const updateResponsavel = validaSchema(atorSchema.updateResponsavel);
 
 //LIDER
-export const lider = validaSchema(Schema.lider);
-export const updateLider = validaSchema(Schema.updateLider);
+export const lider = validaSchema(atorSchema.lider);
+export const updateLider = validaSchema(atorSchema.updateLider);
 
 
-//CARTEIRA
-export const transacao= validaSchema(operacao);
+//NEGOCIACAO
+export const alteraSaldo= validaSchema(negociacaoSchema.entradaSaida);
+export const editaDescricao= validaSchema(negociacaoSchema.descricaoTransacao);

@@ -36,7 +36,7 @@ export const Transacao= sequelize.define<TransacaoInstace>('Transacao', {
         type: DataTypes.FLOAT,
         allowNull: false
     },
-    decricao: {
+    descricao: {
         type: DataTypes.STRING
     },
     id_aluno:{

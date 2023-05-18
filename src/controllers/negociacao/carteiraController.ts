@@ -35,11 +35,11 @@ export const atualizarSaldo = async (req: Request, res: Response) => {
     const carteira = await Carteira.findByPk(id_carteira);
     if (carteira) {
 
-        if (tipo === 'adicionar') {
+        if (tipo === 'entrada') {
             carteira.saldo+= parseFloat(valor);
             await carteira.save();
             res.json({ Carteira: carteira});
-        } else if (tipo === 'retirar' && carteira.saldo>= valor) {
+        } else if (tipo === 'saida' && carteira.saldo>= valor) {
             carteira.saldo-= parseFloat(valor);
             await carteira.save();
             res.json({ Carteira: carteira});
