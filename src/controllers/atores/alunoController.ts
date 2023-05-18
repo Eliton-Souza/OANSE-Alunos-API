@@ -4,22 +4,21 @@ import { Aluno } from '../../models/Pessoa/Aluno';
 import { Responsavel } from '../../models/Pessoa/Responsavel';
 import { sequelize } from '../../instances/mysql';
 import { Clube, Manual } from '../../models/Clube';
-import { atualizarPessoa, criarPessoa, salvarPessoa } from './pessoaController';
+import { atualizarPessoa, criarPessoa, salvarPessoa } from '../../services/atores/servicePessoa';
 import { Carteira } from '../../models/Negociacao/Carteira';
-import { criarCarteira } from '../negociacao/carteiraController';
+import { criarCarteira } from '../../services/Negociacao/serviceCarteira';
 
 
 export const criarAluno = async (req: Request, res: Response) => {
 
     const transaction = await sequelize.transaction();
-   
 
     try {
         const pessoa = await criarPessoa(req.body, transaction);
 
         let novaCarteira;
         if (req.body.carteira) {
-          novaCarteira = await criarCarteira();
+          novaCarteira = await criarCarteira(transaction);
         }
     
         const aluno = await Aluno.create({

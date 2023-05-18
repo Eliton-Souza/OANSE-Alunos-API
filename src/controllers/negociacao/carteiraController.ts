@@ -1,32 +1,10 @@
 import { Request, Response } from 'express';
 import { Carteira } from '../../models/Negociacao/Carteira';
-import { format } from 'date-fns'
-
-export const criarCarteira = async () => {
-
-    try {
-        const carteira = await Carteira.create({
-           saldo: 0,
-           data_criacao: format(new Date, 'yyyy-MM-dd'),
-        });
-    
-        console.log('Carteira criada com sucesso na data' + carteira.data_criacao);
-    
-       return carteira.id_carteira;
-    } catch (error: any) {
-    
-        console.log('Ocorreu um erro ao criar a carteira:', error);
-        
-        return(error);
-    }
-};
-
-
+import { criarTransacao } from '../../services/Negociacao/serviceTransacao';
 
 export const listarCarteiras = async (req: Request, res: Response) => {
 
     const carteiras = await Carteira.findAll();
-
     res.json({carteiras});
 }
 
@@ -34,7 +12,6 @@ export const listarCarteiras = async (req: Request, res: Response) => {
 export const pegarCarteira = async (req: Request, res: Response) => {
 
     let id= req.params.id;
-
     const carteira= await Carteira.findByPk(id);
 
     if(carteira){
@@ -46,29 +23,32 @@ export const pegarCarteira = async (req: Request, res: Response) => {
 }
 
 
-export const atualizarSaldo = async (req: Request, res: Response) => {
+export const alterarSaldo = async (req: Request, res: Response) => {
 
   const id_carteira = req.params.id;
 
   try {
-    const { valor, tipo } = req.body;
+    const { valor, tipo, id_lider, descricao, id_aluno } = req.body;
 
     // Recuperar dados da carteira do banco
     const carteira = await Carteira.findByPk(id_carteira);
     if (carteira) {
 
-        if (tipo === 'adicionar') {
-            carteira.saldo+= parseFloat(valor);
+        if (tipo === 'entrada' || (tipo === 'saida' && carteira.saldo >= valor)) {
+            
+            if (tipo === 'entrada') {
+                carteira.saldo += parseFloat(valor);
+            } else {
+                carteira.saldo -= parseFloat(valor);
+            }
+
             await carteira.save();
-            res.json({ Carteira: carteira});
-        } else if (tipo === 'retirar' && carteira.saldo>= valor) {
-            carteira.saldo-= parseFloat(valor);
-            await carteira.save();
-            res.json({ Carteira: carteira});
-        }else{
+            await criarTransacao(id_lider, tipo, valor, descricao, id_aluno, carteira.saldo);
+            res.json({ Carteira: carteira });
+
+        } else {
             res.json("Saldo insuficiente");
         }
-        
         
     }
     else{
@@ -80,7 +60,7 @@ export const atualizarSaldo = async (req: Request, res: Response) => {
 };
 
 
-
+/*
 export const deletarCarteira = async (req: Request, res: Response) => {
     
     const id_carteira= req.params.id;
@@ -88,3 +68,4 @@ export const deletarCarteira = async (req: Request, res: Response) => {
     await Carteira.destroy({where:{id_carteira}});
     res.json({});
 };
+*/

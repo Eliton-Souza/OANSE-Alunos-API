@@ -5,21 +5,30 @@ import { LiderInstace } from '../../models/Pessoa/Lider';
 import { ResponsavelInstace, } from '../../models/Pessoa/Responsavel';
 
 export const criarPessoa = async (body: any, transaction: any) => {
-    const pessoa = await Pessoa.create({
+  
+  const pessoa = await Pessoa.create({
       genero: body.genero,
       nome: body.nome,
       sobrenome: body.sobrenome,
       nascimento: body.nascimento,
     }, { transaction });
-  
-    return pessoa;
+
+  return pessoa;
+
 }
 
 export const atualizarPessoa = (pessoa: PessoaInstace, dados: PessoaInstace) => {
-  pessoa.nome = dados.nome ?? pessoa.nome;
-  pessoa.sobrenome = dados.sobrenome ?? pessoa.sobrenome;
-  pessoa.genero = dados.genero ?? pessoa.genero;
-  pessoa.nascimento = dados.nascimento ?? pessoa.nascimento;
+  
+  try {
+    pessoa.nome = dados.nome ?? pessoa.nome;
+    pessoa.sobrenome = dados.sobrenome ?? pessoa.sobrenome;
+    pessoa.genero = dados.genero ?? pessoa.genero;
+    pessoa.nascimento = dados.nascimento ?? pessoa.nascimento;
+
+  } catch (error: any) {
+    console.log('Ocorreu um erro ao criar pessoa:', error);
+    return(error);
+  }
 };
 
 
