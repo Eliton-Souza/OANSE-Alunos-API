@@ -1,13 +1,13 @@
 import { Carteira } from '../../models/Negociacao/Carteira';
 import { format } from 'date-fns'
 
-export const criarCarteira = async () => {
+export const criarCarteira = async (transaction: any) => {
 
     try {
         const carteira = await Carteira.create({
            saldo: 0,
            data_criacao: format(new Date, 'yyyy-MM-dd'),
-        });
+        },{ transaction });
     
         console.log('Carteira criada com sucesso');
     

@@ -19,7 +19,7 @@ export const criarAluno = async (req: Request, res: Response) => {
 
         let novaCarteira;
         if (req.body.carteira) {
-          novaCarteira = await criarCarteira();
+          novaCarteira = await criarCarteira(transaction);
         }
     
         const aluno = await Aluno.create({
