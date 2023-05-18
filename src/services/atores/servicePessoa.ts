@@ -6,21 +6,15 @@ import { ResponsavelInstace, } from '../../models/Pessoa/Responsavel';
 
 export const criarPessoa = async (body: any, transaction: any) => {
   
-  try {
-    const pessoa = await Pessoa.create({
-        genero: body.genero,
-        nome: body.nome,
-        sobrenome: body.sobrenome,
-        nascimento: body.nascimento,
-      }, { transaction });
+  const pessoa = await Pessoa.create({
+      genero: body.genero,
+      nome: body.nome,
+      sobrenome: body.sobrenome,
+      nascimento: body.nascimento,
+    }, { transaction });
 
-    return pessoa;
+  return pessoa;
 
-    } catch (error: any) {
-    
-      console.log('Ocorreu um erro ao criar pessoa:', error);
-      return(error);
-    }
 }
 
 export const atualizarPessoa = (pessoa: PessoaInstace, dados: PessoaInstace) => {
