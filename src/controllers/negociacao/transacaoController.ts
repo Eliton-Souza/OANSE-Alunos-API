@@ -1,6 +1,10 @@
 import { Request, Response } from 'express';
-import { Carteira } from '../../models/Negociacao/Carteira';
+import { Transacao } from '../../models/Negociacao/Transacao';
+import { format } from 'date-fns'
 
+
+
+/*
 export const listarCarteiras = async (req: Request, res: Response) => {
 
     const carteiras = await Carteira.findAll();
@@ -57,12 +61,11 @@ export const atualizarSaldo = async (req: Request, res: Response) => {
 };
 
 
-/*
+
 export const deletarCarteira = async (req: Request, res: Response) => {
     
     const id_carteira= req.params.id;
 
     await Carteira.destroy({where:{id_carteira}});
     res.json({});
-};
-*/
+};*/

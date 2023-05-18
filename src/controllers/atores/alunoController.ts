@@ -6,7 +6,7 @@ import { sequelize } from '../../instances/mysql';
 import { Clube, Manual } from '../../models/Clube';
 import { atualizarPessoa, criarPessoa, salvarPessoa } from './pessoaController';
 import { Carteira } from '../../models/Negociacao/Carteira';
-import { criarCarteira } from '../negociacao/carteiraController';
+import { criarCarteira } from '../../services/Negociacao/serviceCarteira';
 
 
 export const criarAluno = async (req: Request, res: Response) => {
