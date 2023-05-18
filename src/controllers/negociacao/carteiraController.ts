@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { Carteira } from '../../models/Negociacao/Carteira';
+import { criarTransacao } from '../../services/Negociacao/serviceTransacao';
 
 export const listarCarteiras = async (req: Request, res: Response) => {
 
@@ -22,26 +23,30 @@ export const pegarCarteira = async (req: Request, res: Response) => {
 }
 
 
-export const atualizarSaldo = async (req: Request, res: Response) => {
+export const alterarSaldo = async (req: Request, res: Response) => {
 
   const id_carteira = req.params.id;
 
   try {
-    const { valor, tipo } = req.body;
+    const { valor, tipo, id_lider, descricao, id_aluno } = req.body;
 
     // Recuperar dados da carteira do banco
     const carteira = await Carteira.findByPk(id_carteira);
     if (carteira) {
 
-        if (tipo === 'entrada') {
-            carteira.saldo+= parseFloat(valor);
+        if (tipo === 'entrada' || (tipo === 'saida' && carteira.saldo >= valor)) {
+            
+            if (tipo === 'entrada') {
+                carteira.saldo += parseFloat(valor);
+            } else {
+                carteira.saldo -= parseFloat(valor);
+            }
+
             await carteira.save();
-            res.json({ Carteira: carteira});
-        } else if (tipo === 'saida' && carteira.saldo>= valor) {
-            carteira.saldo-= parseFloat(valor);
-            await carteira.save();
-            res.json({ Carteira: carteira});
-        }else{
+            await criarTransacao(id_lider, tipo, valor, descricao, id_aluno);
+            res.json({ Carteira: carteira });
+
+        } else {
             res.json("Saldo insuficiente");
         }
         
