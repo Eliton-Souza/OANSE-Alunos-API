@@ -51,18 +51,28 @@ export const atualizarSaldo = async (req: Request, res: Response) => {
   const id_carteira = req.params.id;
 
   try {
-    const { valor } = req.body;
+    const { valor, tipo } = req.body;
 
     // Recuperar dados da carteira do banco
     const carteira = await Carteira.findByPk(id_carteira);
     if (carteira) {
-        carteira.saldo+= parseFloat(valor);
-        await carteira.save();
 
-        res.json({ Carteira: carteira});
+        if (tipo === 'adicionar') {
+            carteira.saldo+= parseFloat(valor);
+            await carteira.save();
+            res.json({ Carteira: carteira});
+        } else if (tipo === 'retirar' && carteira.saldo>= valor) {
+            carteira.saldo-= parseFloat(valor);
+            await carteira.save();
+            res.json({ Carteira: carteira});
+        }else{
+            res.json("Saldo insuficiente");
+        }
+        
+        
     }
     else{
-        return res.status(404).json({ error: 'Carteira não encontrado' });
+        return res.status(404).json({ error: 'Carteira não encontrada' });
     }
    }catch (error:any) {
     res.status(500).json({ error: 'Erro ao atualizar a carteira'});
