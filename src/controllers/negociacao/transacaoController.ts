@@ -1,71 +1,55 @@
 import { Request, Response } from 'express';
 import { Transacao } from '../../models/Negociacao/Transacao';
-import { format } from 'date-fns'
 
 
+export const listarTransacoes = async (req: Request, res: Response) => {
 
-/*
-export const listarCarteiras = async (req: Request, res: Response) => {
-
-    const carteiras = await Carteira.findAll();
-
-    res.json({carteiras});
+    const transacoes = await Transacao.findAll();
+    res.json({transacoes});
 }
 
 
-export const pegarCarteira = async (req: Request, res: Response) => {
+export const pegarTransacao = async (req: Request, res: Response) => {
 
     let id= req.params.id;
+    const transacao= await Transacao.findByPk(id);
 
-    const carteira= await Carteira.findByPk(id);
-
-    if(carteira){
-        res.json({carteira});
+    if(transacao){
+        res.json({transacao});
     }
     else{
-        res.json({error: 'Carteria não encontrada'});
+        res.json({error: 'Transacao não encontrada'});
     }
 }
 
 
-export const atualizarSaldo = async (req: Request, res: Response) => {
+export const editarTransacao = async (req: Request, res: Response) => {
 
-  const id_carteira = req.params.id;
+  const id_transacao = req.params.id;
 
   try {
-    const { valor, tipo } = req.body;
+    const { descricao } = req.body;
 
-    // Recuperar dados da carteira do banco
-    const carteira = await Carteira.findByPk(id_carteira);
-    if (carteira) {
-
-        if (tipo === 'adicionar') {
-            carteira.saldo+= parseFloat(valor);
-            await carteira.save();
-            res.json({ Carteira: carteira});
-        } else if (tipo === 'retirar' && carteira.saldo>= valor) {
-            carteira.saldo-= parseFloat(valor);
-            await carteira.save();
-            res.json({ Carteira: carteira});
-        }else{
-            res.json("Saldo insuficiente");
-        }
-        
+    // Recuperar transacao do banco
+    const transacao = await Transacao.findByPk(id_transacao);
+    if (transacao) { 
+        transacao.descricao= descricao;                         //pode editar apenas a descricao
+        await transacao.save();
+        res.json({ Transacao: transacao});
     }
     else{
-        return res.status(404).json({ error: 'Carteira não encontrada' });
+        return res.status(404).json({ error: 'Transacao não encontrada' });
     }
    }catch (error:any) {
-    res.status(500).json({ error: 'Erro ao atualizar a carteira'});
+    res.status(500).json({ error: 'Erro ao editar Transacao'});
   }
 };
 
 
-
-export const deletarCarteira = async (req: Request, res: Response) => {
+export const deletarTransacao = async (req: Request, res: Response) => {
     
-    const id_carteira= req.params.id;
+    const id_transacao = req.params.id;
 
-    await Carteira.destroy({where:{id_carteira}});
+    await Transacao.destroy({where:{id_transacao}});
     res.json({});
-};*/
+};

@@ -4,6 +4,7 @@ import * as AlunoController from '../controllers/atores/alunoController';
 import * as ResponsavelController from '../controllers/atores/responsavelController';
 import * as ClubeController from '../controllers/clubeController';
 import * as CarteiraController from '../controllers/negociacao/carteiraController';
+import * as TransacaoController from '../controllers/negociacao/transacaoController';
 import * as valida from '../middlewares/validaSchema';
 
 const router = Router();
@@ -35,6 +36,14 @@ router.get('/pegarCarteira/:id', CarteiraController.pegarCarteira);
 router.put('/atualizarSaldo/:id', valida.transacao, CarteiraController.atualizarSaldo);
 //router.post('/criarCarteira', CarteiraController.criarCarteira);              //carteira so pode ser criada quando aluno for criado para garantir que cada carteira tem aluno
 //router.delete('/deletarCarteira/:id', CarteiraController.deletarCarteira);    //carteira so pode ser deletada quando aluno é deletado
+
+
+//CRUD TRANSACAO
+router.get('/listarTransacao', TransacaoController.listarTransacoes);
+router.get('/pegarTransacao/:id', TransacaoController.pegarTransacao);
+router.put('/editarTransacao/:id', TransacaoController.editarTransacao);
+router.delete('/deletarTransacao/:id', TransacaoController.deletarTransacao);
+
 
 
 router.get('/clube', ClubeController.clube);
