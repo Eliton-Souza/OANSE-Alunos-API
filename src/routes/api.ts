@@ -6,12 +6,13 @@ import * as ClubeController from '../controllers/clubeController';
 import * as CarteiraController from '../controllers/negociacao/carteiraController';
 import * as TransacaoController from '../controllers/negociacao/transacaoController';
 import * as valida from '../middlewares/validaSchema';
+import { rotaPrivada } from '../config/passport';
 
 const router = Router();
 
 //CRUD ALUNO
 router.post('/criarAluno', valida.aluno, AlunoController.criarAluno);
-router.get('/alunos', AlunoController.listarAlunos);
+router.get('/alunos', rotaPrivada ,AlunoController.listarAlunos);
 router.get('/aluno/:id', AlunoController.pegarAluno);
 router.put('/atualizarAluno/:id', valida.updateAluno, AlunoController.atualizarAluno);
 router.delete('/deletarAluno/:id', AlunoController.deletarAluno);
