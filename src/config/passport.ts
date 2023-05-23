@@ -5,7 +5,7 @@ import { Request, Response, NextFunction } from "express";
 
 const naoAutorizado= {
     status: 401,
-    mensagem: 'Não autorizado'
+    message: 'Não autorizado'
 };
 
 passport.use(new BasicStrategy(async(login, senha, done)=>{
