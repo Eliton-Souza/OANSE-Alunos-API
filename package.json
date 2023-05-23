@@ -16,6 +16,7 @@
     "express": "^4.17.1",
     "joi": "^17.9.2",
     "mysql2": "^3.2.1",
+    "passport": "^0.6.0",
     "sequelize": "^6.6.5",
     "validator": "^13.6.0"
   },
@@ -23,6 +24,7 @@
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/node": "^16.6.1",
+    "@types/passport": "^1.0.12",
     "@types/sequelize": "^4.28.10",
     "@types/validator": "^13.6.3"
   }
