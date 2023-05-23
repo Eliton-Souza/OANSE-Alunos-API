@@ -146,3 +146,8 @@ export const atualizarLider = async (req: Request, res: Response) => {
       res.json({ error: 'Lider não encontrado'});
     }
   };
+
+  export const login= async (req: Request, res: Response) => {
+
+    res.json({ status: true, lider: req.user});
+  };

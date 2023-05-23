@@ -25,6 +25,7 @@ router.put('/atualizarResponsavel/:id', valida.updateResponsavel, ResponsavelCon
 router.delete('/deletarResponsavel/:id', ResponsavelController.deletarResponsavel);
 
 //CRUD LIDER
+router.post('/login', rotaPrivada, LiderController.login);
 router.post('/criarLider', valida.lider, LiderController.criarLider);
 router.get('/listarLideres', LiderController.listarLideres);
 router.get('/pegarLider/:id', LiderController.pegarLider);

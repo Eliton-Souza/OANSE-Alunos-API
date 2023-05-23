@@ -24,6 +24,7 @@ passport.use(new BasicStrategy(async(login, senha, done)=>{
 
 export const rotaPrivada= (req: Request, res: Response, next: NextFunction)=>{
     passport.authenticate('basic', (error: Error, lider: LiderInstace) => {
+        req.user= lider;
         return lider ? next() : next(naoAutorizado);
     })(req, res, next);
 }
