@@ -8,9 +8,10 @@ import { atualizarPessoa, criarPessoa, salvarPessoa } from '../../services/atore
 export const criarResponsavel = async (req: Request, res: Response) => {
 
   const transaction = await sequelize.transaction();
+  const { nome, sobrenome, genero, nascimento} = req.body;
 
   try {
-      const pessoa = await criarPessoa(req.body, transaction);
+    const pessoa = await criarPessoa(nome, sobrenome, nascimento, genero, transaction);
   
       const responsavel = await Responsavel.create({
           id_pessoa: pessoa.id_pessoa,

@@ -4,13 +4,13 @@ import { AlunoInstace } from '../../models/Pessoa/Aluno';
 import { LiderInstace } from '../../models/Pessoa/Lider';
 import { ResponsavelInstace, } from '../../models/Pessoa/Responsavel';
 
-export const criarPessoa = async (body: any, transaction: any) => {
+export const criarPessoa = async (nome: string, sobrenome: string, nascimento: Date, genero: string, transaction: any) => {
   
   const pessoa = await Pessoa.create({
-      genero: body.genero,
-      nome: body.nome,
-      sobrenome: body.sobrenome,
-      nascimento: body.nascimento,
+      nome,
+      sobrenome,
+      nascimento,
+      genero,
     }, { transaction });
 
   return pessoa;

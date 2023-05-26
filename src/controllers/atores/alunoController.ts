@@ -12,9 +12,18 @@ import { criarCarteira } from '../../services/Negociacao/serviceCarteira';
 export const criarAluno = async (req: Request, res: Response) => {
 
     const transaction = await sequelize.transaction();
+    const { nome, sobrenome, genero, nascimento, id_responsavel, id_manual } = req.body;
+
+    console.log('nome:', nome);
+    console.log('sobrenome:', sobrenome);
+    console.log('Data de Nascimento:', nascimento);
+    console.log('genero:', genero);
+    console.log('responsavel:', id_responsavel);
+    console.log('manual:', id_manual);
+    
 
     try {
-        const pessoa = await criarPessoa(req.body, transaction);
+        const pessoa = await criarPessoa(nome, sobrenome, nascimento, genero, transaction);
 
         let novaCarteira;
         if (req.body.carteira) {
@@ -23,9 +32,8 @@ export const criarAluno = async (req: Request, res: Response) => {
     
         const aluno = await Aluno.create({
             id_pessoa: pessoa.id_pessoa,
-            id_clube: req.body.id_clube,
-            id_manual: req.body.id_manual,
-            id_responsavel: req.body.id_responsavel,
+            id_manual,
+            id_responsavel,
             id_carteira: novaCarteira
         }, { transaction });
     
