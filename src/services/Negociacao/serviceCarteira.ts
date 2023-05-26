@@ -8,7 +8,5 @@ export const criarCarteira = async (transaction: any) => {
         data_criacao: format(new Date, 'yyyy-MM-dd'),
     },{ transaction });
 
-    console.log('Carteira criada com sucesso');
-
     return carteira.id_carteira;
 };
