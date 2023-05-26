@@ -36,11 +36,11 @@ export const criarAluno = async (req: Request, res: Response) => {
     } catch (error: any) {
         await transaction.rollback();
         if (error.name === 'SequelizeUniqueConstraintError') {
-            console.log('Já existe uma pessoa ' + error.errors[0].value + ' cadastrada no banco');
+            res.status(409).json('Já existe uma pessoa ' + error.errors[0].value + ' cadastrada no banco');
         } else {
-            console.log('Ocorreu um erro ao inserir a pessoa:', error);
+            res.status(500).json(error);
         }
-        res.status(500).json(error.errors[0].value + " ja existe cadastrado no banco");
+       
     }
 };
 
