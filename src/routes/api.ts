@@ -11,7 +11,7 @@ import { rotaPrivada } from '../config/passport';
 const router = Router();
 
 //CRUD ALUNO
-router.post('/aluno', AlunoController.criarAluno);
+router.post('/aluno', valida.aluno, AlunoController.criarAluno);
 router.get('/alunos', rotaPrivada ,AlunoController.listarAlunos);
 router.get('/aluno/:id', AlunoController.pegarAluno);
 router.put('/aluno/:id', valida.updateAluno, AlunoController.atualizarAluno);

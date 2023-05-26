@@ -12,15 +12,7 @@ import { criarCarteira } from '../../services/Negociacao/serviceCarteira';
 export const criarAluno = async (req: Request, res: Response) => {
 
     const transaction = await sequelize.transaction();
-    const { nome, sobrenome, genero, nascimento, id_responsavel, id_manual } = req.body;
-
-    console.log('nome:', nome);
-    console.log('sobrenome:', sobrenome);
-    console.log('Data de Nascimento:', nascimento);
-    console.log('genero:', genero);
-    console.log('responsavel:', id_responsavel);
-    console.log('manual:', id_manual);
-    
+    const { nome, sobrenome, genero, nascimento, id_responsavel, id_manual } = req.body;  
 
     try {
         const pessoa = await criarPessoa(nome, sobrenome, nascimento, genero, transaction);
