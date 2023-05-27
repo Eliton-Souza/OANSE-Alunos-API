@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import * as atorSchema from '../schemas/pessoaSchema';
 import * as negociacaoSchema from '../schemas/negociacaoSchema';
-import { throws } from 'assert';
 
 export const validaSchema = (schema: any) => async (
   req: Request,
@@ -13,12 +12,17 @@ export const validaSchema = (schema: any) => async (
     next();
   } catch (err: any) {
 
-    const regex = /\"([^"]+)\" with value/;
-    const match = err.details[0].message.match(regex);
-    const campoComErro = match ? match[1] : null;
+    const errorMessage = err.details[0].message;
+    const regex = /"([^"]+)"/;
+    const match = regex.exec(errorMessage);
 
-    res.status(422).json('O valor do campo ' + campoComErro + ' está incorreto');
-    //throw err;
+    if (match && match.length > 1) {
+      res.status(422).json('O valor do campo ' + match[1] + ' está incorreto');
+    }
+    else{
+      res.status(400).json(err);
+    }
+
   }
 };
 
