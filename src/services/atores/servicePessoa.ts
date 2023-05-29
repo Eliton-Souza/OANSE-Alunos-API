@@ -7,7 +7,11 @@ import { ResponsavelInstace, } from '../../models/Pessoa/Responsavel';
 export const criarPessoa = async (nome: string, sobrenome: string, nascimento: Date, genero: string, transaction: any) => {
 
   const nomePadronizado = nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
-  const sobrenomePadronizado = sobrenome.charAt(0).toUpperCase() + sobrenome.slice(1).toLowerCase();
+  
+  const palavrasSobrenome = sobrenome.split(' ');
+  const sobrenomePadronizado = palavrasSobrenome.map((palavra: string) => {
+    return palavra.charAt(0).toUpperCase() + palavra.slice(1).toLowerCase();
+  }).join(' ');
   
   const pessoa = await Pessoa.create({
       nome: nomePadronizado,
