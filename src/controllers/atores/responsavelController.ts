@@ -36,24 +36,49 @@ export const criarResponsavel = async (req: Request, res: Response) => {
 
 
 export const listarResponsaveis = async (req: Request, res: Response) => {
-
-  const responsavel = await Responsavel.findAll({
+  try {
+    const responsaveis = await Responsavel.findAll({
       include: [
-          {
-            model: Pessoa,
-            attributes: { 
-              exclude: ['id_pessoa']
-            }
+        {
+          model: Pessoa,
+          attributes: {
+            exclude: ['id_pessoa'],
           },
-        ],
-      attributes: { 
-          exclude: ['id_pessoa', 'id_responsavel'] 
+        },
+      ],
+      attributes: {
+        exclude: ['id_pessoa'],
       },
-      raw: true
-  });
+      order: [[Pessoa, 'nome', 'ASC']],
+      raw: true,
+    });
 
-  res.json({responsavel});
-}
+    const responsaveisFormatados = responsaveis.map((responsavel: any) => {
+      const {
+        id_responsavel,
+        contato,
+        'Pessoa.genero': genero,
+        'Pessoa.nascimento': nascimento,
+        'Pessoa.nome': nome,
+        'Pessoa.sobrenome': sobrenome,
+      } = responsavel;
+
+      return {
+        id_responsavel,
+        contato,
+        genero,
+        nascimento,
+        nome,
+        sobrenome,
+      };
+    });
+
+    res.json({ responsaveis: responsaveisFormatados });
+  } catch (error) {
+    console.error('Erro ao listar responsáveis:', error);
+    res.status(500).json({ error: 'Erro ao listar responsáveis' });
+  }
+};
 
 
 export const pegarResponsavel = async (req: Request, res: Response) => {

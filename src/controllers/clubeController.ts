@@ -9,9 +9,17 @@ export const clube = async (req: Request, res: Response) => {
     res.json({clube});
 }
 
-export const manual = async (req: Request, res: Response) => {
-    const manual = await Manual.findAll({
-    });
+export const manuais = async (req: Request, res: Response) => {
 
-    res.json({manual});
-}
+    try {
+      const manuais = await Manual.findAll({    
+      });
+     
+      res.json({manuais: manuais});
+
+    } catch (error) {
+      console.error('Erro ao listar manuais:', error);
+      res.status(500).json({ error: 'Erro ao listar manuais' });
+    }
+  };
+  

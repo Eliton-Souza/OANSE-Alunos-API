@@ -49,6 +49,6 @@ router.delete('/transacao/:id', TransacaoController.deletarTransacao);
 
 
 router.get('/clube', ClubeController.clube);
-router.get('/manual', ClubeController.manual);
+router.get('/manuais', ClubeController.manuais);
 
 export default router;
