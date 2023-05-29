@@ -5,10 +5,13 @@ import { LiderInstace } from '../../models/Pessoa/Lider';
 import { ResponsavelInstace, } from '../../models/Pessoa/Responsavel';
 
 export const criarPessoa = async (nome: string, sobrenome: string, nascimento: Date, genero: string, transaction: any) => {
+
+  const nomePadronizado = nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
+  const sobrenomePadronizado = sobrenome.charAt(0).toUpperCase() + sobrenome.slice(1).toLowerCase();
   
   const pessoa = await Pessoa.create({
-      nome,
-      sobrenome,
+      nome: nomePadronizado,
+      sobrenome: sobrenomePadronizado,
       nascimento,
       genero,
     }, { transaction });
