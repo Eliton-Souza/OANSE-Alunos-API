@@ -26,7 +26,7 @@ const responsavelbase = Joi.object({
 
 const liderBase = Joi.object({
   id_clube: Joi.number().integer().min(0).optional(),
-  login: Joi.string().min(6).max(15),
+  login: Joi.string().min(6).max(30),
   senha: Joi.string().min(6).max(15)
 });
 

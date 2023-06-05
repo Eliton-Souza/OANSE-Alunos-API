@@ -6,7 +6,10 @@ import { Responsavel } from '../../models/Pessoa/Responsavel';
 import { sequelize } from '../../instances/mysql';
 import { Clube, Manual } from '../../models/Clube';
 import { atualizarPessoa, criarPessoa, salvarPessoa } from '../../services/atores/servicePessoa';
+import { dadosUsuario, gerarToken } from '../../config/passport';
 
+const bcrypt = require('bcrypt');
+const expiracaoToken= Math.floor(Date.now() / 1000) + (3600 * 6) // Definindo a expiração para 6 horas a partir do momento atual
 
 export const criarLider = async (req: Request, res: Response) => {
 
@@ -15,18 +18,35 @@ export const criarLider = async (req: Request, res: Response) => {
   
     try {
       const pessoa = await criarPessoa(nome, sobrenome, nascimento, genero, transaction);
-    
+
+      const senha= await bcrypt.hash(req.body.senha, 10);
+       
         const lider = await Lider.create({
             id_pessoa: pessoa.id_pessoa,
             id_clube: req.body.id_clube,
             login: req.body.login,
-            senha: req.body.senha
+            senha
         }, { transaction });
     
         console.log('Pessoa e Lider inseridos com sucesso');
         await transaction.commit();
+  
+     
+        if(!pessoa){
+          res.json({error: "Erro pessoa não encontrada"});
+          return;
+        };
+
+        const payload: dadosUsuario = {
+          id_lider: lider.id_lider,
+          nome: pessoa.nome,
+          id_clube: lider.id_clube,
+          exp: expiracaoToken
+        }
+
+        const token= gerarToken(payload);
     
-        res.json({ Pessoa: pessoa, Lider: lider });
+        res.json({ Pessoa: pessoa, Lider: lider, token: token });
     } catch (error: any) {
         await transaction.rollback();
         if (error.name === 'SequelizeUniqueConstraintError') {
@@ -58,8 +78,11 @@ export const criarLider = async (req: Request, res: Response) => {
         },
         raw: true
     });
+
+    
+    
+  res.json({ lideres });
   
-    res.json({lideres});
   }
 
 
@@ -150,5 +173,43 @@ export const atualizarLider = async (req: Request, res: Response) => {
 
   export const login= async (req: Request, res: Response) => {
 
-    res.json({ status: true, lider: req.user});
+    if(req.body.login && req.body.senha){
+      let login: string = req.body.login;
+      let senha: string = req.body.senha;
+
+      const lider = await Lider.findOne({where: {login}})
+      if(!lider){
+        res.json({error: "Login e/ou senha incorretos"});
+        return;
+      }
+
+      const match = await bcrypt.compare(senha, lider.senha);
+      if(!match){
+        res.json({error: "Login e/ou senha incorretos"});
+        return;
+      }
+
+      const pessoa = await Pessoa.findByPk(lider.id_pessoa);
+  
+     
+      if(!pessoa){
+        res.json({error: "Erro pessoa não encontrada"});
+        return;
+      };
+
+      const payload: dadosUsuario = {
+        id_lider: lider.id_lider,
+        nome: pessoa.nome,
+        id_clube: lider.id_clube,
+        exp: expiracaoToken
+      }
+
+      const token= gerarToken(payload);
+
+      
+      res.json({ status: true, token: token});
+      return;
+    }
+
+    res.json({ status: false });
   };
