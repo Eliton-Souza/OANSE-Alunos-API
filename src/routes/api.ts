@@ -6,13 +6,13 @@ import * as ClubeController from '../controllers/clubeController';
 import * as CarteiraController from '../controllers/negociacao/carteiraController';
 import * as TransacaoController from '../controllers/negociacao/transacaoController';
 import * as valida from '../middlewares/validaSchema';
-import { rotaPrivada } from '../config/passport';
+import { verificarToken } from '../config/passport';
 
 const router = Router();
 
 //CRUD ALUNO
 router.post('/aluno', valida.aluno, AlunoController.criarAluno);
-router.get('/alunos', rotaPrivada ,AlunoController.listarAlunos);
+router.get('/alunos', verificarToken ,AlunoController.listarAlunos);
 router.get('/aluno/:id', AlunoController.pegarAluno);
 router.put('/aluno/:id', valida.updateAluno, AlunoController.atualizarAluno);
 router.delete('/aluno/:id', AlunoController.deletarAluno);
@@ -25,9 +25,9 @@ router.put('/responsavel/:id', valida.updateResponsavel, ResponsavelController.a
 router.delete('/responsavel/:id', ResponsavelController.deletarResponsavel);
 
 //CRUD LIDER
-router.post('/login', rotaPrivada, LiderController.login);
+router.post('/login', LiderController.login);
 router.post('/lider', valida.lider, LiderController.criarLider);
-router.get('/lideres', LiderController.listarLideres);
+router.get('/lideres', verificarToken, LiderController.listarLideres);
 router.get('/lider/:id', LiderController.pegarLider);
 router.put('/lider/:id', valida.updateLider, LiderController.atualizarLider);
 router.delete('/lider/:id', LiderController.deletarLider);
