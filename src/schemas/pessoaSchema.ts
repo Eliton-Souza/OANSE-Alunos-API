@@ -3,7 +3,7 @@ import Joi from 'joi';
 function pessoaSchema(metodo: 'optional' | 'required') {
   const pessoaValidation = Joi.object({
     nome: Joi.string().pattern(/^[a-zA-ZÀ-ú]+$/).min(3).max(15)[metodo](),
-    sobrenome: Joi.string().pattern(/^[\p{L}\s]{3,30}$/u).min(3).max(30)[metodo](),
+    sobrenome: Joi.string().min(1).max(30)[metodo](), // Defina a validação específica para o campo sobrenome
     nascimento: Joi.date().iso().max('now').optional(),
     genero: Joi.string().valid('M', 'F')[metodo]()
   });

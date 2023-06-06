@@ -153,7 +153,7 @@ export const atualizarAluno = async (req: Request, res: Response) => {
     // Recuperar dados da pessoa aluno do banco
     const pessoaAluno = await Pessoa.findByPk(aluno.id_pessoa);
     if (pessoaAluno) {
-      atualizarPessoa(pessoaAluno, req.body);
+      atualizarPessoa(pessoaAluno, nome, sobrenome, genero, nascimento);
     }
     else{
       return res.status(404).json({ error: 'Aluno não encontrado' });

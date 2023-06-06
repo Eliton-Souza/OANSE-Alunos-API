@@ -15,6 +15,8 @@ export const validaSchema = (schema: any) => async (
     const errorMessage = err.details[0].message;
     const regex = /"([^"]+)"/;
     const match = regex.exec(errorMessage);
+    console.log("sobrenome:"+ req.body.sobrenome);
+    console.log(err);
 
     if (match && match.length > 1) {
       res.status(422).json('O valor do campo ' + match[1] + ' está incorreto');

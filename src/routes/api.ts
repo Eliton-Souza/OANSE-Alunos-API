@@ -11,44 +11,44 @@ import { verificarToken } from '../config/passport';
 const router = Router();
 
 //CRUD ALUNO
-router.post('/aluno', valida.aluno, AlunoController.criarAluno);
+router.post('/aluno', verificarToken, valida.aluno, AlunoController.criarAluno);
 router.get('/alunos', verificarToken ,AlunoController.listarAlunos);
-router.get('/aluno/:id', AlunoController.pegarAluno);
-router.put('/aluno/:id', valida.updateAluno, AlunoController.atualizarAluno);
-router.delete('/aluno/:id', AlunoController.deletarAluno);
+router.get('/aluno/:id',verificarToken, AlunoController.pegarAluno);
+router.put('/aluno/:id', verificarToken, valida.updateAluno, AlunoController.atualizarAluno);
+router.delete('/aluno/:id',verificarToken, AlunoController.deletarAluno);
 
 //CRUD RESPONSAVEL
-router.post('/responsavel', valida.responsavel, ResponsavelController.criarResponsavel);
-router.get('/responsaveis', ResponsavelController.listarResponsaveis);
-router.get('/responsavel/:id', ResponsavelController.pegarResponsavel);
-router.put('/responsavel/:id', valida.updateResponsavel, ResponsavelController.atualizarResponsavel);
-router.delete('/responsavel/:id', ResponsavelController.deletarResponsavel);
+router.post('/responsavel', verificarToken,valida.responsavel, ResponsavelController.criarResponsavel);
+router.get('/responsaveis', verificarToken, ResponsavelController.listarResponsaveis);
+router.get('/responsavel/:id', verificarToken, ResponsavelController.pegarResponsavel);
+router.put('/responsavel/:id', verificarToken, valida.updateResponsavel, ResponsavelController.atualizarResponsavel);
+router.delete('/responsavel/:id', verificarToken, ResponsavelController.deletarResponsavel);
 
 //CRUD LIDER
-router.post('/login', LiderController.login);
-router.post('/lider', valida.lider, LiderController.criarLider);
+router.post('/login',  LiderController.login);
+router.post('/lider', verificarToken, valida.lider, LiderController.criarLider);
 router.get('/lideres', verificarToken, LiderController.listarLideres);
-router.get('/lider/:id', LiderController.pegarLider);
-router.put('/lider/:id', valida.updateLider, LiderController.atualizarLider);
-router.delete('/lider/:id', LiderController.deletarLider);
+router.get('/lider/:id', verificarToken, LiderController.pegarLider);
+router.put('/lider/:id', verificarToken, valida.updateLider, LiderController.atualizarLider);
+router.delete('/lider/:id', verificarToken, LiderController.deletarLider);
 
 //CRUD Carteira
-router.get('/carteiras', CarteiraController.listarCarteiras);
-router.get('/carteira/:id', CarteiraController.pegarCarteira);
-router.put('/alterarSaldo/:id', valida.alteraSaldo, CarteiraController.alterarSaldo);
+router.get('/carteiras', verificarToken, CarteiraController.listarCarteiras);
+router.get('/carteira/:id', verificarToken, CarteiraController.pegarCarteira);
+router.put('/alterarSaldo/:id', verificarToken, valida.alteraSaldo, CarteiraController.alterarSaldo);
 //router.post('/criarCarteira', CarteiraController.criarCarteira);              //carteira so pode ser criada quando aluno for criado para garantir que cada carteira tem aluno
 //router.delete('/deletarCarteira/:id', CarteiraController.deletarCarteira);    //carteira so pode ser deletada quando aluno é deletado
 
 
 //CRUD TRANSACAO
-router.get('/transacoes', TransacaoController.listarTransacoes);
-router.get('/transacao/:id', TransacaoController.pegarTransacao);
-router.put('/transacao/:id', valida.editaDescricao,  TransacaoController.editarTransacao);
-router.delete('/transacao/:id', TransacaoController.deletarTransacao);
+router.get('/transacoes', verificarToken, TransacaoController.listarTransacoes);
+router.get('/transacao/:id', verificarToken, TransacaoController.pegarTransacao);
+router.put('/transacao/:id', verificarToken, valida.editaDescricao,  TransacaoController.editarTransacao);
+router.delete('/transacao/:id', verificarToken, TransacaoController.deletarTransacao);
 
 
 
-router.get('/clube', ClubeController.clube);
-router.get('/manuais', ClubeController.manuais);
+router.get('/clube', verificarToken, ClubeController.clube);
+router.get('/manuais', verificarToken, ClubeController.manuais);
 
 export default router;

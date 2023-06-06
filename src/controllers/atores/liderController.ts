@@ -1,12 +1,16 @@
 import { Request, Response } from 'express';
 import { Pessoa } from '../../models/Pessoa/Pessoa';
-import { Aluno } from '../../models/Pessoa/Aluno';
 import { Lider } from '../../models/Pessoa/Lider';
-import { Responsavel } from '../../models/Pessoa/Responsavel';
 import { sequelize } from '../../instances/mysql';
-import { Clube, Manual } from '../../models/Clube';
+import { Clube } from '../../models/Clube';
 import { atualizarPessoa, criarPessoa, salvarPessoa } from '../../services/atores/servicePessoa';
 import { dadosUsuario, gerarToken } from '../../config/passport';
+
+declare global {
+  namespace Express {
+    interface User extends dadosUsuario {}
+  }
+}
 
 const bcrypt = require('bcrypt');
 const expiracaoToken= Math.floor(Date.now() / 1000) + (3600 * 6) // Definindo a expiração para 6 horas a partir do momento atual
@@ -14,18 +18,24 @@ const expiracaoToken= Math.floor(Date.now() / 1000) + (3600 * 6) // Definindo a 
 export const criarLider = async (req: Request, res: Response) => {
 
     const transaction = await sequelize.transaction();
-    const { nome, sobrenome, genero, nascimento} = req.body;
-  
+    const { nome, sobrenome, genero, nascimento, senha} = req.body;
+
+
+    const senhaHash= await bcrypt.hash(senha, 10);
+   
+
+    //console.log((req.user as Express.User).nome);
+
     try {
       const pessoa = await criarPessoa(nome, sobrenome, nascimento, genero, transaction);
 
-      const senha= await bcrypt.hash(req.body.senha, 10);
+     
        
         const lider = await Lider.create({
             id_pessoa: pessoa.id_pessoa,
             id_clube: req.body.id_clube,
             login: req.body.login,
-            senha
+            senha: senhaHash
         }, { transaction });
     
         console.log('Pessoa e Lider inseridos com sucesso');
@@ -39,7 +49,7 @@ export const criarLider = async (req: Request, res: Response) => {
 
         const payload: dadosUsuario = {
           id_lider: lider.id_lider,
-          nome: pessoa.nome,
+          nome: pessoa.nome + pessoa.sobrenome,
           id_clube: lider.id_clube,
           exp: expiracaoToken
         }
@@ -139,7 +149,7 @@ export const atualizarLider = async (req: Request, res: Response) => {
       // Recuperar dados da pessoa lider do banco
       const pessoaLider = await Pessoa.findByPk(lider.id_pessoa);
       if (pessoaLider) {
-        atualizarPessoa(pessoaLider, req.body);
+        atualizarPessoa(pessoaLider, nome, sobrenome, genero, nascimento);
       }
       else{
         return res.status(404).json({ error: 'Lider não encontrado' });
@@ -199,7 +209,7 @@ export const atualizarLider = async (req: Request, res: Response) => {
 
       const payload: dadosUsuario = {
         id_lider: lider.id_lider,
-        nome: pessoa.nome,
+        nome: pessoa.nome + pessoa.sobrenome,
         id_clube: lider.id_clube,
         exp: expiracaoToken
       }
