@@ -46,9 +46,11 @@ router.get('/transacao/:id', verificarToken, TransacaoController.pegarTransacao)
 router.put('/transacao/:id', verificarToken, valida.editaDescricao,  TransacaoController.editarTransacao);
 router.delete('/transacao/:id', verificarToken, TransacaoController.deletarTransacao);
 
-
-
 router.get('/clube', verificarToken, ClubeController.clube);
 router.get('/manuais', verificarToken, ClubeController.manuais);
+
+
+//usado na validação do token no frontend
+router.get('/rotaProtegida', verificarToken);
 
 export default router;
