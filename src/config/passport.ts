@@ -26,7 +26,7 @@ const jwtStrategy = new JWTStrategy(options, async (payload: dadosUsuario, done)
 
     const lider= await Lider.findByPk(payload.id_lider);
 
-    if (tokenExp < currentTimestamp && !lider) {
+    if (!lider) {
         // O token está expirado ou lider nao encontrado
         return done(null, false);
     }
@@ -53,3 +53,16 @@ export const verificarToken = (req: Request, res: Response, next: NextFunction):
 export const gerarToken= (dados: dadosUsuario) => {
     return jwt.sign(dados, process.env.JWT_SECRET as string);
 }
+
+
+export const gerarPayload = (id_lider: number, nomeCompleto: string, id_clube: number) => {
+
+    const payload: dadosUsuario = {
+      id_lider: id_lider,
+      nome: nomeCompleto,
+      id_clube: id_clube,
+      exp: Math.floor(Date.now() / 1000) + (3600 * 6) // Definindo a expiração para 6 horas a partir do momento atual
+    };
+
+    return payload;
+};
