@@ -38,7 +38,8 @@ export const Lider= sequelize.define<LiderInstace>('Lider', {
     },
     login: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
     senha: {
         type: DataTypes.STRING,

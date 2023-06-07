@@ -30,16 +30,16 @@ export const criarAluno = async (req: Request, res: Response) => {
         }, { transaction });
         await transaction.commit();
     
-        res.status(201).json({ Pessoa: pessoa, Aluno: aluno });
+        return res.status(201).json({ Pessoa: pessoa, Aluno: aluno });
     } catch (error: any) {
         await transaction.rollback();
         if (error.name === 'SequelizeUniqueConstraintError') {
           const str = error.errors[0].value;
           const novaStr = str.replace(/-/g, ' ');
         
-          res.status(409).json('O aluno(a) ' + novaStr + ' já está cadastrada no sistema');
+          return res.status(409).json('O aluno(a) ' + novaStr + ' já está cadastrada no sistema');
         } else {
-            res.status(500).json(error);
+            return res.status(500).json(error);
         }
        
     }

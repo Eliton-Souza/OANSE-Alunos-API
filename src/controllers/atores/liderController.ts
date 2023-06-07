@@ -50,12 +50,13 @@ export const criarLider = async (req: Request, res: Response) => {
   }catch (error: any) {
     await transaction.rollback();
     if (error.name === 'SequelizeUniqueConstraintError') {
-        console.log('Já existe uma pessoa ' + error.errors[0].value + ' cadastrada no banco');
-    }else {
-        console.log('Ocorreu um erro ao inserir a pessoa:', error);
+      const str = error.errors[0].value;
+      const novaStr = str.replace(/-/g, ' ');
+    
+      return res.status(409).json('Alguma pessoa já usa ' + novaStr + ' no sistema');
     }
 
-    res.status(500).json(error.errors[0].value + " ja existe cadastrado no banco");
+    return res.status(500).json(error.errors[0].value + " ja existe cadastrado no banco");
   }
 };
   
@@ -149,7 +150,10 @@ export const atualizarLider = async (req: Request, res: Response) => {
     res.json({ lider: lider, pessoa: pessoaLider });
   } catch (error:any) {
     if (error.name === 'SequelizeUniqueConstraintError') {
-      return res.status(400).json({ error: 'Já existe uma pessoa ' + error.errors[0].value + ' cadastrada no sistema' });
+      const str = error.errors[0].value;
+      const novaStr = str.replace(/-/g, ' ');
+    
+      return res.status(409).json('Alguma pessoa já usa ' + novaStr + ' no sistema');
     }
     return res.status(500).json({ error: 'Erro ao atualizar o lider'});
   }

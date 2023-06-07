@@ -21,15 +21,17 @@ export const criarResponsavel = async (req: Request, res: Response) => {
       console.log('Pessoa e Responsavel inseridos com sucesso');
       await transaction.commit();
   
-      res.json({ Pessoa: pessoa, Responsavel: responsavel });
+      return res.json({ Pessoa: pessoa, Responsavel: responsavel });
   } catch (error: any) {
       await transaction.rollback();
       if (error.name === 'SequelizeUniqueConstraintError') {
-          console.log('Já existe uma pessoa ' + error.errors[0].value + ' cadastrada no banco');
+        const str = error.errors[0].value;
+        const novaStr = str.replace(/-/g, ' ');
+      
+        return res.status(409).json('Alguma pessoa já usa ' + novaStr + ' no sistema');
       } else {
-          console.log('Ocorreu um erro ao inserir a pessoa:', error);
+          return res.status(500).json(error);
       }
-      res.status(500).json(error.errors[0].value + " ja existe cadastrado no banco");
   }
 };
 
@@ -140,7 +142,10 @@ export const atualizarResponsavel = async (req: Request, res: Response) => {
     res.json({ responsavel: responsavel, pessoa: pessoaResponsavel });
   } catch (error:any) {
     if (error.name === 'SequelizeUniqueConstraintError') {
-      return res.status(400).json({ error: 'Já existe uma pessoa ' + error.errors[0].value + ' cadastrada no sistema' });
+      const str = error.errors[0].value;
+      const novaStr = str.replace(/-/g, ' ');
+    
+      return res.status(409).json('Alguma pessoa já usa ' + novaStr + ' no sistema');
     }
     res.status(500).json({ error: 'Erro ao atualizar o responsavel'});
   }
