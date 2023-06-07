@@ -2,8 +2,8 @@ import Joi from 'joi';
 
 function pessoaSchema(metodo: 'optional' | 'required') {
   const pessoaValidation = Joi.object({
-    nome: Joi.string().pattern(/^[a-zA-ZÀ-ú]+$/).min(3).max(15)[metodo](),
-    sobrenome: Joi.string().min(1).max(30)[metodo](), // Defina a validação específica para o campo sobrenome
+    nome: Joi.string().pattern(/^[a-zA-ZÀ-ú]+$/).min(2).max(15)[metodo](),
+    sobrenome: Joi.string().pattern(/^[a-zA-ZÀ-ú\s]+$/).min(2).max(30)[metodo](),
     nascimento: Joi.date().iso().max('now').optional(),
     genero: Joi.string().valid('M', 'F')[metodo]()
   });

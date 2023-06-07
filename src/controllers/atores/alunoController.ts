@@ -164,7 +164,10 @@ export const atualizarAluno = async (req: Request, res: Response) => {
     
     res.json({ aluno: aluno, pessoa: pessoaAluno });
   } catch (error:any) {
-    res.status(500).json({ error: 'Erro ao atualizar o aluno'});
+    if (error.name === 'SequelizeUniqueConstraintError') {
+      return res.status(400).json({ error: 'Já existe uma pessoa ' + error.errors[0].value + ' cadastrada no sistema' });
+    }
+    return res.status(500).json({ error: 'Erro ao atualizar o aluno'});
   }
 };
 

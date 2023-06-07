@@ -13,7 +13,6 @@ declare global {
 }
 
 const bcrypt = require('bcrypt');
-const expiracaoToken= Math.floor(Date.now() / 1000) + (3600 * 6) // Definindo a expiração para 6 horas a partir do momento atual
 
 export const criarLider = async (req: Request, res: Response) => {
 
@@ -149,7 +148,10 @@ export const atualizarLider = async (req: Request, res: Response) => {
     
     res.json({ lider: lider, pessoa: pessoaLider });
   } catch (error:any) {
-    res.status(500).json({ error: 'Erro ao atualizar o lider'});
+    if (error.name === 'SequelizeUniqueConstraintError') {
+      return res.status(400).json({ error: 'Já existe uma pessoa ' + error.errors[0].value + ' cadastrada no sistema' });
+    }
+    return res.status(500).json({ error: 'Erro ao atualizar o lider'});
   }
 };
   

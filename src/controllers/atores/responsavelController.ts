@@ -139,6 +139,9 @@ export const atualizarResponsavel = async (req: Request, res: Response) => {
     
     res.json({ responsavel: responsavel, pessoa: pessoaResponsavel });
   } catch (error:any) {
+    if (error.name === 'SequelizeUniqueConstraintError') {
+      return res.status(400).json({ error: 'Já existe uma pessoa ' + error.errors[0].value + ' cadastrada no sistema' });
+    }
     res.status(500).json({ error: 'Erro ao atualizar o responsavel'});
   }
 };

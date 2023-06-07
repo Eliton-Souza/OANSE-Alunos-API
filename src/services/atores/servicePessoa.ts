@@ -3,15 +3,19 @@ import { Pessoa, PessoaInstace } from '../../models/Pessoa/Pessoa';
 import { AlunoInstace } from '../../models/Pessoa/Aluno';
 import { LiderInstace } from '../../models/Pessoa/Lider';
 import { ResponsavelInstace, } from '../../models/Pessoa/Responsavel';
+import _ from 'lodash';
+
+const palavraPadronizado = (nome: string) => {
+  const nomeFormatado = _.startCase(_.toLower(nome));
+
+  return nomeFormatado;
+}
+
 
 export const criarPessoa = async (nome: string, sobrenome: string, nascimento: Date, genero: string, transaction: any) => {
 
-  const nomePadronizado = nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
-  
-  const palavrasSobrenome = sobrenome.split(' ');
-  const sobrenomePadronizado = palavrasSobrenome.map((palavra: string) => {
-    return palavra.charAt(0).toUpperCase() + palavra.slice(1).toLowerCase();
-  }).join(' ');
+  const nomePadronizado = palavraPadronizado(nome);
+  const sobrenomePadronizado = palavraPadronizado(sobrenome);
   
   const pessoa = await Pessoa.create({
       nome: nomePadronizado,
@@ -25,10 +29,13 @@ export const criarPessoa = async (nome: string, sobrenome: string, nascimento: D
 }
 
 export const atualizarPessoa = (pessoa: PessoaInstace, nome: string, sobrenome: string, genero: string, nascimento: Date) => {
+
+  const nomePadronizado = palavraPadronizado(nome);
+  const sobrenomePadronizado = palavraPadronizado(sobrenome);
   
   try {
-    pessoa.nome = nome ?? pessoa.nome;
-    pessoa.sobrenome = sobrenome ?? pessoa.sobrenome;
+    pessoa.nome = nome? nomePadronizado : pessoa.nome;
+    pessoa.sobrenome = sobrenome? sobrenomePadronizado : pessoa.sobrenome;
     pessoa.genero = genero ?? pessoa.genero;
     pessoa.nascimento = nascimento ?? pessoa.nascimento;
 
@@ -46,9 +53,6 @@ async function salvarObjeto(objeto: tipoPessoa, res: Response) {
   try {
     await objeto.save();
   } catch (error: any) {
-    if (error.name === 'SequelizeUniqueConstraintError') {
-      return res.status(400).json({ error: 'Já existe uma pessoa ' + error.errors[0].value + ' cadastrada no banco' });
-    }
     throw error;
   }
 }
