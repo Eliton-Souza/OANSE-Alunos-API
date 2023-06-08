@@ -184,13 +184,13 @@ export const login= async (req: Request, res: Response) => {
 
     const lider = await Lider.findOne({where: {login}})
     if(!lider){
-      res.json({error: "Login e/ou senha incorretos"});
+      res.json({error: "Login e/ou senha incorretos", status: false});
       return;
     }
 
     const match = await bcrypt.compare(senha, lider.senha);
     if(!match){
-      res.json({error: "Login e/ou senha incorretos"});
+      res.json({error: "Login e/ou senha incorretos", status: false});
       return;
     }
 
