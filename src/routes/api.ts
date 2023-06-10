@@ -52,8 +52,8 @@ router.get('/manuais', verificarToken, ClubeController.manuais);
 
 //usado na validação do token no frontend
 router.get('/rotaProtegida', verificarToken, (req, res) => {
-    // Se o token foi verificado com sucesso, retornamos true
-    res.json({ status: true });
-  });
+  // Lógica específica da rota protegida
+  res.status(200).json({ message: 'Rota protegida acessada com sucesso' });
+});
 
 export default router;

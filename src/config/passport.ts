@@ -41,7 +41,7 @@ export const verificarToken = (req: Request, res: Response, next: NextFunction):
     passport.authenticate('jwt', { session: false }, (error: Error, user: dadosUsuario) => {
     if (error || !user) {
         // O token é inválido ou expirou
-        return res.status(401).json({ error: 'Token inválido ou expirado' });
+        return res.json({ error: 'Token inválido ou expirado' });
     }
 
     req.user = user;

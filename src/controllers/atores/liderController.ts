@@ -153,7 +153,7 @@ export const atualizarLider = async (req: Request, res: Response) => {
       const str = error.errors[0].value;
       const novaStr = str.replace(/-/g, ' ');
     
-      return res.status(409).json('Alguma pessoa já usa ' + novaStr + ' no sistema');
+      return res.status(409).json('Alguma pessoa já usa ' + novaStr + ' no sistema');   //remover status, tira a msg de erro personalizada
     }
     return res.status(500).json({ error: 'Erro ao atualizar o lider'});
   }
@@ -169,46 +169,41 @@ export const deletarLider = async (req: Request, res: Response) => {
     const id_pessoa= lider.id_pessoa;
     
     await Pessoa.destroy({where:{id_pessoa}});
-    res.json({});
+    return;
   }
   else{
     res.json({ error: 'Lider não encontrado'});
   }
 };
 
-export const login= async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response) => {
+  try {
+    const { login, senha } = req.body;
 
-  if(req.body.login && req.body.senha){
-    let login: string = req.body.login;
-    let senha: string = req.body.senha;
-
-    const lider = await Lider.findOne({where: {login}})
-    if(!lider){
-      res.json({error: "Login e/ou senha incorretos", status: false});
-      return;
+    const lider = await Lider.findOne({ where: { login } });
+    if (!lider) {
+      return res.json({ error: "Login ou senha incorretos" });
     }
 
     const match = await bcrypt.compare(senha, lider.senha);
-    if(!match){
-      res.json({error: "Login e/ou senha incorretos", status: false});
-      return;
+    if (!match) {
+      return res.json({ error: "Login ou senha incorretos" });
     }
 
     const pessoa = await Pessoa.findByPk(lider.id_pessoa);
+    if (!pessoa) {
+      return res.json({ error: "Pessoa não encontrada" });
+    }
 
-    
-    if(!pessoa){
-      res.json({error: "Erro pessoa não encontrada"});
-      return;
-    };
+    const payload = gerarPayload(
+      lider.id_lider,
+      pessoa.nome + " " + pessoa.sobrenome,
+      lider.id_clube
+    );
+    const token = gerarToken(payload);
 
-    const payload= gerarPayload(lider.id_lider, (pessoa.nome +' '+ pessoa.sobrenome), lider.id_clube);
-    const token= gerarToken(payload);
-
-    
-    res.json({ status: true, token: token});
-    return;
+    return res.json({ token });
+  } catch (error: any) {
+    return res.json({ error: "Erro ao fazer o login" });
   }
-
-  res.json({ status: false });
 };
