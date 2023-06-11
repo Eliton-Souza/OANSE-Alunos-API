@@ -7,6 +7,7 @@ import { Clube, Manual } from '../../models/Clube';
 import { atualizarPessoa, criarPessoa, salvarPessoa } from '../../services/atores/servicePessoa';
 import { Carteira } from '../../models/Negociacao/Carteira';
 import { criarCarteira } from '../../services/Negociacao/serviceCarteira';
+import { aluno } from '../../schemas/pessoaSchema';
 
 
 export const criarAluno = async (req: Request, res: Response) => {
@@ -48,43 +49,65 @@ export const criarAluno = async (req: Request, res: Response) => {
 
 export const listarAlunos = async (req: Request, res: Response) => {
 
-    const alunos = await Aluno.findAll({
-        include: [
-            {
-              model: Pessoa,
-              attributes: { 
-                exclude: ['id_pessoa']
-              }
-            },
-            {
-              model: Manual,
-              attributes: ['nome'],
-              include: [{
-                    model: Clube,
-                    attributes: { 
-                        exclude: ['id_clube', 'id_manual'] 
-                    },
-                }]
-            },
-            {
-              model: Responsavel,
-              attributes: ['contato'],
-              include: [{
-                    model: Pessoa,
-                    attributes: { 
-                      exclude: ['id_pessoa']
-                    }
-                }]
-            },
-          ],
-        attributes: { 
-            exclude: ['id_pessoa','id_clube', 'id_manual', 'id_responsavel'] 
-        },
-        raw: true
-    });
+  const alunos = await Aluno.findAll({
+      include: [
+          {
+            model: Pessoa,
+            attributes: { 
+              exclude: ['id_pessoa']
+            }
+          },
+          {
+            model: Manual,
+            attributes: ['nome'],
+            include: [{
+                  model: Clube,
+                  attributes: { 
+                      exclude: ['id_clube', 'id_manual'] 
+                  },
+              }]
+          },
+          {
+            model: Responsavel,
+            attributes: ['contato'],
+            include: [{
+                  model: Pessoa,
+                  attributes: { 
+                    exclude: ['id_pessoa']
+                  }
+              }]
+          },
+        ],
+      attributes: { 
+          exclude: ['id_pessoa','id_clube', 'id_manual', 'id_responsavel'] 
+      },
+      raw: true
+  });
 
-    res.json({alunos});
+  const alunosFormatados = alunos.map((aluno: any) => {  
+    return {
+      id_aluno: aluno.id_aluno,
+      id_carteira: aluno.id_carteira,
+
+      nome: aluno['Pessoa.nome'] + ' ' + aluno['Pessoa.sobrenome'],
+      genero: aluno['Pessoa.genero'],
+      nascimento: aluno['Pessoa.nascimento'],
+
+      clube: aluno['Manual.Clube.nome'],
+      id_clube: aluno['Manual.Clube.id_clube'],
+      manual: aluno['Manual.nome'],
+
+      id_responsavel: aluno['Responsavel.Pessoa.id_pessoa'],
+      nome_responsavel: aluno['Responsavel.Pessoa.nome'] + ' ' + aluno['Responsavel.Pessoa.sobrenome'],
+      genero_responsavel: aluno['Responsavel.Pessoa.genero'],
+      contato_responsavel: aluno['Responsavel.contato'],
+      nascimento_responsavel: aluno['Responsavel.Pessoa.nascimento'],
+    };
+  });
+
+  res.json({ alunos: alunosFormatados });
 }
+
 
 
 export const pegarAluno = async (req: Request, res: Response) => {
