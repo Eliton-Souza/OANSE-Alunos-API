@@ -58,12 +58,18 @@ export const listarAlunos = async (req: Request, res: Response) => {
             }
           },
           {
+            model: Carteira,
+            attributes: { 
+              exclude: ['id_carteira', 'data_criacao']
+            }
+          },
+          {
             model: Manual,
             attributes: ['nome'],
             include: [{
                   model: Clube,
                   attributes: { 
-                      exclude: ['id_clube', 'id_manual'] 
+                      exclude: ['id_clube'] 
                   },
               }]
           },
@@ -73,13 +79,13 @@ export const listarAlunos = async (req: Request, res: Response) => {
             include: [{
                   model: Pessoa,
                   attributes: { 
-                    exclude: ['id_pessoa']
+                    exclude: ['id_pessoa', 'id_responsavel']
                   }
               }]
           },
         ],
       attributes: { 
-          exclude: ['id_pessoa','id_clube', 'id_manual', 'id_responsavel'] 
+          exclude: ['id_pessoa'] 
       },
       raw: true
   });
@@ -89,23 +95,28 @@ export const listarAlunos = async (req: Request, res: Response) => {
       id_aluno: aluno.id_aluno,
       id_carteira: aluno.id_carteira,
 
-      nome: aluno['Pessoa.nome'] + ' ' + aluno['Pessoa.sobrenome'],
+      saldo: aluno['Carteira.saldo'],
+      
+      nome: aluno['Pessoa.nome'],
+      sobrenome: aluno['Pessoa.sobrenome'],
       genero: aluno['Pessoa.genero'],
       nascimento: aluno['Pessoa.nascimento'],
 
+      id_manual: aluno.id_manual,
+      manual: aluno['Manual.nome'],
       clube: aluno['Manual.Clube.nome'],
       id_clube: aluno['Manual.Clube.id_clube'],
-      manual: aluno['Manual.nome'],
-
-      id_responsavel: aluno['Responsavel.Pessoa.id_pessoa'],
-      nome_responsavel: aluno['Responsavel.Pessoa.nome'] + ' ' + aluno['Responsavel.Pessoa.sobrenome'],
+  
+      id_responsavel: aluno.id_responsavel,
+      nome_responsavel: aluno['Responsavel.Pessoa.nome'],
+      sobrenome_responsavel: aluno['Responsavel.Pessoa.sobrenome'],
       genero_responsavel: aluno['Responsavel.Pessoa.genero'],
       contato_responsavel: aluno['Responsavel.contato'],
       nascimento_responsavel: aluno['Responsavel.Pessoa.nascimento'],
     };
   });
 
-  res.json({ alunos: alunosFormatados });
+  return res.json({ alunos: alunosFormatados });
 }
 
 

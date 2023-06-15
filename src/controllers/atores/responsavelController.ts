@@ -55,25 +55,20 @@ export const listarResponsaveis = async (req: Request, res: Response) => {
       raw: true,
     });
 
-    const responsaveisFormatados = responsaveis.map((responsavel: any) => {
-      const {
-        id_responsavel,
-        contato,
-        'Pessoa.genero': genero,
-        'Pessoa.nascimento': nascimento,
-        'Pessoa.nome': nome,
-        'Pessoa.sobrenome': sobrenome,
-      } = responsavel;
 
+    const responsaveisFormatados = responsaveis.map((responsavel: any) => {  
       return {
-        id_responsavel,
-        contato,
-        genero,
-        nascimento,
-        nome,
-        sobrenome,
+        id_responsavel: responsavel.id_responsavel,
+        contato: responsavel.contato,
+          
+        nome: responsavel['Pessoa.nome'],
+        sobrenome: responsavel['Pessoa.sobrenome'],
+        genero: responsavel['Pessoa.genero'],
+        nascimento: responsavel['Pessoa.nascimento'],      
       };
     });
+
+   
 
     res.json({ responsaveis: responsaveisFormatados });
   } catch (error) {

@@ -12,10 +12,26 @@ export const clube = async (req: Request, res: Response) => {
 export const manuais = async (req: Request, res: Response) => {
 
     try {
-      const manuais = await Manual.findAll({    
+      const manuais = await Manual.findAll({ 
+        include: [
+          {
+            model: Clube,
+            attributes: { 
+                exclude: ['id_clube'] 
+          },
+        }]   
       });
      
-      res.json({manuais: manuais});
+      const manuaisFormatados = manuais.map((manual: any) => {  
+        return {
+          id_manual: manual.id_manual,
+          nome: manual.nome,
+          clube: manual.Clube.nome,
+        };
+      });
+      
+    
+      return res.json({ manuais: manuaisFormatados });
 
     } catch (error) {
       console.error('Erro ao listar manuais:', error);
