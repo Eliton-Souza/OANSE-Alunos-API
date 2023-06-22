@@ -33,9 +33,9 @@ export const criarAluno = async (req: Request, res: Response) => {
           const str = error.errors[0].value;
           const novaStr = str.replace(/-/g, ' ');
         
-          return res.json('O aluno(a) ' + novaStr + ' já está cadastrada no sistema');
+          return res.json({error: 'O aluno(a) ' + novaStr + ' já está cadastrada no sistema'});
         } else {
-            return res.json(error);
+            return res.json({error: error});
         }
        
     }
@@ -51,45 +51,51 @@ export const listarAlunos = async (req: Request, res: Response) => {
     whereClause = { '$Manual.Clube.id_clube$': id_clube }; // Filtra os alunos pelo id_clube
   }
 
-  const alunos = await Aluno.findAll({
-    include: [
-      {
-        model: Pessoa,
-        attributes: ['nome', 'sobrenome']
+  try {
+    const alunos = await Aluno.findAll({
+      include: [
+        {
+          model: Pessoa,
+          attributes: ['nome', 'sobrenome']
+        },
+        {
+          model: Carteira,
+          attributes: ['saldo']
+        },
+        {
+          model: Manual,
+          attributes: ['nome'],
+          include: [
+            {
+              model: Clube,
+              attributes: ['nome']
+            }
+          ]
+        }
+      ],
+      where: whereClause, // Aplica a cláusula where dinamicamente
+      attributes: {
+        exclude: ['id_pessoa', 'id_responsavel', 'id_manual', 'id_carteira']
       },
-      {
-        model: Carteira,
-        attributes: ['saldo']
-      },
-      {
-        model: Manual,
-        attributes: ['nome'],
-        include: [
-          {
-            model: Clube,
-            attributes: ['id_clube']
-          }
-        ]
-      }
-    ],
-    where: whereClause, // Aplica a cláusula where dinamicamente
-    attributes: {
-      exclude: ['id_pessoa', 'id_responsavel', 'id_manual', 'id_carteira']
-    },
-    raw: true
-  });
-
-  const alunosFormatados = alunos.map((aluno: any) => {
-    return {
-      id_aluno: aluno.id_aluno,
-      nome: aluno['Pessoa.nome'],
-      sobrenome: aluno['Pessoa.sobrenome'],
-      manual: aluno['Manual.nome'],
-      saldo: aluno['Carteira.saldo']
-    };
-  });
-
-  return res.json({ alunos: alunosFormatados, clube: id_clube });
+      raw: true
+    });
+  
+    const alunosFormatados = alunos.map((aluno: any) => {
+      return {
+        id_aluno: aluno.id_aluno,
+        nome: aluno['Pessoa.nome'],
+        sobrenome: aluno['Pessoa.sobrenome'],
+        clube: aluno['Manual.Clube.nome'],
+        manual: aluno['Manual.nome'],
+        saldo: aluno['Carteira.saldo']
+      };
+    });
+  
+    return res.json({ alunos: alunosFormatados, clube: id_clube});
+    
+  } catch (error) {
+    return res.json({error: "Erro ao encontrar alunos"})
+  }
 };
 
 
@@ -188,8 +194,7 @@ export const pegarAluno = async (req: Request, res: Response) => {
     
     return res.json({ aluno: alunoFormatado });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: 'Erro interno do servidor' });
+    return res.json({ error: 'Aluno não encontrado'});
   }
 };
 
@@ -207,7 +212,7 @@ export const atualizarAluno = async (req: Request, res: Response) => {
       aluno.id_manual= id_manual ?? aluno.id_manual
     }
     else{
-      return res.status(404).json({ error: 'Aluno não encontrado' });
+      return res.json({ error: 'Aluno não encontrado' });
     }
 
     // Recuperar dados da pessoa aluno do banco
@@ -216,18 +221,21 @@ export const atualizarAluno = async (req: Request, res: Response) => {
       atualizarPessoa(pessoaAluno, nome, sobrenome, genero, nascimento);
     }
     else{
-      return res.status(404).json({ error: 'Aluno não encontrado' });
+      return res.json({ error: 'Aluno não encontrado' });
     }
 
     // Salvar as alterações no banco de dados
     await salvarPessoa(aluno, pessoaAluno, res);
     
-    res.json({ aluno: aluno.id_aluno });
+    return res.json({ aluno: aluno.id_aluno });
   } catch (error:any) {
     if (error.name === 'SequelizeUniqueConstraintError') {
-      return res.status(400).json({ error: 'Já existe uma pessoa ' + error.errors[0].value + ' cadastrada no sistema' });
+      const str = error.errors[0].value;
+      const novaStr = str.replace(/-/g, ' ');
+    
+      return res.json({error: 'Alguma pessoa já usa ' + novaStr + ' no sistema'});
     }
-    return res.status(500).json({ error: 'Erro ao atualizar o aluno'});
+    return res.json({ error: 'Erro ao atualizar o aluno'});
   }
 };
 
@@ -235,17 +243,26 @@ export const atualizarAluno = async (req: Request, res: Response) => {
 export const deletarAluno = async (req: Request, res: Response) => {
 
   const id_aluno= req.params.id;
-  const aluno= await Aluno.findByPk(id_aluno);
 
-  if(aluno){
-    const id_pessoa= aluno.id_pessoa;
-    const id_carteira= aluno.id_carteira;
+  try {
+    const aluno= await Aluno.findByPk(id_aluno);
+
+    if(aluno){
+      const id_pessoa= aluno.id_pessoa;
+      const id_carteira= aluno.id_carteira;
+      
+      await Pessoa.destroy({where:{ id_pessoa }});
+      await Aluno.destroy({where:{id_aluno}});
+  
+      await Carteira.destroy({ where: { id_carteira }});
+  
+      return res.json({sucesso: "Aluno excluído com sucesso"});
+    }
+    else{
+      return res.json({ error: 'Aluno não encontrado'});
+    }
     
-    await Pessoa.destroy({where:{ id_pessoa }});
-    await Carteira.destroy({ where: { id_carteira }});
-    res.json({});
-  }
-  else{
-    res.json({ error: 'Aluno não encontrado'});
+  } catch (error) {
+    return res.json({ error: 'Erro ao excluir Aluno'});
   }
 };
