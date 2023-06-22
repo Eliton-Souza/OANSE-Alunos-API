@@ -18,19 +18,18 @@ export const criarResponsavel = async (req: Request, res: Response) => {
           contato: req.body.contato
       }, { transaction });
   
-      console.log('Pessoa e Responsavel inseridos com sucesso');
       await transaction.commit();
   
-      return res.json({ Pessoa: pessoa, Responsavel: responsavel });
+      return res.json({ Responsavel: responsavel.id_responsavel });
   } catch (error: any) {
       await transaction.rollback();
       if (error.name === 'SequelizeUniqueConstraintError') {
         const str = error.errors[0].value;
         const novaStr = str.replace(/-/g, ' ');
       
-        return res.status(409).json('Alguma pessoa já usa ' + novaStr + ' no sistema');
+        return res.json({ error: 'Alguma pessoa já usa ' + novaStr + ' no sistema' });
       } else {
-          return res.status(500).json(error);
+        return res.json({ error: error });
       }
   }
 };
@@ -55,7 +54,6 @@ export const listarResponsaveis = async (req: Request, res: Response) => {
       raw: true,
     });
 
-
     const responsaveisFormatados = responsaveis.map((responsavel: any) => {  
       return {
         id_responsavel: responsavel.id_responsavel,
@@ -68,21 +66,19 @@ export const listarResponsaveis = async (req: Request, res: Response) => {
       };
     });
 
-   
-
-    res.json({ responsaveis: responsaveisFormatados });
+    return res.json({ responsaveis: responsaveisFormatados });
   } catch (error) {
-    console.error('Erro ao listar responsáveis:', error);
-    res.status(500).json({ error: 'Erro ao listar responsáveis' });
+    return res.json({ error: 'Erro ao encontrar responsáveis' });
   }
 };
 
 
 export const pegarResponsavel = async (req: Request, res: Response) => {
-  
+
   let id= req.params.id;
 
-  const responsavel = await Responsavel.findByPk(id, {
+  try {
+    const responsavelResponse = await Responsavel.findByPk(id, {
       include: [
           {
             model: Pessoa,
@@ -92,16 +88,40 @@ export const pegarResponsavel = async (req: Request, res: Response) => {
           },
         ],
       attributes: { 
-          exclude: ['id_pessoa', 'id_responsavel'] 
+          exclude: ['id_pessoa'] 
       },
       raw: true
   });
 
-  if(responsavel){
-    res.json({responsavel});
-  }
-  else{
-    res.json({error: 'Responsavel nao encontrado'});
+    
+
+    interface responsavelFormatado {
+      id_responsavel: number;
+      contato: string;
+  
+      nome: string;
+      sobrenome: string;
+      genero: string;
+      nascimento: string;
+    }
+
+    const responsavel: any= responsavelResponse;
+
+    const responsavelFormatado: responsavelFormatado  = {
+
+      id_responsavel: responsavel.id_responsavel,
+      contato: responsavel.contato,
+        
+      nome: responsavel['Pessoa.nome'],
+      sobrenome: responsavel['Pessoa.sobrenome'],
+      genero: responsavel['Pessoa.genero'],
+      nascimento: responsavel['Pessoa.nascimento'],      
+    };
+    
+    return res.json({ responsavel: responsavelFormatado });
+    
+  } catch (error) {
+    return res.json({ error: "Responsável não encontrado" });
   }
 }
 
@@ -119,7 +139,7 @@ export const atualizarResponsavel = async (req: Request, res: Response) => {
         responsavel.contato= contato ?? responsavel.contato
     }
     else{
-      return res.status(404).json({ error: 'Responsavel não encontrado' });
+      return res.json({ error: 'Responsavel não encontrado' });
     }
 
     // Recuperar dados da pessoa responsavel do banco
@@ -128,21 +148,21 @@ export const atualizarResponsavel = async (req: Request, res: Response) => {
       atualizarPessoa(pessoaResponsavel, nome, sobrenome, genero, nascimento);
     }
     else{
-      return res.status(404).json({ error: 'Responsavel não encontrado' });
+      return res.json({ error: 'Responsavel não encontrado' });
     }
 
     // Salvar as alterações no banco de dados
     await salvarPessoa(responsavel, pessoaResponsavel, res);
     
-    res.json({ responsavel: responsavel, pessoa: pessoaResponsavel });
+    return res.json({ responsavel: responsavel, pessoa: pessoaResponsavel });
   } catch (error:any) {
     if (error.name === 'SequelizeUniqueConstraintError') {
       const str = error.errors[0].value;
       const novaStr = str.replace(/-/g, ' ');
     
-      return res.status(409).json('Alguma pessoa já usa ' + novaStr + ' no sistema');
+      return res.json({ error: 'Alguma pessoa já usa ' + novaStr + ' no sistema' });
     }
-    res.status(500).json({ error: 'Erro ao atualizar o responsavel'});
+    return res.json({ error: 'Erro ao atualizar o responsavel'});
   }
 };
 
@@ -150,15 +170,23 @@ export const atualizarResponsavel = async (req: Request, res: Response) => {
 export const deletarResponsavel = async (req: Request, res: Response) => {
 
   const id_responsavel= req.params.id;
-  const responsavel= await Responsavel.findByPk(id_responsavel)
 
-  if(responsavel){
-    const id_pessoa= responsavel.id_pessoa;
+  try {
+    const responsavel= await Responsavel.findByPk(id_responsavel)
+
+    if(responsavel){
+      const id_pessoa= responsavel.id_pessoa;
+      
+      await Pessoa.destroy({where:{id_pessoa}});
+      await Responsavel.destroy({where:{id_responsavel}});
+
+      return res.json({ sucesso: "Responsavel excluído com sucesso" });
+    }
+    else{
+      return res.json({ error: 'Responsavel não encontrado'});
+    }
     
-    await Pessoa.destroy({where:{id_pessoa}});
-    res.json({});
-  }
-  else{
-    res.json({ error: 'Responsavel não encontrado'});
-  }
+  } catch (error) {
+    return res.json({ error: 'Erro ao excluir Responsavel'});
+  } 
 };
