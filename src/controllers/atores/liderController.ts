@@ -22,8 +22,6 @@ export const criarLider = async (req: Request, res: Response) => {
   const senhaHash= await bcrypt.hash(senha, 10);
   
 
-  //console.log((req.user as Express.User).nome);
-
   try {
     const pessoa = await criarPessoa(nome, sobrenome, nascimento, genero, transaction);
 
@@ -34,14 +32,7 @@ export const criarLider = async (req: Request, res: Response) => {
         senha: senhaHash
     }, { transaction });
 
-    console.log('Pessoa e Lider inseridos com sucesso');
     await transaction.commit();
-
-  
-    if(!pessoa){
-      res.json({error: "Erro pessoa não encontrada"});
-      return;
-    };
 
     const payload= gerarPayload(lider.id_lider, (pessoa.nome +' '+ pessoa.sobrenome), lider.id_clube);
     const token= gerarToken(payload);
@@ -53,18 +44,57 @@ export const criarLider = async (req: Request, res: Response) => {
       const str = error.errors[0].value;
       const novaStr = str.replace(/-/g, ' ');
     
-      return res.status(409).json('Alguma pessoa já usa ' + novaStr + ' no sistema');
+      return res.json('Alguma pessoa já usa ' + novaStr + ' no sistema');
     }
-
-    return res.status(500).json(error.errors[0].value + " ja existe cadastrado no banco");
+    return res.json(error);
   }
 };
   
 
 export const listarLideres = async (req: Request, res: Response) => {
 
-  const lideres = await Lider.findAll({
-    include: [
+  try {
+    const lideres = await Lider.findAll({
+      include: [
+          {
+            model: Pessoa,
+            attributes: ['nome', 'sobrenome']
+          },
+          {
+            model: Clube,
+            attributes: ['nome']
+          }
+        ],
+      attributes: { 
+          exclude: ['id_pessoa', 'id_clube', 'login', 'senha'] 
+      },
+      raw: true
+    });
+  
+    const lideresFormatados = lideres.map((lider: any) => {
+      return {
+        id_lider: lider.id_lider,
+        nome: lider['Pessoa.nome'],
+        sobrenome: lider['Pessoa.sobrenome'],
+        clube: lider['Clube.nome'],
+      };
+    });
+    
+    return res.json({ lideres: lideresFormatados });
+  } catch (error) {
+    return res.json(error);
+  }
+}
+
+
+
+export const pegarLider = async (req: Request, res: Response) => {
+
+  let id= req.params.id;
+
+  try {
+    const liderResponse = await Lider.findByPk(id, {
+      include: [
         {
           model: Pessoa,
           attributes: { 
@@ -75,44 +105,44 @@ export const listarLideres = async (req: Request, res: Response) => {
           model: Clube
         }
       ],
-    attributes: { 
-        exclude: ['id_pessoa', 'id_clube'] 
-    },
-    raw: true
-  });
-  
-  res.json({ lideres });
-}
-
-
-
-export const pegarLider = async (req: Request, res: Response) => {
-
-  let id= req.params.id;
-
-  const lider = await Lider.findByPk(id, {
-    include: [
-      {
-        model: Pessoa,
-        attributes: { 
-          exclude: ['id_pessoa']
-        }
+      attributes: { 
+          exclude: ['id_pessoa', 'senha'] 
       },
-      {
-        model: Clube
-      }
-    ],
-    attributes: { 
-        exclude: ['id_pessoa', 'id_clube'] 
-    },
-    raw: true
-  });
+      raw: true
+    });
 
-  if(lider){
-      res.json({lider});
-  }
-  else{
-      res.json({error: 'Lider nao encontrado'});
+    interface liderFormatado {
+      id_lider: number;
+      login: string;
+
+      nome: string;
+      sobrenome: string;
+      genero: string;
+      nascimento: string;
+
+      clube: string;
+      id_clube: number;
+    }
+
+    const lider: any= liderResponse;
+
+    const liderFormatado: liderFormatado  = {
+      id_lider: lider.id_lider,
+      login: lider.login,
+     
+      nome: lider['Pessoa.nome'],
+      sobrenome: lider['Pessoa.sobrenome'],
+      genero: lider['Pessoa.genero'],
+      nascimento: lider['Pessoa.nascimento'],
+
+      id_clube: lider.id_clube,
+      clube: lider['Clube.nome'],
+    };
+    
+    return res.json({ lider: liderFormatado });
+    
+  } catch (error) {
+    res.json({error: "Aluno não encontrado"});
   }
 }
 
@@ -132,7 +162,7 @@ export const atualizarLider = async (req: Request, res: Response) => {
       lider.senha= senha? await bcrypt.hash(senha, 10) : lider.senha
     }
     else{
-      return res.status(404).json({ error: 'Lider não encontrado' });
+      return res.json({ error: 'Lider não encontrado' });
     }
 
     // Recuperar dados da pessoa lider do banco
@@ -141,7 +171,7 @@ export const atualizarLider = async (req: Request, res: Response) => {
       atualizarPessoa(pessoaLider, nome, sobrenome, genero, nascimento);
     }
     else{
-      return res.status(404).json({ error: 'Lider não encontrado' });
+      return res.json({ error: 'Lider não encontrado' });
     }
 
     // Salvar as alterações no banco de dados
@@ -153,9 +183,9 @@ export const atualizarLider = async (req: Request, res: Response) => {
       const str = error.errors[0].value;
       const novaStr = str.replace(/-/g, ' ');
     
-      return res.status(409).json('Alguma pessoa já usa ' + novaStr + ' no sistema');   //remover status, tira a msg de erro personalizada
+      return res.json({error: 'Alguma pessoa já usa ' + novaStr + ' no sistema'});
     }
-    return res.status(500).json({ error: 'Erro ao atualizar o lider'});
+    return res.json({ error: 'Erro ao atualizar o lider'});
   }
 };
   
@@ -169,7 +199,8 @@ export const deletarLider = async (req: Request, res: Response) => {
     const id_pessoa= lider.id_pessoa;
     
     await Pessoa.destroy({where:{id_pessoa}});
-    return;
+    await Lider.destroy({where:{id_lider}});
+    return res.json({sucesso: "Lider excluído com sucesso"});
   }
   else{
     res.json({ error: 'Lider não encontrado'});
