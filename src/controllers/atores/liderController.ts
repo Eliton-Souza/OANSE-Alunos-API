@@ -46,7 +46,7 @@ export const criarLider = async (req: Request, res: Response) => {
     
       return res.json('Alguma pessoa já usa ' + novaStr + ' no sistema');
     }
-    return res.json(error);
+    return res.json({error: error});
   }
 };
   
@@ -82,7 +82,7 @@ export const listarLideres = async (req: Request, res: Response) => {
     
     return res.json({ lideres: lideresFormatados });
   } catch (error) {
-    return res.json(error);
+    return res.json({error: "Erro ao encontrar líderes"});
   }
 }
 
@@ -177,7 +177,7 @@ export const atualizarLider = async (req: Request, res: Response) => {
     // Salvar as alterações no banco de dados
     await salvarPessoa(lider, pessoaLider, res);
     
-    res.json({ lider: lider, pessoa: pessoaLider });
+    res.json({ lider: lider.id_lider });
   } catch (error:any) {
     if (error.name === 'SequelizeUniqueConstraintError') {
       const str = error.errors[0].value;
@@ -193,17 +193,24 @@ export const atualizarLider = async (req: Request, res: Response) => {
 export const deletarLider = async (req: Request, res: Response) => {
 
   const id_lider= req.params.id;
-  const lider= await Lider.findByPk(id_lider)
+ 
+  try {
+    const lider= await Lider.findByPk(id_lider);
 
-  if(lider){
-    const id_pessoa= lider.id_pessoa;
+    if(lider){
+      const id_pessoa= lider.id_pessoa;
+      
+      await Pessoa.destroy({where:{id_pessoa}});
+      await Lider.destroy({where:{id_lider}});
+
+      return res.json({sucesso: "Lider excluído com sucesso"});
+    }
+    else{
+      return res.json({ error: 'Lider não encontrado'});
+    }
     
-    await Pessoa.destroy({where:{id_pessoa}});
-    await Lider.destroy({where:{id_lider}});
-    return res.json({sucesso: "Lider excluído com sucesso"});
-  }
-  else{
-    res.json({ error: 'Lider não encontrado'});
+  } catch (error) {
+    return res.json({ error: 'Erro ao excluir Lider'});
   }
 };
 
