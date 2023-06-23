@@ -16,16 +16,20 @@ export const criarPessoa = async (nome: string, sobrenome: string, nascimento: D
 
   const nomePadronizado = palavraPadronizado(nome);
   const sobrenomePadronizado = palavraPadronizado(sobrenome);
-  
-  const pessoa = await Pessoa.create({
+
+  try {
+    const pessoa = await Pessoa.create({
       nome: nomePadronizado,
       sobrenome: sobrenomePadronizado,
       nascimento,
       genero,
     }, { transaction });
 
-  return pessoa;
-
+    return pessoa;
+    
+  } catch (error: any) {
+    throw error;
+  }
 }
 
 export const atualizarPessoa = (pessoa: PessoaInstace, nome: string, sobrenome: string, genero: string, nascimento: Date) => {
@@ -40,11 +44,9 @@ export const atualizarPessoa = (pessoa: PessoaInstace, nome: string, sobrenome: 
     pessoa.nascimento = nascimento ?? pessoa.nascimento;
 
   } catch (error: any) {
-    console.log('Ocorreu um erro ao criar pessoa:', error);
-    return(error);
+    throw error;
   }
 };
-
 
 
 //ALTERAÇÕES DE UPDATE NO BANCO
