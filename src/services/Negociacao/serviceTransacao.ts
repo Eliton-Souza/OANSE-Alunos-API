@@ -14,13 +14,8 @@ export const criarTransacao = async (id_lider:number, tipo: string, valor: numbe
             novo_saldo,
         });
     
-        console.log('Transacao adicionada no Histórico');
-    
-       //return transacao.id_transacao;
+       return transacao.id_transacao; 
     } catch (error: any) {
-    
-        console.log('Ocorreu um erro ao adicionar transacap:', error);
-        
         return(error);
     }
 };

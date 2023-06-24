@@ -26,36 +26,34 @@ export const pegarCarteira = async (req: Request, res: Response) => {
 export const alterarSaldo = async (req: Request, res: Response) => {
 
   const id_carteira = req.params.id;
+  const id_lider = req.user?.id_lider as number;
 
   try {
-    const { valor, tipo, id_lider, descricao, id_aluno } = req.body;
+    const { valor, tipo, id_aluno, descricao } = req.body;
 
     // Recuperar dados da carteira do banco
     const carteira = await Carteira.findByPk(id_carteira);
     if (carteira) {
-
-        if (tipo === 'entrada' || (tipo === 'saida' && carteira.saldo >= valor)) {
             
-            if (tipo === 'entrada') {
-                carteira.saldo += parseFloat(valor);
-            } else {
-                carteira.saldo -= parseFloat(valor);
-            }
-
-            await carteira.save();
-            await criarTransacao(id_lider, tipo, valor, descricao, id_aluno, carteira.saldo);
-            res.json({ Carteira: carteira });
-
-        } else {
-            res.json("Saldo insuficiente");
+        if (tipo === 'entrada') {
+            carteira.saldo += parseFloat(valor);
+        } else if (carteira.saldo >= valor){
+            carteira.saldo -= parseFloat(valor);
         }
-        
+        else {
+            return res.json({error: "Saldo insuficiente"});
+        }
+
+        await carteira.save();
+        await criarTransacao(id_lider, tipo, valor, descricao, id_aluno, carteira.saldo);
+
+        return res.json({ Carteira: carteira });
     }
     else{
-        return res.status(404).json({ error: 'Carteira não encontrada' });
+        return res.json({ error: 'Carteira não encontrada' });
     }
    }catch (error:any) {
-    res.status(500).json({ error: 'Erro ao atualizar a carteira'});
+    return res.json({ error: 'Erro ao alterar o saldo'});
   }
 };
 

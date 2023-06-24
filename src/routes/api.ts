@@ -35,7 +35,7 @@ router.delete('/lider/:id', verificarToken, LiderController.deletarLider);
 //CRUD Carteira
 router.get('/carteiras', verificarToken, CarteiraController.listarCarteiras);
 router.get('/carteira/:id', verificarToken, CarteiraController.pegarCarteira);
-router.put('/alterarSaldo/:id', verificarToken, valida.alteraSaldo, CarteiraController.alterarSaldo);
+router.put('/carteira/:id', verificarToken, valida.alteraSaldo, CarteiraController.alterarSaldo);
 //router.post('/criarCarteira', CarteiraController.criarCarteira);              //carteira so pode ser criada quando aluno for criado para garantir que cada carteira tem aluno
 //router.delete('/deletarCarteira/:id', CarteiraController.deletarCarteira);    //carteira so pode ser deletada quando aluno é deletado
 
