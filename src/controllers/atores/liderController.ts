@@ -44,7 +44,7 @@ export const criarLider = async (req: Request, res: Response) => {
       const str = error.errors[0].value;
       const novaStr = str.replace(/-/g, ' ');
     
-      return res.json('Alguma pessoa já usa ' + novaStr + ' no sistema');
+      return res.json({ error: novaStr + ' já está cadastrado(a) no sistema' });
     }
     return res.json({error: error});
   }
@@ -183,7 +183,7 @@ export const atualizarLider = async (req: Request, res: Response) => {
       const str = error.errors[0].value;
       const novaStr = str.replace(/-/g, ' ');
     
-      return res.json({error: 'Alguma pessoa já usa ' + novaStr + ' no sistema'});
+      return res.json({error:  novaStr + ' já está cadastrado(a) no sistema'});
     }
     return res.json({ error: 'Erro ao atualizar o lider'});
   }

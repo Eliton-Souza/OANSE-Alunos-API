@@ -33,7 +33,7 @@ export const criarAluno = async (req: Request, res: Response) => {
           const str = error.errors[0].value;
           const novaStr = str.replace(/-/g, ' ');
         
-          return res.json({error: 'O aluno(a) ' + novaStr + ' já está cadastrada no sistema'});
+          return res.json({error:  novaStr + ' já está cadastrado(a) no sistema'});
         } else {
             return res.json({error: error});
         }
@@ -233,7 +233,7 @@ export const atualizarAluno = async (req: Request, res: Response) => {
       const str = error.errors[0].value;
       const novaStr = str.replace(/-/g, ' ');
     
-      return res.json({error: 'Alguma pessoa já usa ' + novaStr + ' no sistema'});
+      return res.json({error: novaStr + ' já está cadastrado(a) no sistema'});
     }
     return res.json({ error: 'Erro ao atualizar o aluno'});
   }
