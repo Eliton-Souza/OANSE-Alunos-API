@@ -8,5 +8,5 @@ export const entradaSaida = Joi.object({
 });
 
 export const descricaoTransacao = Joi.object({
-  descricao: Joi.string().optional()
+  descricao: Joi.string().max(200).optional()
 });
