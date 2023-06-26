@@ -38,8 +38,8 @@ export const Transacao= sequelize.define<TransacaoInstace>('Transacao', {
         allowNull: false
     },
     descricao: {
-        type: DataTypes.STRING
-    },
+        type: DataTypes.STRING(200),
+    },      
     id_aluno:{
         type: DataTypes.INTEGER,
         allowNull: false,
