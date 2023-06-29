@@ -34,6 +34,7 @@
     "@types/node": "^16.6.1",
     "@types/passport": "^1.0.12",
     "@types/passport-jwt": "^3.0.8",
-    "@types/sequelize": "^4.28.10"
+    "@types/sequelize": "^4.28.10",
+    "nodemon": "^2.0.22"
   }
 }
