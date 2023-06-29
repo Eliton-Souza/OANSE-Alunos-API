@@ -80,7 +80,7 @@ export const pegarTransacao = async (req: Request, res: Response) => {
             valor: number,
             descricao: string,
             data: Date,
-            novoSaldo: number,
+            novo_saldo: number,
 
             nome_lider: string,
             sobrenome_lider: string,
@@ -98,7 +98,7 @@ export const pegarTransacao = async (req: Request, res: Response) => {
         valor: transacao.valor,
         descricao: transacao.descricao,
         data: transacao.data,
-        novoSaldo: transacao.novo_saldo,
+        novo_saldo: transacao.novo_saldo,
 
         nome_lider: transacao['Lider.Pessoa.nome'],
         sobrenome_lider: transacao['Lider.Pessoa.sobrenome'],
@@ -108,7 +108,7 @@ export const pegarTransacao = async (req: Request, res: Response) => {
     };
       
       return res.json({ transacao: transacaoFormatada });
-    } catch (error) {
+    } catch (error){
       return res.json({ error: 'Transação não encontrado'});
     }
   };
