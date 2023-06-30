@@ -71,7 +71,7 @@ export const pegarTransacao = async (req: Request, res: Response) => {
                     }]
                 },
             ],
-            attributes: ['tipo','valor', 'data', 'novo_saldo', 'id_transacao'],
+            attributes: ['tipo','valor', 'data', 'novo_saldo', 'id_transacao', 'descricao'],
             raw: true
         });
         interface transacaoFormatada {
