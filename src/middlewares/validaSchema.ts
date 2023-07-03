@@ -10,21 +10,19 @@ export const validaSchema = (schema: any) => async (
   try {
     await schema.validateAsync(req.body);
     next();
-  } catch (err: any) {
+  } catch (error: any) {
+    console.log(error);
 
-    const errorMessage = err.details[0].message;
+    const errorMessage = error.details[0].message;
     const regex = /"([^"]+)"/;
     const match = regex.exec(errorMessage);
-    console.log("sobrenome:"+ req.body.sobrenome);
-    console.log(err);
-
+   
     if (match && match.length > 1) {
-      res.status(422).json('O valor do campo ' + match[1] + ' está incorreto');
+      return res.json('O valor do campo ' + match[1] + ' está incorreto');
     }
     else{
-      res.status(400).json(err);
+      return res.json(error);
     }
-
   }
 };
 
