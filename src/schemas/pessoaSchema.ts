@@ -4,7 +4,7 @@ function pessoaSchema(metodo: 'optional' | 'required') {
   const pessoaValidation = Joi.object({
     nome: Joi.string().pattern(/^[a-zA-ZÀ-ú]+$/).min(2).max(15)[metodo](),
     sobrenome: Joi.string().pattern(/^[a-zA-ZÀ-ú\s]+$/).min(2).max(30)[metodo](),
-    nascimento: Joi.date().iso().max('now').allow('').optional(),
+    nascimento: Joi.date().iso().max('now').allow(null).optional(),
     genero: Joi.string().valid('M', 'F')[metodo]()
   });
 
@@ -18,7 +18,7 @@ const alunoBase = Joi.object({
 });
 
 const responsavelbase = Joi.object({
-  contato: Joi.string().regex(/^\d{11}$/).pattern(/^\d+$/).allow('').optional(),
+  contato: Joi.string().regex(/^\d{11}$/).pattern(/^\d+$/).allow(null).optional(),
 });
 
 const liderBase = Joi.object({
