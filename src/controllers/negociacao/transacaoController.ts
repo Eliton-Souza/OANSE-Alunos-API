@@ -123,11 +123,11 @@ export const editarTransacao = async (req: Request, res: Response) => {
     const { descricao } = req.body;
 
     // Recuperar transacoes do banco
-    const transacoes = await Transacao.findByPk(id_transacao);
-    if (transacoes) { 
-        transacoes.descricao= descricao;                         //pode editar apenas a descricao
-        await transacoes.save();
-        return res.json({ Transacao: transacoes});
+    const transacao = await Transacao.findByPk(id_transacao);
+    if (transacao) { 
+        transacao.descricao= descricao;                         //pode editar apenas a descricao
+        await transacao.save();
+        return res.json({ Transacao: transacao});
     }
     else{
         return res.json({ error: 'Transacao não encontrada' });

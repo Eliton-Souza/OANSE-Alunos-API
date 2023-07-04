@@ -208,7 +208,7 @@ export const atualizarAluno = async (req: Request, res: Response) => {
     // Recuperar dados do aluno do banco
     const aluno = await Aluno.findByPk(id);
     if (aluno) {
-      aluno.id_responsavel= id_responsavel ?? aluno.id_responsavel,
+      aluno.id_responsavel= id_responsavel,
       aluno.id_manual= id_manual ?? aluno.id_manual
     }
     else{
