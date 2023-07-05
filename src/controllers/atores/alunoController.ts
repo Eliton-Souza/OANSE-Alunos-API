@@ -125,7 +125,7 @@ export const rankingAlunos = async (req: Request, res: Response) => {
       attributes: {
         exclude: ['id_pessoa', 'id_responsavel', 'id_manual', 'id_carteira']
       },
-      order: [[Carteira, 'saldo', 'ASC']],
+      order: [[Carteira, 'saldo', 'DESC']],
       raw: true
     });
   
