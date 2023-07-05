@@ -77,6 +77,7 @@ export const listarAlunos = async (req: Request, res: Response) => {
       attributes: {
         exclude: ['id_pessoa', 'id_responsavel', 'id_manual', 'id_carteira']
       },
+      order: [[Pessoa, 'nome', 'ASC']],
       raw: true
     });
   
