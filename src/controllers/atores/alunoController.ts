@@ -99,6 +99,53 @@ export const listarAlunos = async (req: Request, res: Response) => {
 };
 
 
+export const rankingAlunos = async (req: Request, res: Response) => {
+ 
+  try {
+    const alunos = await Aluno.findAll({
+      include: [
+        {
+          model: Pessoa,
+          attributes: ['nome', 'sobrenome']
+        },
+        {
+          model: Carteira,
+          attributes: ['saldo']
+        },
+        {
+          model: Manual,
+          include: [
+            {
+              model: Clube,
+              attributes: ['nome']
+            }
+          ]
+        }
+      ],
+      attributes: {
+        exclude: ['id_pessoa', 'id_responsavel', 'id_manual', 'id_carteira']
+      },
+      order: [[Carteira, 'saldo', 'ASC']],
+      raw: true
+    });
+  
+    const alunosFormatados = alunos.map((aluno: any) => {
+      return {
+        id_aluno: aluno.id_aluno,
+        nome: aluno['Pessoa.nome'],
+        sobrenome: aluno['Pessoa.sobrenome'],
+        clube: aluno['Manual.Clube.nome'],
+        saldo: aluno['Carteira.saldo']
+      };
+    });
+  
+    return res.json({ alunos: alunosFormatados});
+    
+  } catch (error) {
+    return res.json({error: "Erro ao encontrar alunos"})
+  }
+};
+
 
 
 export const pegarAluno = async (req: Request, res: Response) => {

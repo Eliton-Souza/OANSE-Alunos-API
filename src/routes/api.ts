@@ -13,6 +13,7 @@ const router = Router();
 //CRUD ALUNO
 router.post('/aluno', verificarToken, valida.aluno, AlunoController.criarAluno);
 router.get('/alunos', verificarToken ,AlunoController.listarAlunos);
+router.get('/ranking', verificarToken ,AlunoController.rankingAlunos);
 router.get('/aluno/:id',verificarToken, AlunoController.pegarAluno);
 router.put('/aluno/:id', verificarToken, valida.updateAluno, AlunoController.atualizarAluno);
 router.delete('/aluno/:id',verificarToken, AlunoController.deletarAluno);
