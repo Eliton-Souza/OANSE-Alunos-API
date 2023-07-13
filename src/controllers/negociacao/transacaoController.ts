@@ -27,7 +27,8 @@ export const listarTransacoes = async (req: Request, res: Response) => {
                     }]
                 },
             ],
-            attributes: ['tipo','valor', 'id_transacao'],
+            attributes: ['tipo','valor', 'id_transacao', 'data'],
+            order: [['data', 'DESC']],
             raw: true
         });
 
