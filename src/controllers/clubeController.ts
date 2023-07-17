@@ -16,17 +16,14 @@ export const manuais = async (req: Request, res: Response) => {
   let whereClause = {}; // Cláusula where inicial vazia
 
   if (id_clube !== 8) {
-    whereClause = { '$Manual.Clube.id_clube$': id_clube }; // Filtra os alunos pelo id_clube
+    whereClause = { '$Clube.id_clube$': id_clube }; // Filtra os manuais pelo id_clube
   }
 
     try {
       const manuais = await Manual.findAll({ 
         include: [
           {
-            model: Clube,
-            attributes: { 
-                exclude: ['id_clube'] 
-          },
+            model: Clube
         }],
         where: whereClause, // Aplica a cláusula where dinamicamente   
       });
