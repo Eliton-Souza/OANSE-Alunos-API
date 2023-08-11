@@ -87,6 +87,65 @@ export const listarLideres = async (req: Request, res: Response) => {
 }
 
 
+export const meusDadosLider = async (req: Request, res: Response) => {
+
+  const id = req.user?.id_lider;
+
+  try {
+    const liderResponse = await Lider.findByPk(id, {
+      include: [
+        {
+          model: Pessoa,
+          attributes: { 
+            exclude: ['id_pessoa']
+          }
+        },
+        {
+          model: Clube
+        }
+      ],
+      attributes: { 
+          exclude: ['id_pessoa', 'senha'] 
+      },
+      raw: true
+    });
+
+    interface liderFormatado {
+      id_lider: number;
+      login: string;
+
+      nome: string;
+      sobrenome: string;
+      genero: string;
+      nascimento: string;
+
+      clube: string;
+      id_clube: number;
+    }
+
+    const lider: any= liderResponse;
+
+    const liderFormatado: liderFormatado  = {
+      id_lider: lider.id_lider,
+      login: lider.login,
+     
+      nome: lider['Pessoa.nome'],
+      sobrenome: lider['Pessoa.sobrenome'],
+      genero: lider['Pessoa.genero'],
+      nascimento: lider['Pessoa.nascimento'],
+
+      id_clube: lider.id_clube,
+      clube: lider['Clube.nome'],
+    };
+    
+    return res.json({ lider: liderFormatado });
+    
+  } catch (error) {
+    res.json({error: "Líder não encontrado"});
+  }
+}
+
+
 
 export const pegarLider = async (req: Request, res: Response) => {
 
@@ -177,7 +236,7 @@ export const atualizarLider = async (req: Request, res: Response) => {
     // Salvar as alterações no banco de dados
     await salvarPessoa(lider, pessoaLider, res);
     
-    res.json({ lider: lider.id_lider });
+    return res.json({ lider: lider.id_lider });
   } catch (error:any) {
     if (error.name === 'SequelizeUniqueConstraintError') {
       const str = error.errors[0].value;
