@@ -3,9 +3,18 @@ import { Transacao } from '../../models/Negociacao/Transacao';
 import { Aluno } from '../../models/Pessoa/Aluno';
 import { Pessoa } from '../../models/Pessoa/Pessoa';
 import { Lider } from '../../models/Pessoa/Lider';
+import { Clube, Manual } from '../../models/Clube';
 
 
 export const listarTransacoes = async (req: Request, res: Response) => {
+
+  const id_clube = req.user?.id_clube;
+
+  let whereClause = {}; // Cláusula where inicial vazia
+
+  if (id_clube !== 8) {
+    whereClause = { '$Aluno.Manual.Clube.id_clube$': id_clube }; // Filtra os alunos pelo id_clube
+  }
 
     try {
         const transacoes = await Transacao.findAll({
@@ -15,8 +24,19 @@ export const listarTransacoes = async (req: Request, res: Response) => {
                 attributes: [],
                 include: [{
                     model: Pessoa,
-                    attributes: ['nome'] 
-                    }]
+                    attributes: ['nome']
+                    },
+                    {
+                      model: Manual,
+                      attributes: ['nome'],
+                      include: [
+                        {
+                          model: Clube,
+                          attributes: ['id_clube']
+                        }
+                      ]
+                    }
+                  ],
                 },
                 {
                 model: Lider,
@@ -27,6 +47,7 @@ export const listarTransacoes = async (req: Request, res: Response) => {
                     }]
                 },
             ],
+            where: whereClause, // Aplica a cláusula where dinamicamente
             attributes: ['tipo','valor', 'id_transacao', 'data'],
             order: [['data', 'DESC']],
             raw: true
