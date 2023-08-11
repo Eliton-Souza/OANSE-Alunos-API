@@ -142,7 +142,7 @@ export const pegarLider = async (req: Request, res: Response) => {
     return res.json({ lider: liderFormatado });
     
   } catch (error) {
-    res.json({error: "Aluno não encontrado"});
+    res.json({error: "Líder não encontrado"});
   }
 }
 
