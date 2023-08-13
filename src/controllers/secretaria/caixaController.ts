@@ -3,7 +3,8 @@ import { Transacao } from '../../models/Negociacao/Transacao';
 import { Aluno } from '../../models/Pessoa/Aluno';
 import { Pessoa } from '../../models/Pessoa/Pessoa';
 import { Lider } from '../../models/Pessoa/Lider';
-import { Clube, Manual } from '../../models/Clube';
+import { Clube } from '../../models/Clube';
+import { Material } from '../../models/Secretaria/Material';
 
 
 export const listarTransacoes = async (req: Request, res: Response) => {
@@ -13,7 +14,7 @@ export const listarTransacoes = async (req: Request, res: Response) => {
   let whereClause = {}; // Cláusula where inicial vazia
 
   if (id_clube !== 8) {
-    whereClause = { '$Aluno.Manual.Clube.id_clube$': id_clube }; // Filtra os alunos pelo id_clube
+    whereClause = { '$Aluno.Material.Clube.id_clube$': id_clube }; // Filtra os alunos pelo id_clube
   }
 
     try {
@@ -23,11 +24,11 @@ export const listarTransacoes = async (req: Request, res: Response) => {
                 model: Aluno,
                 attributes: [],
                 include: [{
-                    model: Pessoa,
-                    attributes: ['nome']
+                      model: Pessoa,
+                      attributes: ['nome']
                     },
                     {
-                      model: Manual,
+                      model: Material,
                       attributes: ['nome'],
                       include: [
                         {
