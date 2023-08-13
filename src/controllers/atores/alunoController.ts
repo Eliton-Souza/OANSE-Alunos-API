@@ -3,10 +3,11 @@ import { Pessoa } from '../../models/Pessoa/Pessoa';
 import { Aluno } from '../../models/Pessoa/Aluno';
 import { Responsavel } from '../../models/Pessoa/Responsavel';
 import { sequelize } from '../../instances/mysql';
-import { Clube, Manual } from '../../models/Clube';
+import { Clube } from '../../models/Clube';
 import { atualizarPessoa, criarPessoa, salvarPessoa } from '../../services/atores/servicePessoa';
 import { Carteira } from '../../models/Negociacao/Carteira';
 import { criarCarteira } from '../../services/Negociacao/serviceCarteira';
+import { Material } from '../../models/Secretaria/Material';
 
 export const criarAluno = async (req: Request, res: Response) => {
 
@@ -48,7 +49,7 @@ export const listarAlunos = async (req: Request, res: Response) => {
   let whereClause = {}; // Cláusula where inicial vazia
 
   if (id_clube !== 8) {
-    whereClause = { '$Manual.Clube.id_clube$': id_clube }; // Filtra os alunos pelo id_clube
+    whereClause = { '$Material.Clube.id_clube$': id_clube }; // Filtra os alunos pelo id_clube
   }
 
   try {
@@ -63,7 +64,7 @@ export const listarAlunos = async (req: Request, res: Response) => {
           attributes: ['saldo']
         },
         {
-          model: Manual,
+          model: Material,
           attributes: ['nome'],
           include: [
             {
@@ -75,7 +76,7 @@ export const listarAlunos = async (req: Request, res: Response) => {
       ],
       where: whereClause, // Aplica a cláusula where dinamicamente
       attributes: {
-        exclude: ['id_pessoa', 'id_responsavel', 'id_manual', 'id_carteira']
+        exclude: ['id_pessoa', 'id_responsavel', 'id_material', 'id_carteira']
       },
       order: [[Pessoa, 'nome', 'ASC']],
       raw: true
@@ -86,8 +87,8 @@ export const listarAlunos = async (req: Request, res: Response) => {
         id_aluno: aluno.id_aluno,
         nome: aluno['Pessoa.nome'],
         sobrenome: aluno['Pessoa.sobrenome'],
-        clube: aluno['Manual.Clube.nome'],
-        manual: aluno['Manual.nome'],
+        clube: aluno['Material.Clube.nome'],
+        manual: aluno['Material.nome'],
         saldo: aluno['Carteira.saldo']
       };
     });
@@ -114,7 +115,7 @@ export const rankingAlunos = async (req: Request, res: Response) => {
           attributes: ['saldo']
         },
         {
-          model: Manual,
+          model: Material,
           include: [
             {
               model: Clube,
@@ -124,7 +125,7 @@ export const rankingAlunos = async (req: Request, res: Response) => {
         }
       ],
       attributes: {
-        exclude: ['id_pessoa', 'id_responsavel', 'id_manual', 'id_carteira']
+        exclude: ['id_pessoa', 'id_responsavel', 'id_material', 'id_carteira']
       },
       order: [[Carteira, 'saldo', 'DESC']],
       raw: true
@@ -135,7 +136,7 @@ export const rankingAlunos = async (req: Request, res: Response) => {
         id_aluno: aluno.id_aluno,
         nome: aluno['Pessoa.nome'],
         sobrenome: aluno['Pessoa.sobrenome'],
-        clube: aluno['Manual.Clube.nome'],
+        clube: aluno['Material.Clube.nome'],
         saldo: aluno['Carteira.saldo']
       };
     });
@@ -168,7 +169,7 @@ export const pegarAluno = async (req: Request, res: Response) => {
           }
         },
         {
-          model: Manual,
+          model: Material,
           attributes: ['nome'],
           include: [
             {
@@ -227,10 +228,10 @@ export const pegarAluno = async (req: Request, res: Response) => {
       nascimento: aluno['Pessoa.nascimento'],
 
       id_manual: aluno.id_manual,
-      manual: aluno['Manual.nome'],
+      manual: aluno['Material.nome'],
 
-      id_clube: aluno['Manual.Clube.id_clube'],
-      clube: aluno['Manual.Clube.nome'],
+      id_clube: aluno['Material.Clube.id_clube'],
+      clube: aluno['Material.Clube.nome'],
 
       id_responsavel: aluno.id_responsavel,
       nome_responsavel: aluno['Responsavel.Pessoa.nome'],
