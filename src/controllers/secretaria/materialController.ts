@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { criarTransacao } from '../../services/Negociacao/serviceTransacao';
 import { Material } from '../../models/Secretaria/Material';
 import { Clube } from '../../models/Clube';
 
