@@ -23,40 +23,8 @@ export const Clube = sequelize.define<ClubeInstace>('Clube', {
 });
 
 
-//MANUAL
-export interface ManualInstace extends Model{
-    id_manual: number;
-    nome: string;
-    id_clube: number;
-}
 
-export const Manual= sequelize.define<ManualInstace>('Manual', {
-    id_manual: {
-        primaryKey: true,
-        autoIncrement: true,
-        type: DataTypes.INTEGER
-    },
-    nome: {
-        type: DataTypes.STRING
-    },
-    id_clube:{
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: Clube,
-            key: 'id_clube'
-        }
-    },
-}, {
-    tableName: 'Manual',
-    timestamps: false
-});
-Clube.hasMany(Manual, { foreignKey: 'id_clube' });
-Manual.belongsTo(Clube, { foreignKey: 'id_clube' });
-
-
-
-
+/*
 //CAPITULO
 export interface CapituloInstace extends Model{
     id_capitulo: number;
@@ -92,4 +60,4 @@ export const Capitulo= sequelize.define<CapituloInstace>('Capitulo', {
 Manual.hasMany(Capitulo, { foreignKey: 'id_manual' });
 Capitulo.belongsTo(Manual, { foreignKey: 'id_manual' });
 
-
+*/

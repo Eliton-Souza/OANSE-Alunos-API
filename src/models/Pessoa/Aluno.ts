@@ -1,10 +1,9 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../../instances/mysql';
-import { Capitulo, Manual } from '../Clube';
 import { Carteira } from '../Negociacao/Carteira';
 import { Pessoa } from './Pessoa';
 import { Responsavel } from './Responsavel';
-import { Lider } from './Lider';
+import { Material } from '../Secretaria/Material';
 
 //ALUNO
 export interface AlunoInstace extends Model{
@@ -42,8 +41,8 @@ export const Aluno= sequelize.define<AlunoInstace>('Aluno', {
         type: DataTypes.INTEGER,
         allowNull: true,
         references: {
-            model: Manual,
-            key: 'id_manual'
+            model: Material,
+            key: 'id_material'
         }
     },
     id_carteira:{
@@ -64,14 +63,14 @@ Aluno.belongsTo(Pessoa, { foreignKey: 'id_pessoa',  onDelete: 'CASCADE' });
 Responsavel.hasMany(Aluno, { foreignKey: 'id_responsavel' });
 Aluno.belongsTo(Responsavel, { foreignKey: 'id_responsavel' });
 
-Manual.hasMany(Aluno, { foreignKey: 'id_manual' });
-Aluno.belongsTo(Manual, { foreignKey: 'id_manual' });
+Material.hasMany(Aluno, { foreignKey: 'id_material' });
+Aluno.belongsTo(Material, { foreignKey: 'id_manual' });
 
 Carteira.hasOne(Aluno, { foreignKey: 'id_carteira' });
 Aluno.belongsTo(Carteira, { foreignKey: 'id_carteira',  onDelete: 'CASCADE' });
 
 
-
+/*
 //SECOES DOS ALUNOS
 export interface SecoesInstace extends Model{
     id_secao: number;
@@ -138,3 +137,4 @@ HistoricoSecao.belongsTo(Lider, { foreignKey: 'id_lider' });
 
 Capitulo.hasMany(HistoricoSecao, { foreignKey: 'id_capitulo' });
 HistoricoSecao.belongsTo(Capitulo, { foreignKey: 'id_capitulo' });
+*/

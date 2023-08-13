@@ -18,6 +18,7 @@ export const Material = sequelize.define<MaterialInstace>('Material', {
     },
     nome: {
         type: DataTypes.STRING,
+        unique: true,
         allowNull: false
     },
     id_clube:{

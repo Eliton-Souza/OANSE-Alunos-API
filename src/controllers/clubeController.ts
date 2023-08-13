@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
-import { Clube, Manual} from '../models/Clube';
+import { Clube } from '../models/Clube';
+import { Material } from '../models/Secretaria/Material';
+import { Op } from 'sequelize';
 
 
 export const clube = async (req: Request, res: Response) => {
@@ -10,36 +12,37 @@ export const clube = async (req: Request, res: Response) => {
 }
 
 export const manuais = async (req: Request, res: Response) => {
-
   const id_clube = req.user?.id_clube;
 
-  let whereClause = {}; // Cláusula where inicial vazia
+  let whereClause: any = {}; // Cláusula where inicial vazia
 
   if (id_clube !== 8) {
-    whereClause = { '$Clube.id_clube$': id_clube }; // Filtra os manuais pelo id_clube
+    whereClause['$Clube.id_clube$'] = id_clube; // Filtra os manuais pelo id_clube
   }
 
-    try {
-      const manuais = await Manual.findAll({ 
-        include: [
-          {
-            model: Clube
-        }],
-        where: whereClause, // Aplica a cláusula where dinamicamente   
-      });
-     
-      const manuaisFormatados = manuais.map((manual: any) => {  
-        return {
-          id_manual: manual.id_manual,
-          nome: manual.nome,
-          clube: manual.Clube.nome,
-        };
-      });
-        
-      return res.json({ manuais: manuaisFormatados });
+  whereClause['id_material'] = { [Op.between]: [1, 24] }; // Filtra os manuais de id 1 até 24
 
-    } catch (error) {
-      return res.json({ error: 'Erro ao listar manuais' });
-    }
-  };
-  
+  try {
+    const manuais = await Material.findAll({
+      include: [
+        {
+          model: Clube
+        }
+      ],
+      where: whereClause, // Aplica a cláusula where dinamicamente
+    });
+
+    const manuaisFormatados = manuais.map((manual: any) => {
+      return {
+        id_manual: manual.id_material,
+        nome: manual.nome,
+        clube: manual.Clube.nome,
+      };
+    });
+
+    return res.json({ manuais: manuaisFormatados });
+
+  } catch (error) {
+    return res.json({ error: 'Erro ao listar manuais' });
+  }
+};

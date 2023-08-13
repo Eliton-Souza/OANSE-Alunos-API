@@ -5,6 +5,7 @@ import * as ResponsavelController from '../controllers/atores/responsavelControl
 import * as ClubeController from '../controllers/clubeController';
 import * as CarteiraController from '../controllers/negociacao/carteiraController';
 import * as TransacaoController from '../controllers/negociacao/transacaoController';
+import * as MaterialController from '../controllers/secretaria/materialController';
 import * as valida from '../middlewares/validaSchema';
 import { verificarToken } from '../config/passport';
 
@@ -47,6 +48,13 @@ router.get('/transacoes', verificarToken, TransacaoController.listarTransacoes);
 router.get('/transacao/:id', verificarToken, TransacaoController.pegarTransacao);
 router.put('/transacao/:id', verificarToken, valida.editaDescricao,  TransacaoController.editarTransacao);
 router.delete('/transacao/:id', verificarToken, TransacaoController.deletarTransacao);
+
+//CRUD MATERIAL
+router.post('/material', verificarToken, MaterialController.criarMaterial);
+router.get('/materiais', verificarToken, MaterialController.listarMateriais);
+//router.get('/material/:id', verificarToken, TransacaoController.pegarTransacao);
+//router.put('/transacao/:id', verificarToken, valida.editaDescricao,  TransacaoController.editarTransacao);
+router.delete('/material/:id', verificarToken, MaterialController.deletarMaterial);
 
 router.get('/clube', verificarToken, ClubeController.clube);
 router.get('/manuais', verificarToken, ClubeController.manuais);
