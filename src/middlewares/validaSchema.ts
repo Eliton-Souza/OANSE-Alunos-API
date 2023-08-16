@@ -46,4 +46,5 @@ export const editaDescricao= validaSchema(negociacaoSchema.descricaoTransacao);
 
 
 //SECRETARIA
+export const material= validaSchema(secretariaSchema.material);
 export const editarMaterial= validaSchema(secretariaSchema.updateMaterial);
