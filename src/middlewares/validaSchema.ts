@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import * as atorSchema from '../schemas/pessoaSchema';
 import * as negociacaoSchema from '../schemas/negociacaoSchema';
+import * as secretariaSchema from '../schemas/secretariaSchema';
 
 export const validaSchema = (schema: any) => async (
   req: Request,
@@ -42,3 +43,7 @@ export const updateLider = validaSchema(atorSchema.updateLider);
 //NEGOCIACAO
 export const alteraSaldo= validaSchema(negociacaoSchema.entradaSaida);
 export const editaDescricao= validaSchema(negociacaoSchema.descricaoTransacao);
+
+
+//SECRETARIA
+export const editarMaterial= validaSchema(secretariaSchema.updateMaterial);

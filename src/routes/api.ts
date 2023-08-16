@@ -52,8 +52,8 @@ router.delete('/transacao/:id', verificarToken, TransacaoController.deletarTrans
 //CRUD MATERIAL
 router.post('/material', verificarToken, MaterialController.criarMaterial);
 router.get('/materiais', verificarToken, MaterialController.listarMateriais);
-//router.get('/material/:id', verificarToken, TransacaoController.pegarTransacao);
-//router.put('/transacao/:id', verificarToken, valida.editaDescricao,  TransacaoController.editarTransacao);
+router.get('/material/:id', verificarToken, MaterialController.pegarMaterial);
+router.put('/material/:id', verificarToken, valida.editarMaterial, MaterialController.editarMaterial);
 router.delete('/material/:id', verificarToken, MaterialController.deletarMaterial);
 
 router.get('/clube', verificarToken, ClubeController.clube);

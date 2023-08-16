@@ -54,16 +54,69 @@ export const listarMateriais = async (req: Request, res: Response) => {
 
 export const pegarMaterial = async (req: Request, res: Response) => {
 
-    let id= req.params.id;
-    const material= await Material.findByPk(id);
+  try {
+    const id = req.params.id;
 
-    if(material){
-        return res.json({material});
+    const materialResponse = await Material.findByPk(id, {
+      include: [
+        {
+          model: Clube,
+          attributes: ['nome']
+        }
+      ],
+      raw: true
+    });
+
+    interface MaterialFormatado {
+      id_material: number;
+      nome: string;
+      clube: string;
+      quantidade: number;
+    }
+
+    const material: any= materialResponse;
+
+    const materialFormatado: MaterialFormatado = {
+  
+      id_material: material.id_material,
+      nome: material.nome,
+      clube: material['Clube.nome'],
+      quantidade: material.quantidade,
+    };
+    
+    return res.json({ material: materialFormatado });
+  } catch (error) {
+    return res.json({ error: 'Material não encontrado'});
+  }
+}
+
+
+export const editarMaterial = async (req: Request, res: Response) => {
+
+  const id_material = req.params.id;
+
+  try {
+    const { nome, id_clube, quantidade } = req.body;
+
+    // Recuperar dados do material do banco
+    const material = await Material.findByPk(id_material);
+    if (material) {
+            
+        material.nome= nome?? material.nome;
+        material.id_clube= id_clube?? material.id_clube;
+        material.quantidade= quantidade?? material.quantidade;
+
+        await material.save();
+        return res.json({ Material: material });
     }
     else{
-        return res.json({error: 'Material não encontrada'});
+        return res.json({ error: 'Material não encontrada' });
     }
-}
+   }catch (error:any) {
+    return res.json({ error: 'Erro ao atualizar material'});
+  }
+};
+
 
 /*
 export const atualizarMaterial = async (req: Request, res: Response) => {
@@ -92,9 +145,8 @@ export const atualizarMaterial = async (req: Request, res: Response) => {
    }catch (error:any) {
     return res.json({ error: 'Erro ao alterar o saldo'});
   }
-};*/
-
-
+};
+*/
 
 export const deletarMaterial = async (req: Request, res: Response) => {
     
