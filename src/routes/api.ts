@@ -56,7 +56,7 @@ router.get('/material/:id', verificarToken, MaterialController.pegarMaterial);
 router.put('/material/:id', verificarToken, valida.editarMaterial, MaterialController.editarMaterial);
 router.delete('/material/:id', verificarToken, MaterialController.deletarMaterial);
 
-router.get('/clube', verificarToken, ClubeController.clube);
+router.get('/clubes', verificarToken, ClubeController.listarClubes);
 router.get('/manuais', verificarToken, ClubeController.manuais);
 
 

@@ -4,11 +4,11 @@ import { Material } from '../models/Secretaria/Material';
 import { Op } from 'sequelize';
 
 
-export const clube = async (req: Request, res: Response) => {
-    const clube = await Clube.findAll({
+export const listarClubes = async (req: Request, res: Response) => {
+    const clubes = await Clube.findAll({
     });
 
-    return res.json({clube});
+    return res.json({clubes});
 }
 
 export const manuais = async (req: Request, res: Response) => {
