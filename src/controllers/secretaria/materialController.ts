@@ -30,25 +30,29 @@ export const criarMaterial = async (req: Request, res: Response) => {
 
 export const listarMateriais = async (req: Request, res: Response) => {
 
-    const materiais = await Material.findAll({
-      include: [
-        {
-          model: Clube,
-          attributes: ['nome']
-        }
-      ],
-    });
+  const materiais = await Material.findAll({
+    include: [
+      {
+        model: Clube,
+        attributes: ['nome']
+      }
+    ],
+    order: [
+      [Clube, 'id_clube', 'ASC'], // Ordena pelo id_clube em ordem ascendente
+      ['nome', 'ASC'] // Ordena pelo nome do material em ordem alfabética
+    ]
+  });
 
-    const materiaisFormatados = materiais.map((material: any) => {
-        return {
-          id_material: material.id_material,
-          nome: material.nome,
-          quantidade: material.quantidade,
-          clube: material.Clube.nome
-        };
-      });
-    
-      return res.json({ materiais: materiaisFormatados});
+  const materiaisFormatados = materiais.map((material: any) => {
+      return {
+        id_material: material.id_material,
+        nome: material.nome,
+        quantidade: material.quantidade,
+        clube: material.Clube.nome
+      };
+    });
+  
+    return res.json({ materiais: materiaisFormatados});
 }
 
 
@@ -160,6 +164,18 @@ export const deletarMaterial = async (req: Request, res: Response) => {
     
     const id_material= req.params.id;
 
-    await Material.destroy({where:{id_material}});
-    return res.json({});
+    try {
+      const material= await Material.findByPk(id_material);
+  
+      if(material){
+        await Material.destroy({ where: { id_material }});
+        return res.json({sucesso: "Material excluído com sucesso"});
+      }
+      else{
+        return res.json({ error: 'Material não encontrado'});
+      }
+      
+    } catch (error) {
+      return res.json({ error: 'Erro ao excluir Material'});
+    }
 };
