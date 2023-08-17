@@ -71,6 +71,7 @@ export const pegarMaterial = async (req: Request, res: Response) => {
       id_material: number;
       nome: string;
       clube: string;
+      id_clube: number;
       quantidade: number;
     }
 
@@ -81,6 +82,7 @@ export const pegarMaterial = async (req: Request, res: Response) => {
       id_material: material.id_material,
       nome: material.nome,
       clube: material['Clube.nome'],
+      id_clube: material.id_clube,
       quantidade: material.quantidade,
     };
     
