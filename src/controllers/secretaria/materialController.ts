@@ -114,8 +114,14 @@ export const editarMaterial = async (req: Request, res: Response) => {
     else{
         return res.json({ error: 'Material não encontrada' });
     }
-   }catch (error:any) {
-    return res.json({ error: 'Erro ao atualizar material'});
+  } catch (error:any) {
+    if (error.name === 'SequelizeUniqueConstraintError') {
+      const str = error.errors[0].value;
+      const novaStr = str.replace(/-/g, ' ');
+    
+      return res.json({error: novaStr + ' já está cadastrado(a) no sistema'});
+    }
+    return res.json({ error: 'Erro ao atualizar o material'});
   }
 };
 
