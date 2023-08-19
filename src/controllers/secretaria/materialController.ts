@@ -48,7 +48,8 @@ export const listarMateriais = async (req: Request, res: Response) => {
         id_material: material.id_material,
         nome: material.nome,
         quantidade: material.quantidade,
-        clube: material.Clube.nome
+        clube: material.Clube.nome,
+        id_clube: material.id_clube,
       };
     });
   
