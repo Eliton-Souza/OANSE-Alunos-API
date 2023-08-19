@@ -63,7 +63,7 @@ Aluno.belongsTo(Pessoa, { foreignKey: 'id_pessoa',  onDelete: 'CASCADE' });
 Responsavel.hasMany(Aluno, { foreignKey: 'id_responsavel' });
 Aluno.belongsTo(Responsavel, { foreignKey: 'id_responsavel' });
 
-Material.hasMany(Aluno, { foreignKey: 'id_material' });
+Material.hasMany(Aluno, { foreignKey: 'id_manual' });
 Aluno.belongsTo(Material, { foreignKey: 'id_manual' });
 
 Carteira.hasOne(Aluno, { foreignKey: 'id_carteira' });
