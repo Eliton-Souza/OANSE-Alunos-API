@@ -253,11 +253,11 @@ export const atualizarAluno = async (req: Request, res: Response) => {
 
   try {
     const { nome, sobrenome, genero, nascimento, id_responsavel, id_manual } = req.body;
-
+    
     // Recuperar dados do aluno do banco
     const aluno = await Aluno.findByPk(id);
     if (aluno) {
-      aluno.id_responsavel= id_responsavel,
+      aluno.id_responsavel= id_responsavel ?? null,
       aluno.id_manual= id_manual ?? aluno.id_manual
     }
     else{
@@ -276,7 +276,7 @@ export const atualizarAluno = async (req: Request, res: Response) => {
     // Salvar as alterações no banco de dados
     await salvarPessoa(aluno, pessoaAluno, res);
     
-    return res.json({ aluno: aluno.id_aluno });
+    return res.json({ aluno: "Aluno atualizado com sucesso" });
   } catch (error:any) {
     if (error.name === 'SequelizeUniqueConstraintError') {
       const str = error.errors[0].value;

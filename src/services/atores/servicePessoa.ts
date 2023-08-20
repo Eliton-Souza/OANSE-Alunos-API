@@ -41,7 +41,7 @@ export const atualizarPessoa = (pessoa: PessoaInstace, nome: string, sobrenome: 
     pessoa.nome = nome? nomePadronizado : pessoa.nome;
     pessoa.sobrenome = sobrenome? sobrenomePadronizado : pessoa.sobrenome;
     pessoa.genero = genero ?? pessoa.genero;
-    pessoa.nascimento = nascimento;
+    pessoa.nascimento = nascimento?? null;
 
   } catch (error: any) {
     throw error;
