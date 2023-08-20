@@ -18,7 +18,7 @@ const alunoBase = Joi.object({
 });
 
 const responsavelbase = Joi.object({
-  contato: Joi.string().regex(/^\d{11}$/).pattern(/^\d+$/).allow(null).optional(),
+  contato: Joi.string().regex(/^([\d()\s\-]{15})?$/).allow('',null).optional(),
 });
 
 const liderBase = Joi.object({
