@@ -8,6 +8,7 @@ export interface MaterialInstace extends Model {
     nome: string;
     id_clube: number;
     quantidade: number;
+    valor: number;
 }
 
 export const Material = sequelize.define<MaterialInstace>('Material', {
@@ -31,6 +32,10 @@ export const Material = sequelize.define<MaterialInstace>('Material', {
     },
     quantidade: {
         type: DataTypes.INTEGER,
+        defaultValue: 0,
+    },
+    valor: {
+        type: DataTypes.FLOAT,
         defaultValue: 0,
     },
 }, {

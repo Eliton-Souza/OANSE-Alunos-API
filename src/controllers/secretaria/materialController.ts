@@ -5,13 +5,14 @@ import { Clube } from '../../models/Clube';
 
 export const criarMaterial = async (req: Request, res: Response) => {
    
-    const { nome, id_clube } = req.body;
+    const { nome, id_clube, valor } = req.body;
 
     try {        
         const material = await Material.create({
             nome,
             id_clube,
-            quantidade: 0
+            quantidade: 0,
+            valor,
         });
       
         return res.json({ Material: material.id_material });
@@ -50,6 +51,7 @@ export const listarMateriais = async (req: Request, res: Response) => {
         quantidade: material.quantidade,
         clube: material.Clube.nome,
         id_clube: material.id_clube,
+        valor: material.valor,
       };
     });
   
@@ -78,6 +80,7 @@ export const pegarMaterial = async (req: Request, res: Response) => {
       clube: string;
       id_clube: number;
       quantidade: number;
+      valor: number;
     }
 
     const material: any= materialResponse;
@@ -89,6 +92,7 @@ export const pegarMaterial = async (req: Request, res: Response) => {
       clube: material['Clube.nome'],
       id_clube: material.id_clube,
       quantidade: material.quantidade,
+      valor: material.valor,
     };
     
     return res.json({ material: materialFormatado });
@@ -103,7 +107,7 @@ export const editarMaterial = async (req: Request, res: Response) => {
   const id_material = req.params.id;
 
   try {
-    const { nome, id_clube, quantidade } = req.body;
+    const { nome, id_clube, quantidade, valor } = req.body;
 
     // Recuperar dados do material do banco
     const material = await Material.findByPk(id_material);
@@ -112,6 +116,7 @@ export const editarMaterial = async (req: Request, res: Response) => {
         material.nome= nome?? material.nome;
         material.id_clube= id_clube?? material.id_clube;
         material.quantidade= quantidade?? material.quantidade;
+        material.valor= valor ?? 0;
 
         await material.save();
         return res.json({ Material: material });

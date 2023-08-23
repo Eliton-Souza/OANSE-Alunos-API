@@ -5,6 +5,7 @@ function materialSchema(metodo: 'optional' | 'required') {
     nome: Joi.string().regex(/^[a-zA-Z0-9\sçÇáÁàÀâÂãÃéÉèÈêÊíÍìÌîÎóÓòÒôÔõÕúÚùÙûÛ]+$/)[metodo](),
     quantidade: Joi.number().integer().min(0).optional().optional(),
     id_clube: Joi.number().integer().min(1).optional()[metodo](),
+    valor: Joi.number().integer().min(0).optional().optional(),
   });
 
   return materialValidation;
