@@ -5,14 +5,14 @@ import { Clube } from '../../models/Clube';
 
 export const criarMaterial = async (req: Request, res: Response) => {
    
-    const { nome, id_clube, valor } = req.body;
+    const { nome, id_clube, preco } = req.body;
 
     try {        
         const material = await Material.create({
             nome,
             id_clube,
             quantidade: 0,
-            valor,
+            preco,
         });
       
         return res.json({ Material: material.id_material });
@@ -51,7 +51,7 @@ export const listarMateriais = async (req: Request, res: Response) => {
         quantidade: material.quantidade,
         clube: material.Clube.nome,
         id_clube: material.id_clube,
-        valor: material.valor,
+        preco: material.preco,
       };
     });
   
@@ -80,7 +80,7 @@ export const pegarMaterial = async (req: Request, res: Response) => {
       clube: string;
       id_clube: number;
       quantidade: number;
-      valor: number;
+      preco: number;
     }
 
     const material: any= materialResponse;
@@ -92,7 +92,7 @@ export const pegarMaterial = async (req: Request, res: Response) => {
       clube: material['Clube.nome'],
       id_clube: material.id_clube,
       quantidade: material.quantidade,
-      valor: material.valor,
+      preco: material.preco,
     };
     
     return res.json({ material: materialFormatado });
@@ -107,7 +107,7 @@ export const editarMaterial = async (req: Request, res: Response) => {
   const id_material = req.params.id;
 
   try {
-    const { nome, id_clube, quantidade, valor } = req.body;
+    const { nome, id_clube, quantidade, preco } = req.body;
 
     // Recuperar dados do material do banco
     const material = await Material.findByPk(id_material);
@@ -116,7 +116,7 @@ export const editarMaterial = async (req: Request, res: Response) => {
         material.nome= nome?? material.nome;
         material.id_clube= id_clube?? material.id_clube;
         material.quantidade= quantidade?? material.quantidade;
-        material.valor= valor ?? 0;
+        material.preco= preco ?? 0;
 
         await material.save();
         return res.json({ Material: material });
@@ -153,7 +153,7 @@ export const atualizarMaterial = async (req: Request, res: Response) => {
         material
 
         await material.save();
-        await criarTransacao(id_lider, tipo, valor, descricao, id_aluno, material.saldo);
+        await criarTransacao(id_lider, tipo, preco, descricao, id_aluno, material.saldo);
 
         return res.json({ Material: material });
     }
