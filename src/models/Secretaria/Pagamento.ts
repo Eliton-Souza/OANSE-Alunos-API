@@ -1,31 +1,31 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../../instances/mysql';
-import { Aluno } from '../Pessoa/Aluno';
 import { Lider } from '../Pessoa/Lider';
+import { Venda } from './Venda';
 
-//REGISTRO DAS VENDAS
-export interface VendaInstace extends Model {
+//REGISTRO DOS PAGAMENTOS
+export interface PagamentoInstace extends Model {
+    id_pagamento: number;
     id_venda: number;
-    id_aluno: number;
     id_lider: number;
-    valor_total: number;
-    descricao: string;
+    valor_pago: number;
     data: Date;
-    status_pag: string
+    tipo: string;
+
 }
 
-export const Venda = sequelize.define<VendaInstace>('Venda', {
-    id_venda: {
+export const Pagamento = sequelize.define<PagamentoInstace>('Pagamento', {
+    id_pagamento: {
         primaryKey: true,
         autoIncrement: true,
         type: DataTypes.INTEGER
     },
-    id_aluno:{
+    id_venda:{
         type: DataTypes.INTEGER,
-        allowNull: true,
+        allowNull: false,
         references: {
-            model: Aluno,
-            key: 'id_aluno'
+            model: Venda,
+            key: 'id_venda'
         }
     },
     id_lider:{
@@ -36,27 +36,25 @@ export const Venda = sequelize.define<VendaInstace>('Venda', {
             key: 'id_lider'
         }
     },
-    valor_total: {
+    valor_pago: {
         type: DataTypes.FLOAT,
         allowNull: false,
-    },
-    descricao: {
-        type: DataTypes.STRING(200),
     },
     data: {
         type: DataTypes.DATE,
         allowNull: false
     },
-    status_pag: {
+    tipo: {
         type: DataTypes.STRING(20),
+        allowNull: false,
     },
 }, {
-    tableName: 'Venda',
+    tableName: 'Pagamento',
     timestamps: false
 });
 
-Lider.hasMany(Venda, { foreignKey: 'id_lider' });
-Venda.belongsTo(Lider, { foreignKey: 'id_lider' });
+Lider.hasMany(Pagamento, { foreignKey: 'id_lider' });
+Pagamento.belongsTo(Lider, { foreignKey: 'id_lider' });
 
-Aluno.hasMany(Venda, { foreignKey: 'id_aluno' });
-Venda.belongsTo(Aluno, { foreignKey: 'id_aluno' });
+Venda.hasMany(Pagamento, { foreignKey: 'id_venda' });
+Pagamento.belongsTo(Venda, { foreignKey: 'id_venda' });

@@ -3,7 +3,7 @@ import { sequelize } from '../../instances/mysql';
 import { Venda } from './Venda';
 import { Material } from './Material';
 
-//REGISTRO DAS VENDAS
+//ASSOCIAÇÃO ENTRE VENDAS E MATERIAIS
 export interface VendaMaterialInstace extends Model {
     id_venda_material: string;
     id_venda: number;
