@@ -24,7 +24,7 @@ export const Material = sequelize.define<MaterialInstace>('Material', {
     },
     id_clube:{
         type: DataTypes.INTEGER,
-        allowNull: true,
+        allowNull: false,
         references: {
             model: Clube,
             key: 'id_clube'

@@ -6,6 +6,7 @@ import * as ClubeController from '../controllers/clubeController';
 import * as CarteiraController from '../controllers/negociacao/carteiraController';
 import * as TransacaoController from '../controllers/negociacao/transacaoController';
 import * as MaterialController from '../controllers/secretaria/materialController';
+import * as VendaController from '../controllers/secretaria/vendaController';
 import * as valida from '../middlewares/validaSchema';
 import { verificarToken } from '../config/passport';
 
@@ -55,6 +56,13 @@ router.get('/materiais', verificarToken, MaterialController.listarMateriais);
 router.get('/material/:id', verificarToken, MaterialController.pegarMaterial);
 router.put('/material/:id', verificarToken, valida.editarMaterial, MaterialController.editarMaterial);
 router.delete('/material/:id', verificarToken, MaterialController.deletarMaterial);
+
+//CRUD VENDAS -- fazer validadações de entrada de dados
+router.post('/venda', verificarToken, valida.venda, VendaController.registrarVenda);
+router.get('/vendas/:tipo', verificarToken, VendaController.listarVendas);
+router.get('/venda/:id', verificarToken, VendaController.pegarVenda);
+router.put('/venda/:id', verificarToken, valida.editaDescricao, VendaController.editarVenda);
+router.delete('/venda/:id', verificarToken, VendaController.deletarVenda);
 
 router.get('/clubes', verificarToken, ClubeController.listarClubes);
 router.get('/manuais', verificarToken, ClubeController.manuais);
