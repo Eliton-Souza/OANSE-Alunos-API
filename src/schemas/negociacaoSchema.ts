@@ -6,7 +6,3 @@ export const entradaSaida = Joi.object({
   descricao: Joi.string().allow(null).max(200).optional(),
   id_aluno: Joi.number().integer().min(0).required(),
 });
-
-export const descricaoTransacao = Joi.object({
-  descricao: Joi.string().allow(null).max(200).optional(),
-});

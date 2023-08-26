@@ -15,3 +15,17 @@ function materialSchema(metodo: 'optional' | 'required') {
 export const material = materialSchema("required");          //criar
 export const updateMaterial = materialSchema("optional");    //atualizar
 
+
+
+export const venda = Joi.object({
+  materiais: Joi.array().items(
+    Joi.object({
+      id_material: Joi.number().integer().min(0).required(),
+      quantidade: Joi.number().integer().min(1).required(),
+      valor_unit: Joi.number().positive().required(),
+    })
+  ).required(),
+  valor_total: Joi.number().positive().required(),
+  descricao: Joi.string().allow(null).max(200).optional(),
+  id_aluno: Joi.number().integer().min(0).required(),
+});
