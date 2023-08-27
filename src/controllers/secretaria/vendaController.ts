@@ -60,7 +60,7 @@ export const listarVendas = async (req: Request, res: Response) => {
 
   let whereClause = {}; // Cláusula where inicial vazia
 
-  if (tipo !== 'todos') {
+  if (tipo !== 'todas') {
     whereClause = { '$Venda.status_pag$': tipo }; // Filtra as vendas
   }
 
@@ -98,7 +98,7 @@ export const listarVendas = async (req: Request, res: Response) => {
       ],
       where: whereClause, // Aplica a cláusula where dinamicamente
         attributes: {
-        exclude: ['id_aluno', 'id_lider', 'status_pag']
+        exclude: ['id_aluno', 'id_lider']
       },
       raw: true
     });
@@ -114,6 +114,7 @@ export const listarVendas = async (req: Request, res: Response) => {
         valor_total: venda.valor_total,
         data: venda.data,
         descricao: venda.descricao,
+        status: venda.status_pag
       };
     });
   
@@ -162,8 +163,9 @@ export const pegarVenda = async (req: Request, res: Response) => {
         }
       ],
         attributes: {
-        exclude: ['id_aluno', 'id_lider', 'status_pag']
+        exclude: ['id_aluno', 'id_lider']
       },
+      raw: true
     });
 
     interface VendaFormatada {
@@ -175,6 +177,7 @@ export const pegarVenda = async (req: Request, res: Response) => {
       valor_total: number;
       data: Date;
       descricao: string;
+      status: string;
     }
 
     const venda: any= vendaResponse;
@@ -188,6 +191,7 @@ export const pegarVenda = async (req: Request, res: Response) => {
       valor_total: venda.valor_total,
       data: venda.data,
       descricao: venda.descricao,
+      status: venda.status_pag,
     };
 
     const materiaisVendidos = await Venda_Material_Ass.findAll({
@@ -211,41 +215,6 @@ export const pegarVenda = async (req: Request, res: Response) => {
     return res.json({ error});
   }
 }
-
-
-export const editarMaterial = async (req: Request, res: Response) => {
-
-  const id_material = req.params.id;
-
-  try {
-    const { nome, id_clube, quantidade, preco } = req.body;
-
-    // Recuperar dados do material do banco
-    const material = await Material.findByPk(id_material);
-    if (material) {
-            
-        material.nome= nome?? material.nome;
-        material.id_clube= id_clube?? material.id_clube;
-        material.quantidade= quantidade?? material.quantidade;
-        material.preco= preco ?? 0;
-
-        await material.save();
-        return res.json({ Material: material });
-    }
-    else{
-        return res.json({ error: 'Material não encontrada' });
-    }
-  } catch (error:any) {
-    if (error.name === 'SequelizeUniqueConstraintError') {
-      const str = error.errors[0].value;
-      const novaStr = str.replace(/-/g, ' ');
-    
-      return res.json({error: novaStr + ' já está cadastrado(a) no sistema'});
-    }
-    return res.json({ error: 'Erro ao atualizar o material'});
-  }
-};
-
 
 
 export const editarVenda = async (req: Request, res: Response) => {
