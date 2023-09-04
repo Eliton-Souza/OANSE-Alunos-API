@@ -76,7 +76,7 @@ export const listarAlunos = async (req: Request, res: Response) => {
       ],
       where: whereClause, // Aplica a cláusula where dinamicamente
       attributes: {
-        exclude: ['id_pessoa', 'id_responsavel', 'id_material', 'id_carteira']
+        exclude: ['id_pessoa', 'id_responsavel', 'id_manual', 'id_carteira']
       },
       order: [[Pessoa, 'nome', 'ASC']],
       raw: true
@@ -88,6 +88,7 @@ export const listarAlunos = async (req: Request, res: Response) => {
         nome: aluno['Pessoa.nome'],
         sobrenome: aluno['Pessoa.sobrenome'],
         clube: aluno['Material.Clube.nome'],
+        id_clube: aluno['Material.Clube.id_clube'],
         manual: aluno['Material.nome'],
         saldo: aluno['Carteira.saldo']
       };

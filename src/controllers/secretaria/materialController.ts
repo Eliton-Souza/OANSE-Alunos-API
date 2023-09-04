@@ -30,6 +30,13 @@ export const criarMaterial = async (req: Request, res: Response) => {
 
 
 export const listarMateriais = async (req: Request, res: Response) => {
+  const id = req.params.id ?? null;
+
+  let whereClause = {}; // Cláusula where inicial vazia
+
+  if (id !== null) {
+    whereClause = { '$Clube.id_clube$': id }; // Filtra os materiais pelo id_clube
+  }
 
   const materiais = await Material.findAll({
     include: [
@@ -38,8 +45,8 @@ export const listarMateriais = async (req: Request, res: Response) => {
         attributes: ['nome']
       }
     ],
+    where: whereClause, // Aplica a cláusula where dinamicamente
     order: [
-      [Clube, 'id_clube', 'ASC'], // Ordena pelo id_clube em ordem ascendente
       ['nome', 'ASC'] // Ordena pelo nome do material em ordem alfabética
     ]
   });
