@@ -97,9 +97,10 @@ export const listarVendas = async (req: Request, res: Response) => {
         }
       ],
       where: whereClause, // Aplica a cláusula where dinamicamente
-        attributes: {
+      attributes: {
         exclude: ['id_aluno', 'id_lider']
       },
+      order: [['id_venda', 'DESC']],
       raw: true
     });
 

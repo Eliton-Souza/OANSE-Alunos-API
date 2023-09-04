@@ -50,7 +50,7 @@ export const listarTransacoes = async (req: Request, res: Response) => {
             ],
             where: whereClause, // Aplica a cláusula where dinamicamente
             attributes: ['tipo','valor', 'id_transacao', 'data'],
-            order: [['data', 'DESC']],
+            order: [['id_transacao', 'DESC']],
             raw: true
         });
 
