@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { Material } from '../../models/Secretaria/Material';
 import { Venda } from '../../models/Secretaria/Venda';
 import { sequelize } from '../../instances/mysql';
 import { Venda_Material_Ass } from '../../models/Secretaria/VendaMaterial';
