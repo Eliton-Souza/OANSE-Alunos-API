@@ -66,7 +66,7 @@ export const listarLideres = async (req: Request, res: Response) => {
           }
         ],
       attributes: { 
-          exclude: ['id_pessoa', 'id_clube', 'login', 'senha'] 
+          exclude: ['id_clube', 'login', 'senha'] 
       },
       raw: true
     });
@@ -74,6 +74,7 @@ export const listarLideres = async (req: Request, res: Response) => {
     const lideresFormatados = lideres.map((lider: any) => {
       return {
         id_lider: lider.id_lider,
+        id_pessoa: lider.id_pessoa,
         nome: lider['Pessoa.nome'],
         sobrenome: lider['Pessoa.sobrenome'],
         clube: lider['Clube.nome'],

@@ -47,9 +47,6 @@ export const listarResponsaveis = async (req: Request, res: Response) => {
           },
         },
       ],
-      attributes: {
-        exclude: ['id_pessoa'],
-      },
       order: [[Pessoa, 'nome', 'ASC']],
       raw: true,
     });
@@ -58,7 +55,8 @@ export const listarResponsaveis = async (req: Request, res: Response) => {
       return {
         id_responsavel: responsavel.id_responsavel,
         contato: responsavel.contato,
-          
+        
+        id_pessoa: responsavel.id_pessoa,
         nome: responsavel['Pessoa.nome'],
         sobrenome: responsavel['Pessoa.sobrenome'],
         genero: responsavel['Pessoa.genero'],
@@ -92,8 +90,6 @@ export const pegarResponsavel = async (req: Request, res: Response) => {
       },
       raw: true
   });
-
-    
 
     interface responsavelFormatado {
       id_responsavel: number;
