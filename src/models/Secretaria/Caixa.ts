@@ -1,22 +1,20 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../../instances/mysql';
 import {Lider} from '../Pessoa/Lider';
-import { Aluno } from '../Pessoa/Aluno';
 
-//TRANSACAO -- HISTORICO DE VENDAS NA FEIRINHA E ADICAO DE SALDO A CARTEIRA DO ALUNO
-export interface TransacaoInstace extends Model{
-    id_transacao: number;
+//CAIXA -- HISTORICO DE ENTRADAS E SAIDAS NO CAIXA
+export interface CaixaInstace extends Model{
+    id_movimentacao: number;
     id_lider: number;
     tipo: string;
     valor: number;
     descricao: string;
-    id_aluno: number;
     data: Date;
-    novo_saldo: number;
+    tipo_pag: string;
 }
 
-export const Transacao= sequelize.define<TransacaoInstace>('Transacao', {
-    id_transacao: {
+export const Caixa= sequelize.define<CaixaInstace>('Caixa', {
+    id_movimentacao: {
         primaryKey: true,
         autoIncrement: true,
         type: DataTypes.INTEGER
@@ -39,29 +37,19 @@ export const Transacao= sequelize.define<TransacaoInstace>('Transacao', {
     },
     descricao: {
         type: DataTypes.STRING(200),
+        allowNull: true
     },      
-    id_aluno:{
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: Aluno,
-            key: 'id_aluno'
-        }
-    },
     data: {
         type: DataTypes.DATE,
         allowNull: false
     },
-    novo_saldo: {
-        type: DataTypes.FLOAT,
+    tipo_pag: {
+        type: DataTypes.STRING,
         allowNull: false
     },
 }, {
-    tableName: 'Transacao',
+    tableName: 'Caixa',
     timestamps: false
 });
-Lider.hasMany(Transacao, { foreignKey: 'id_lider' });
-Transacao.belongsTo(Lider, { foreignKey: 'id_lider' });
-
-Aluno.hasMany(Transacao, { foreignKey: 'id_aluno' });
-Transacao.belongsTo(Aluno, { foreignKey: 'id_aluno' });
+Lider.hasMany(Caixa, { foreignKey: 'id_lider' });
+Caixa.belongsTo(Lider, { foreignKey: 'id_lider' });
