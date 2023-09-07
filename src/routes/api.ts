@@ -8,6 +8,7 @@ import * as TransacaoController from '../controllers/negociacao/transacaoControl
 import * as MaterialController from '../controllers/secretaria/materialController';
 import * as VendaController from '../controllers/secretaria/vendaController';
 import * as PagamentoController from '../controllers/secretaria/pagamentoController';
+import * as CaixaController from '../controllers/secretaria/caixaController';
 import * as valida from '../middlewares/validaSchema';
 import { verificarToken } from '../config/passport';
 
@@ -71,6 +72,11 @@ router.get('/pagamentos', verificarToken, PagamentoController.listarPagamentos);
 router.get('/pagamento/:id', verificarToken, PagamentoController.pegarPagamento);
 /*router.put('/venda/:id', verificarToken, valida.editaDescricao, VendaController.editarVenda);
 router.delete('/venda/:id', verificarToken, VendaController.deletarVenda);*/
+
+//CRUD Caixa
+router.post('/caixa', verificarToken, CaixaController.alterarSaldoCaixa);
+//router.get('/pagamentos', verificarToken, PagamentoController.listarPagamentos);
+//router.get('/pagamento/:id', verificarToken, PagamentoController.pegarPagamento);
 
 router.get('/clubes', verificarToken, ClubeController.listarClubes);
 router.get('/manuais', verificarToken, ClubeController.manuais);
