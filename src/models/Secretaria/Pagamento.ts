@@ -7,7 +7,6 @@ import { Pessoa } from '../Pessoa/Pessoa';
 //REGISTRO DOS PAGAMENTOS
 export interface PagamentoInstace extends Model {
     id_pagamento: number;
-    id_pagador: number;
     id_venda: number;
     id_lider: number;
     valor_pago: number;
@@ -21,14 +20,6 @@ export const Pagamento = sequelize.define<PagamentoInstace>('Pagamento', {
         primaryKey: true,
         autoIncrement: true,
         type: DataTypes.INTEGER
-    },
-    id_pagador:{
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: Pessoa,
-            key: 'id_pagador'
-        }
     },
     id_venda:{
         type: DataTypes.INTEGER,
@@ -62,9 +53,6 @@ export const Pagamento = sequelize.define<PagamentoInstace>('Pagamento', {
     tableName: 'Pagamento',
     timestamps: false
 });
-
-Pessoa.hasMany(Pagamento, { foreignKey: 'id_pagador' });
-Pagamento.belongsTo(Pessoa, { foreignKey: 'id_pagador' });
 
 Lider.hasMany(Pagamento, { foreignKey: 'id_lider' });
 Pagamento.belongsTo(Lider, { foreignKey: 'id_lider' });
