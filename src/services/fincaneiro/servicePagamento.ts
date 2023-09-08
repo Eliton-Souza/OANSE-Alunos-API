@@ -3,8 +3,10 @@ import { Pagamento } from "../../models/Secretaria/Pagamento";
 import { format } from 'date-fns'
 import { criarMovimentacaoCaixa } from "./serviceCaixa";
 import { alterarSaldo } from "../Negociacao/serviceCarteira";
-import { alterarStatusPagamento } from "./serviceVendas";
+import { alterarStatusVenda } from "./serviceVendas";
 import { Venda } from "../../models/Secretaria/Venda";
+import { Lider } from "../../models/Pessoa/Lider";
+import { Pessoa } from "../../models/Pessoa/Pessoa";
 
 const criarPagamento = async (id_lider: number, id_venda: number, valor_pago: number, tipo: string, transaction: any ) => {
      
@@ -44,7 +46,7 @@ const criarPagamento = async (id_lider: number, id_venda: number, valor_pago: nu
           }, 0); //valor inicial 0 para soma
 
           if( totalValorPago >= venda.valor_total){
-              await alterarStatusPagamento(id_venda, 'Pago');
+              await alterarStatusVenda(id_venda, 'Pago');
           }
         }
 
@@ -76,3 +78,42 @@ export const novoPagamento = async (id_lider: number, id_venda: number, valor_pa
         throw error;
     }
   };
+
+
+//retorna pagagamentos feitos de uma venda
+export const pagamentosFeitos = async (id_venda: string ) => {
+  try {
+    const pagamentos = await Pagamento.findAll({
+      include: [
+        {
+          model: Lider,
+          attributes: ['id_pessoa'],
+          include: [
+            {
+              model: Pessoa,
+              attributes: ['nome', 'sobrenome'] 
+            }
+          ]
+        },
+      ],
+      where: {
+        id_venda
+      }
+    });
+
+    const pagamentosFormatados = pagamentos.map((pagamento: any) => {
+      return {
+        id_pagamento: pagamento.id_pagamento,
+        nome_lider: pagamento.Lider.Pessoa.nome,
+        sobrenome_lider: pagamento.Lider.Pessoa.sobrenome,
+        data: pagamento.data,
+        valor_pago: pagamento.valor_pago,
+        tipo: pagamento.tipo
+      };
+    });
+      
+    return pagamentosFormatados;
+  } catch (error: any) {
+    throw error;
+  }
+};

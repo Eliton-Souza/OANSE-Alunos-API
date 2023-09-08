@@ -5,8 +5,7 @@ import { Venda_Material_Ass } from '../../models/Secretaria/VendaMaterial';
 import { format } from 'date-fns';
 import { Aluno } from '../../models/Pessoa/Aluno';
 import { Pessoa } from '../../models/Pessoa/Pessoa';
-import { Lider } from '../../models/Pessoa/Lider';
-import { pegarNomeMaterial } from '../../services/secretaria/serviceSecretaria';
+import { pegarInfosVenda } from '../../services/fincaneiro/serviceVendas';
 
 export const registrarVenda = async (req: Request, res: Response) => {
   
@@ -67,20 +66,6 @@ export const listarVendas = async (req: Request, res: Response) => {
     const vendas = await Venda.findAll({
       include: [
         {
-          model: Lider,
-          attributes: {
-            exclude: ['login', 'senha', 'id_lider', 'id_pessoa', 'id_clube']
-          },
-          include: [ 
-            {
-              model: Pessoa,
-              attributes: {
-                exclude: ['nascimento', 'genero']
-              },
-            }
-          ]
-        },
-        {
           model: Aluno,
           attributes: {
             exclude: ['id_aluno', 'id_pessoa', 'id_responsavel', 'id_manual', 'id_carteira']
@@ -97,7 +82,7 @@ export const listarVendas = async (req: Request, res: Response) => {
       ],
       where: whereClause, // Aplica a cláusula where dinamicamente
       attributes: {
-        exclude: ['id_aluno', 'id_lider']
+        exclude: ['id_aluno', 'id_lider', 'descricao']
       },
       order: [['id_venda', 'DESC']],
       raw: true
@@ -107,13 +92,10 @@ export const listarVendas = async (req: Request, res: Response) => {
     const vendasFormatadas = vendas.map((venda: any) => {
       return {
         id_venda: venda.id_venda,
-        nome_lider: venda['Lider.Pessoa.nome'],
-        sobrenome_lider: venda['Lider.Pessoa.sobrenome'],
         nome_aluno: venda['Aluno.Pessoa.nome'],
         sobrenome_aluno: venda['Aluno.Pessoa.sobrenome'],
         valor_total: venda.valor_total,
         data: venda.data,
-        descricao: venda.descricao,
         status: venda.status_pag
       };
     });
@@ -128,93 +110,17 @@ export const listarVendas = async (req: Request, res: Response) => {
 
 export const pegarVenda = async (req: Request, res: Response) => {
 
+  const id = req.params.id;
+
   try {
-    const id = req.params.id;
-
-    const vendaResponse = await Venda.findByPk(id, {
-      include: [
-        {
-          model: Lider,
-          attributes: {
-            exclude: ['login', 'senha', 'id_lider', 'id_pessoa', 'id_clube']
-          },
-          include: [ 
-            {
-              model: Pessoa,
-              attributes: {
-                exclude: ['nascimento', 'genero']
-              },
-            }
-          ]
-        },
-        {
-          model: Aluno,
-          attributes: {
-            exclude: ['id_aluno', 'id_pessoa', 'id_responsavel', 'id_manual', 'id_carteira']
-          },
-          include: [
-            {
-              model: Pessoa,
-              attributes: {
-                exclude: ['nascimento', 'genero']
-              },
-            }
-          ]
-        }
-      ],
-        attributes: {
-        exclude: ['id_aluno', 'id_lider']
-      },
-      raw: true
-    });
-
-    interface VendaFormatada {
-      id_venda: number;
-      nome_lider: string;
-      sobrenome_lider: string
-      nome_aluno: string;
-      sobrenome_aluno: string;
-      valor_total: number;
-      data: Date;
-      descricao: string;
-      status: string;
-    }
-
-    const venda: any= vendaResponse;
-    
-    const vendaFormatada: VendaFormatada = {
-      id_venda: venda.id_venda,
-      nome_lider: venda['Lider.Pessoa.nome'],
-      sobrenome_lider: venda['Lider.Pessoa.sobrenome'],
-      nome_aluno: venda['Aluno.Pessoa.nome'],
-      sobrenome_aluno: venda['Aluno.Pessoa.sobrenome'],
-      valor_total: venda.valor_total,
-      data: venda.data,
-      descricao: venda.descricao,
-      status: venda.status_pag,
-    };
-
-    const materiaisVendidos = await Venda_Material_Ass.findAll({
-     where: { id_venda: id },
-      attributes: {
-        exclude: ['id_venda_material', 'id_venda']
-      },
-    });
-
-    const materiaisFormatadas = await Promise.all(materiaisVendidos.map(async (material: any) => {
-      const nome_material = await pegarNomeMaterial(material.id_material);
-      return {
-        nome_material,
-        quantidade: material.quantidade,
-        valor_unit: material.valor_unit,
-      };
-    }));
-    
-    return res.json({ venda: vendaFormatada, materiais: materiaisFormatadas });
-  } catch (error) {
-    return res.json({ error});
+   
+    const venda = await pegarInfosVenda(id);
+    return res.json({ venda });
+   
+  } catch (error: any) {
+    return res.json({ error: error });
   }
-}
+};
 
 
 export const editarVenda = async (req: Request, res: Response) => {

@@ -47,16 +47,9 @@ export const Venda_Material_Ass = sequelize.define<VendaMaterialInstace>('Venda_
     timestamps: false
 });
 
+//Definindo relacionamento muitos para muitos
+Venda.hasMany(Venda_Material_Ass, { foreignKey: 'id_venda' });
+Venda_Material_Ass.belongsTo(Venda, { foreignKey: 'id_venda' });
 
-
-Venda.belongsToMany(Material, {
-    through: Venda_Material_Ass,
-    foreignKey: 'id_venda',
-    otherKey: 'id_material'
-});
-
-Material.belongsToMany(Venda, {
-    through: Venda_Material_Ass,
-    foreignKey: 'id_material',
-    otherKey: 'id_venda'
-});
+Material.hasMany(Venda_Material_Ass, { foreignKey: 'id_material' });
+Venda_Material_Ass.belongsTo(Material, { foreignKey: 'id_material' });

@@ -65,6 +65,7 @@ router.get('/venda/:id', verificarToken, VendaController.pegarVenda);
 router.put('/venda/:id', verificarToken, valida.editaDescricao, VendaController.editarVenda);
 router.delete('/venda/:id', verificarToken, VendaController.deletarVenda);
 
+
 //CRUD Pagamentos
 router.post('/pagamento', verificarToken, PagamentoController.registrarPagamento);
 router.get('/pagamentos', verificarToken, PagamentoController.listarPagamentos);
