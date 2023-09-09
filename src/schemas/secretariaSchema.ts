@@ -25,7 +25,14 @@ export const venda = Joi.object({
       valor_unit: Joi.number().min(0).required(),
     })
   ).required(),
-  valor_total: Joi.number().positive().min(0).required(),
+  valor_total: Joi.number().min(0).required(),
   descricao: Joi.string().allow(null).max(200).optional(),
-  id_aluno: Joi.number().integer().min(0).required(),
+  id_aluno: Joi.number().integer().min(1).required(),
+});
+
+
+export const pagamento = Joi.object({
+  valor_pago: Joi.number().min(0).required(),
+  tipo: Joi.string().valid('Pix', 'Dinheiro'),
+  id_venda: Joi.number().integer().min(1).required(),
 });

@@ -67,7 +67,7 @@ router.delete('/venda/:id', verificarToken, VendaController.deletarVenda);
 
 
 //CRUD Pagamentos
-router.post('/pagamento', verificarToken, PagamentoController.registrarPagamento);
+router.post('/pagamento', verificarToken, valida.pagamento, PagamentoController.registrarPagamento);
 router.get('/pagamentos', verificarToken, PagamentoController.listarPagamentos);
 router.get('/pagamento/:id', verificarToken, PagamentoController.pegarPagamento);
 
