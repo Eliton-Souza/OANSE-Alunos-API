@@ -12,7 +12,7 @@ export const criarCarteira = async (transaction: any) => {
 };
 
 
-export const alterarSaldo = async (id_carteira: number, valor: number, tipo: string, transaction: any) => {
+export const alterarSaldo = async (id_carteira: string, valor: number, tipo: string, transaction: any) => {
     
     try {
     

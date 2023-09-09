@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { Carteira } from '../../models/Negociacao/Carteira';
 import { criarTransacao } from '../../services/Negociacao/serviceTransacao';
+import { alterarSaldo } from '../../services/Negociacao/serviceCarteira';
+import { sequelize } from '../../instances/mysql';
 
 export const listarCarteiras = async (req: Request, res: Response) => {
 
@@ -23,38 +25,28 @@ export const pegarCarteira = async (req: Request, res: Response) => {
 }
 
 
-export const alterarSaldo = async (req: Request, res: Response) => {
+export const novoSalvo = async (req: Request, res: Response) => {
 
   const id_carteira = req.params.id;
   const id_lider = req.user?.id_lider as number;
 
+  const transaction = await sequelize.transaction(); 
+
   try {
     const { valor, tipo, id_aluno, descricao } = req.body;
 
-    // Recuperar dados da carteira do banco
-    const carteira = await Carteira.findByPk(id_carteira);
-    if (carteira) {
-            
-        if (tipo === 'entrada') {
-            carteira.saldo += parseFloat(valor);
-        } else if (carteira.saldo >= valor){
-            carteira.saldo -= parseFloat(valor);
-        }
-        else {
-            return res.json({error: "Saldo insuficiente"});
-        }
+    const novoSaldo= await alterarSaldo(id_carteira, valor, tipo, transaction);
+    const transacao= criarTransacao(id_lider, tipo, valor, descricao, id_aluno, novoSaldo, transaction);
 
-        await carteira.save();
-        await criarTransacao(id_lider, tipo, valor, descricao, id_aluno, carteira.saldo);
+    await Promise.all([novoSaldo, transacao]);
+    await transaction.commit();
 
-        return res.json({ Carteira: carteira });
+    return res.json({ Saldo: novoSaldo });
+       
+   }catch (error: any) {
+    await transaction.rollback();
+    return res.json({error: error});
     }
-    else{
-        return res.json({ error: 'Carteira não encontrada' });
-    }
-   }catch (error:any) {
-    return res.json({ error: 'Erro ao alterar o saldo'});
-  }
 };
 
 

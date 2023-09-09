@@ -62,10 +62,10 @@ export const novoPagamento = async (id_lider: number, id_venda: number, valor_pa
     const transaction = await sequelize.transaction();  
   
     try {
-
+        const id_carteira_caixa= '1';
         const pagamento = criarPagamento( id_lider, id_venda, valor_pago, tipo, transaction);
         const movimentacao =  criarMovimentacaoCaixa(valor_pago, id_lider, 'entrada', tipo, 'Pagamento de conta', transaction);
-        const alteraSaldo= alterarSaldo(1, valor_pago, 'entrada', transaction);
+        const alteraSaldo= alterarSaldo(id_carteira_caixa, valor_pago, 'entrada', transaction);
 
         await Promise.all([pagamento, movimentacao, alteraSaldo]);
         await transaction.commit();
