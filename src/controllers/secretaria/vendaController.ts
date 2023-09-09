@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import { Aluno } from '../../models/Pessoa/Aluno';
 import { Pessoa } from '../../models/Pessoa/Pessoa';
 import { pegarInfosVenda } from '../../services/fincaneiro/serviceVendas';
+import { retirarEstoque } from '../../services/secretaria/serviceSecretaria';
 
 export const registrarVenda = async (req: Request, res: Response) => {
   
@@ -27,6 +28,8 @@ export const registrarVenda = async (req: Request, res: Response) => {
     // Iterar sobre a lista de materiais
     for (const material of materiais) {
       const { id_material, quantidade, valor_unit } = material;
+
+      await retirarEstoque(id_material, quantidade);
 
       let novoID = venda.id_venda + '-' + id_material;
 

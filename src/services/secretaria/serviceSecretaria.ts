@@ -39,3 +39,22 @@ export const pegarMateriaisVenda = async (id_venda: string) => {
     
     return materiaisFormatados;
 }
+
+
+export const retirarEstoque = async (id_material: string, quantidade: number) => {
+
+  try {
+    const material = await Material.findByPk(id_material);
+    if (material) {
+      material.quantidade -= parseInt(quantidade.toString());
+      await material.save();
+      
+      return material;
+    }else{
+        throw new Error("Material não encontrado");
+    }
+    
+  }catch (error) {
+    throw error;
+  }
+}
