@@ -36,3 +36,11 @@ export const pagamento = Joi.object({
   tipo: Joi.string().valid('Pix', 'Dinheiro'),
   id_venda: Joi.number().integer().min(1).required(),
 });
+
+
+export const movimentacao = Joi.object({
+  valor: Joi.number().positive().required(),
+  tipo: Joi.string().valid('entrada', 'saida'),
+  tipo_pag: Joi.string().valid('Pix', 'Dinheiro'),
+  descricao: Joi.string().allow(null).max(200).optional(),
+});
