@@ -27,13 +27,12 @@ export const criarMovimentacao = async (req: Request, res: Response) => {
 
 export const listarMovimentacoes = async (req: Request, res: Response) => {
 
-  const tipo = req.params.tipo;
   const id_clube = req.user?.id_clube as number;
 
   try {
     if(id_clube==8){
       
-      const movimentacoes = await listarMovimentacoesCaixa(tipo);
+      const movimentacoes = await listarMovimentacoesCaixa();
     
       return res.json({ movimentacoes });
     }else{

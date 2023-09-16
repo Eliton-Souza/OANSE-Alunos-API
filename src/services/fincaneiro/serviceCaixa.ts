@@ -26,29 +26,49 @@ export const criarMovimentacaoCaixa = async (valor: number, id_lider: number, ti
 
 
 
-export const listarMovimentacoesCaixa = async (tipo: string) => {
-
-  let whereClause = {}; // Cláusula where inicial vazia
-
-  if (tipo !== 'todas') {
-    whereClause = { '$Caixa.tipo$': tipo }; // Filtra as vendas
-  }
+export const listarMovimentacoesCaixa = async () => {
 
   try {
     const movimentacoes = await Caixa.findAll({
-      where: whereClause, // Aplica a cláusula where dinamicamente
+
+      include: [
+        {
+          model: Lider,
+          attributes: [],
+          include: [ 
+            {
+              model: Pessoa,
+              attributes: ['nome']
+            }
+          ]
+        },
+      ],
       attributes: {
-        exclude: ['tipo_pag', 'id_lider', 'data']
+        exclude: ['tipo_pag', 'id_lider']
       },
       order: [['id_movimentacao', 'DESC']],
       raw: true
     });
 
-    return movimentacoes;
+    const movimentacoesFormatadas = movimentacoes.map((movimentacao: any) => {
+      return {
+        id_movimentacao: movimentacao.id_movimentacao,
+        nome_lider: movimentacao['Lider.Pessoa.nome'],
+        tipo: movimentacao.tipo,
+        valor: movimentacao.valor,
+        data: movimentacao.data,
+        motivo: "algum movivo"
+      };
+    });
+      
+    
+
+    return movimentacoesFormatadas;
     
   } catch (error: any) {
     throw error;
   }
+
 }
 
 
@@ -95,7 +115,6 @@ export const pegarMovimentacaoCaixa = async (id: string) => {
       valor: movimentacao.valor,
       data: movimentacao.data,
       tipo_pag: movimentacao.tipo_pag
-      
     };
     
     return movimentacaoFormatada;

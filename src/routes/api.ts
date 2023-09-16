@@ -75,7 +75,7 @@ router.get('/pagamento/:id', verificarToken, PagamentoController.pegarPagamento)
 
 //CRUD CAIXA
 router.post('/caixa', verificarToken, valida.caixa, CaixaController.criarMovimentacao);
-router.get('/caixas/:tipo', verificarToken, CaixaController.listarMovimentacoes);
+router.get('/caixas/', verificarToken, CaixaController.listarMovimentacoes);
 router.get('/caixa/:id', verificarToken, CaixaController.pegarMovimentacao);
 router.put('/caixa/:id', verificarToken, valida.editaDescricao, CaixaController.editarMovimentacao);
 
