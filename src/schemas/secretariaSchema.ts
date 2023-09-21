@@ -27,7 +27,7 @@ export const venda = Joi.object({
   ).required(),
   valor_total: Joi.number().min(0).required(),
   descricao: Joi.string().allow(null).max(200).optional(),
-  id_aluno: Joi.number().integer().min(1).required(),
+  id_pessoa: Joi.number().integer().min(1).required(),
 });
 
 

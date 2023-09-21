@@ -66,7 +66,7 @@ export const listarLideres = async (req: Request, res: Response) => {
           }
         ],
       attributes: { 
-          exclude: ['id_clube', 'login', 'senha'] 
+          exclude: ['login', 'senha'] 
       },
       raw: true
     });
@@ -78,6 +78,7 @@ export const listarLideres = async (req: Request, res: Response) => {
         nome: lider['Pessoa.nome'],
         sobrenome: lider['Pessoa.sobrenome'],
         clube: lider['Clube.nome'],
+        id_clube: lider.id_clube
       };
     });
     

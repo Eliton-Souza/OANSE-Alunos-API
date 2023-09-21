@@ -61,7 +61,7 @@ router.delete('/material/:id', verificarToken, MaterialController.deletarMateria
 
 //CRUD VENDAS
 router.post('/venda', verificarToken, valida.venda, VendaController.registrarVenda);
-router.get('/vendas/:tipo', verificarToken, VendaController.listarVendas);
+router.get('/vendas', verificarToken, VendaController.listarVendas);
 router.get('/venda/:id', verificarToken, VendaController.pegarVenda);
 router.put('/venda/:id', verificarToken, valida.editaDescricao, VendaController.editarVenda);
 router.delete('/venda/:id', verificarToken, VendaController.deletarVenda);

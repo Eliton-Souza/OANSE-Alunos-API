@@ -3,7 +3,6 @@ import { Venda } from '../../models/Secretaria/Venda';
 import { sequelize } from '../../instances/mysql';
 import { Venda_Material_Ass } from '../../models/Secretaria/VendaMaterial';
 import { format } from 'date-fns';
-import { Aluno } from '../../models/Pessoa/Aluno';
 import { Pessoa } from '../../models/Pessoa/Pessoa';
 import { pegarInfosVenda } from '../../services/fincaneiro/serviceVendas';
 import { retirarEstoque } from '../../services/secretaria/serviceSecretaria';
@@ -13,11 +12,11 @@ export const registrarVenda = async (req: Request, res: Response) => {
   const transaction = await sequelize.transaction();
   const id_lider = req.user?.id_lider;
 
-  const { id_aluno, valor_total, descricao, materiais } = req.body;
+  const { id_pessoa, valor_total, descricao, materiais } = req.body;
 
   try {
     const venda = await Venda.create({
-      id_aluno,
+      id_pessoa,
       id_lider,
       valor_total,
       data: format(new Date, 'yyyy-MM-dd'),
@@ -57,35 +56,18 @@ export const registrarVenda = async (req: Request, res: Response) => {
 
 export const listarVendas = async (req: Request, res: Response) => {
 
-  const tipo = req.params.tipo;
-
-  let whereClause = {}; // Cláusula where inicial vazia
-
-  if (tipo !== 'todas') {
-    whereClause = { '$Venda.status_pag$': tipo }; // Filtra as vendas
-  }
-
   try {
-    const vendas = await Venda.findAll({
+    const vendas = await Venda.findAll({              
       include: [
         {
-          model: Aluno,
+          model: Pessoa,
           attributes: {
-            exclude: ['id_aluno', 'id_pessoa', 'id_responsavel', 'id_manual', 'id_carteira']
+            exclude: ['nascimento', 'genero']
           },
-          include: [
-            {
-              model: Pessoa,
-              attributes: {
-                exclude: ['nascimento', 'genero']
-              },
-            }
-          ]
         }
       ],
-      where: whereClause, // Aplica a cláusula where dinamicamente
       attributes: {
-        exclude: ['id_aluno', 'id_lider', 'descricao']
+        exclude: ['id_pessoa', 'id_lider', 'descricao']
       },
       order: [['id_venda', 'DESC']],
       raw: true
@@ -95,8 +77,8 @@ export const listarVendas = async (req: Request, res: Response) => {
     const vendasFormatadas = vendas.map((venda: any) => {
       return {
         id_venda: venda.id_venda,
-        nome_aluno: venda['Aluno.Pessoa.nome'],
-        sobrenome_aluno: venda['Aluno.Pessoa.sobrenome'],
+        nome_pessoa: venda['Pessoa.nome'],
+        sobrenome_pessoa: venda['Pessoa.sobrenome'],
         valor_total: venda.valor_total,
         data: venda.data,
         status: venda.status_pag

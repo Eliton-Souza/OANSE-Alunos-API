@@ -1,7 +1,7 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../../instances/mysql';
-import { Aluno } from '../Pessoa/Aluno';
 import { Lider } from '../Pessoa/Lider';
+import { Pessoa } from '../Pessoa/Pessoa';
 
 //REGISTRO DAS VENDAS
 export interface VendaInstace extends Model {
@@ -20,12 +20,12 @@ export const Venda = sequelize.define<VendaInstace>('Venda', {
         autoIncrement: true,
         type: DataTypes.INTEGER
     },
-    id_aluno:{
+    id_pessoa:{
         type: DataTypes.INTEGER,
         allowNull: true,
         references: {
-            model: Aluno,
-            key: 'id_aluno'
+            model: Pessoa,
+            key: 'id_pessoa'
         }
     },
     id_lider:{
@@ -58,5 +58,5 @@ export const Venda = sequelize.define<VendaInstace>('Venda', {
 Lider.hasMany(Venda, { foreignKey: 'id_lider' });
 Venda.belongsTo(Lider, { foreignKey: 'id_lider' });
 
-Aluno.hasMany(Venda, { foreignKey: 'id_aluno' });
-Venda.belongsTo(Aluno, { foreignKey: 'id_aluno' });
+Pessoa.hasMany(Venda, { foreignKey: 'id_pessoa' });
+Venda.belongsTo(Pessoa, { foreignKey: 'id_pessoa' });

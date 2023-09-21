@@ -1,4 +1,3 @@
-import { Aluno } from "../../models/Pessoa/Aluno";
 import { Lider } from "../../models/Pessoa/Lider";
 import { Pessoa } from "../../models/Pessoa/Pessoa";
 import { Venda } from "../../models/Secretaria/Venda";
@@ -41,19 +40,13 @@ const infosVenda = async (id_venda: string) => {
             }
           ]
         },
-        {
-          model: Aluno,
-          attributes: [],
-          include: [
-            {
-              model: Pessoa,
-              attributes: ['nome', 'sobrenome'],
-            }
-          ]
+        {    
+          model: Pessoa,
+          attributes: ['nome', 'sobrenome'],        
         },
       ],
         attributes: {
-        exclude: ['id_aluno', 'id_lider']
+        exclude: ['id_pessoa', 'id_lider']
       },
       raw: true
     });
@@ -62,8 +55,8 @@ const infosVenda = async (id_venda: string) => {
       id_venda: number;
       nome_lider: string;
       sobrenome_lider: string
-      nome_aluno: string;
-      sobrenome_aluno: string;
+      nome_pessoa: string;
+      sobrenome_pessoa: string;
       valor_total: number;
       data: Date;
       descricao: string;
@@ -76,8 +69,8 @@ const infosVenda = async (id_venda: string) => {
       id_venda: venda.id_venda,
       nome_lider: venda['Lider.Pessoa.nome'],
       sobrenome_lider: venda['Lider.Pessoa.sobrenome'],
-      nome_aluno: venda['Aluno.Pessoa.nome'],
-      sobrenome_aluno: venda['Aluno.Pessoa.sobrenome'],
+      nome_pessoa: venda['Pessoa.nome'],
+      sobrenome_pessoa: venda['Pessoa.sobrenome'],
       valor_total: venda.valor_total,
       data: venda.data,
       descricao: venda.descricao,
