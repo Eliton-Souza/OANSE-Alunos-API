@@ -8,10 +8,10 @@ export const criarMovimentacao = async (req: Request, res: Response) => {
   const transaction = await sequelize.transaction();
   const id_lider = req.user?.id_lider as number;
 
-  const { tipo, valor, descricao, tipo_pag } = req.body;
+  const { tipo, valor, descricao, tipo_pag, motivo } = req.body;
 
   try {
-    const movimentacao = await criarMovimentacaoCaixa(valor, id_lider, tipo, tipo_pag, descricao, transaction);
+    const movimentacao = await criarMovimentacaoCaixa(valor, id_lider, tipo, tipo_pag, descricao, motivo, transaction);
     const alteraSaldo = await alterarSaldo('1', valor, tipo, transaction);
     
     await transaction.commit();

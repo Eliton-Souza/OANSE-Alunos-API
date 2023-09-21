@@ -24,6 +24,34 @@ export const alterarStatusVenda = async (id_venda: number, status: string) => {
   }
 }
 
+export const responsavelVenda = async (id_venda: number) => {
+  try {
+    const vendaResponse = await Venda.findByPk(id_venda, {
+      include: [
+         {    
+          model: Pessoa,
+          attributes: ['nome'],        
+        },
+      ],
+        attributes: [],
+        raw: true
+    });
+
+    interface VendaFormatada {
+      nome_pessoa: string;
+    }
+
+    const venda: any= vendaResponse;    
+
+    const vendaFormatada: VendaFormatada = {    
+      nome_pessoa: venda['Pessoa.nome']     
+    };
+    
+    return vendaFormatada.nome_pessoa;
+  } catch (error){
+    throw error;
+  }
+};
 
 const infosVenda = async (id_venda: string) => {
 

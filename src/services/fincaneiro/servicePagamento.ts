@@ -3,7 +3,7 @@ import { Pagamento } from "../../models/Secretaria/Pagamento";
 import { format } from 'date-fns'
 import { criarMovimentacaoCaixa } from "./serviceCaixa";
 import { alterarSaldo } from "../Negociacao/serviceCarteira";
-import { alterarStatusVenda } from "./serviceVendas";
+import { alterarStatusVenda, responsavelVenda } from "./serviceVendas";
 import { Venda } from "../../models/Secretaria/Venda";
 import { Lider } from "../../models/Pessoa/Lider";
 import { Pessoa } from "../../models/Pessoa/Pessoa";
@@ -63,8 +63,10 @@ export const novoPagamento = async (id_lider: number, id_venda: number, valor_pa
   
     try {
         const id_carteira_caixa= '1';
+        const nome= await responsavelVenda(id_venda);
+
         const pagamento = criarPagamento( id_lider, id_venda, valor_pago, tipo, transaction);
-        const movimentacao =  criarMovimentacaoCaixa(valor_pago, id_lider, 'entrada', tipo, 'Pagamento de conta', transaction);
+        const movimentacao = criarMovimentacaoCaixa(valor_pago, id_lider, 'entrada', tipo, '', `Pagamento do(a) - ${nome}`, transaction);
         const alteraSaldo= alterarSaldo(id_carteira_caixa, valor_pago, 'entrada', transaction);
 
         await Promise.all([pagamento, movimentacao, alteraSaldo]);

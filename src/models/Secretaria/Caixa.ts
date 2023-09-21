@@ -8,6 +8,7 @@ export interface CaixaInstace extends Model{
     id_lider: number;
     tipo: string;
     valor: number;
+    motivo: string;
     descricao: string;
     data: Date;
     tipo_pag: string;
@@ -35,6 +36,10 @@ export const Caixa= sequelize.define<CaixaInstace>('Caixa', {
         type: DataTypes.FLOAT,
         allowNull: false
     },
+    motivo: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },  
     descricao: {
         type: DataTypes.STRING(200),
         allowNull: true

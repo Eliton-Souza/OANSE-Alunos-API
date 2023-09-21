@@ -43,4 +43,5 @@ export const movimentacao = Joi.object({
   tipo: Joi.string().valid('entrada', 'saida'),
   tipo_pag: Joi.string().valid('Pix', 'Dinheiro'),
   descricao: Joi.string().allow(null).max(200).optional(),
+  motivo: Joi.string().allow(null).max(200).optional(),
 });

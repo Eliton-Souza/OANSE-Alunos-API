@@ -3,25 +3,25 @@ import { Pessoa } from "../../models/Pessoa/Pessoa";
 import { Caixa } from "../../models/Secretaria/Caixa";
 import { format } from 'date-fns'
 
-export const criarMovimentacaoCaixa = async (valor: number, id_lider: number, tipo: string,  tipo_pag: string, descricao: string, transaction: any) => {
-
+export const criarMovimentacaoCaixa = async (valor: number, id_lider: number, tipo: string, tipo_pag: string, descricao: string, motivo: string, transaction: any) => {
   try {
     const movimentacao = await Caixa.create({
       valor,
       id_lider,
       tipo,
       tipo_pag,
-      data: format(new Date, 'yyyy-MM-dd'), 
+      data: format(new Date(), 'yyyy-MM-dd'), 
       descricao,
+      motivo
     }, { transaction });
 
     return movimentacao;
-    
   } catch (error: any) {
     await transaction.rollback();
     throw error;
   }
-}
+};
+
 
 
 
@@ -57,7 +57,7 @@ export const listarMovimentacoesCaixa = async () => {
         tipo: movimentacao.tipo,
         valor: movimentacao.valor,
         data: movimentacao.data,
-        motivo: "algum movivo"
+        motivo: movimentacao.motivo
       };
     });
       
@@ -102,6 +102,7 @@ export const pegarMovimentacaoCaixa = async (id: string) => {
       valor: number;
       data: Date;
       tipo_pag: string;
+      motivo: string;
     }
 
     const movimentacao: any= movimentacaoResponse;
@@ -114,7 +115,8 @@ export const pegarMovimentacaoCaixa = async (id: string) => {
       tipo: movimentacao.tipo,
       valor: movimentacao.valor,
       data: movimentacao.data,
-      tipo_pag: movimentacao.tipo_pag
+      tipo_pag: movimentacao.tipo_pag,
+      motivo: movimentacao.motivo
     };
     
     return movimentacaoFormatada;
