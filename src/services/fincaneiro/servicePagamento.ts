@@ -1,14 +1,12 @@
 import { sequelize } from "../../instances/mysql";
 import { Pagamento } from "../../models/Secretaria/Pagamento";
-import { format } from 'date-fns'
 import { criarMovimentacaoCaixa } from "./serviceCaixa";
-import { alterarSaldo } from "../Negociacao/serviceCarteira";
 import { alterarStatusVenda, responsavelVenda } from "./serviceVendas";
 import { Venda } from "../../models/Secretaria/Venda";
 import { Lider } from "../../models/Pessoa/Lider";
 import { Pessoa } from "../../models/Pessoa/Pessoa";
 
-const criarPagamento = async (id_lider: number, id_venda: number, valor_pago: number, tipo: string, transaction: any ) => {
+const criarPagamento = async (id_lider: number, id_venda: number, valor_pago: number, tipo: string, data: Date, transaction: any ) => {
      
     try {
       const pagamento = await Pagamento.create({
@@ -16,7 +14,7 @@ const criarPagamento = async (id_lider: number, id_venda: number, valor_pago: nu
         valor_pago,
         id_lider,
         tipo,
-        data: format(new Date, 'yyyy-MM-dd'),    
+        data,    
       },{ transaction });
   
       return pagamento.id_pagamento;
@@ -58,18 +56,16 @@ const criarPagamento = async (id_lider: number, id_venda: number, valor_pago: nu
 
 
 
-export const novoPagamento = async (id_lider: number, id_venda: number, valor_pago: number, tipo: string ) => {
+export const novoPagamento = async (id_lider: number, id_venda: number, valor_pago: number, data: Date, tipo: string ) => {
     const transaction = await sequelize.transaction();  
   
     try {
-        const id_carteira_caixa= '1';
+        
         const nome= await responsavelVenda(id_venda);
-
-        const pagamento = criarPagamento( id_lider, id_venda, valor_pago, tipo, transaction);
-        const movimentacao = criarMovimentacaoCaixa(valor_pago, id_lider, 'entrada', tipo, '', `Pagamento do(a) - ${nome}`, transaction);
-        const alteraSaldo= alterarSaldo(id_carteira_caixa, valor_pago, 'entrada', transaction);
-
-        await Promise.all([pagamento, movimentacao, alteraSaldo]);
+        const pagamento = criarPagamento( id_lider, id_venda, valor_pago, tipo, data, transaction);
+        const movimentacao = criarMovimentacaoCaixa(valor_pago, id_lider, 'entrada', tipo, '', data,  `Pagamento do(a) - ${nome}`, transaction);
+       
+        await Promise.all([pagamento, movimentacao]);
         await transaction.commit();
 
         await verificarPagamentos(id_venda);

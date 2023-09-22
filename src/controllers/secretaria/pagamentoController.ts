@@ -11,12 +11,12 @@ export const registrarPagamento = async (req: Request, res: Response) => {
 
   const id_lider = req.user?.id_lider as number;
   const id_clube = req.user?.id_clube as number;
-  const { id_venda, valor_pago, tipo } = req.body;
+  const { id_venda, valor_pago, data, tipo } = req.body;
 
   try {
     if(id_clube==8){
       
-      const pagamento = await pagamentoService.novoPagamento(id_lider, id_venda, valor_pago, tipo);
+      const pagamento = await pagamentoService.novoPagamento(id_lider, id_venda, valor_pago, data, tipo);
     
     return res.json({ pagamento });
     }else{

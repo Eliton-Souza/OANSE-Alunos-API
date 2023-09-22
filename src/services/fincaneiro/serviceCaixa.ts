@@ -1,16 +1,15 @@
 import { Lider } from "../../models/Pessoa/Lider";
 import { Pessoa } from "../../models/Pessoa/Pessoa";
 import { Caixa } from "../../models/Secretaria/Caixa";
-import { format } from 'date-fns'
 
-export const criarMovimentacaoCaixa = async (valor: number, id_lider: number, tipo: string, tipo_pag: string, descricao: string, motivo: string, transaction: any) => {
+export const criarMovimentacaoCaixa = async (valor: number, id_lider: number, tipo: string, tipo_pag: string, descricao: string, data: Date, motivo: string, transaction: any) => {
   try {
     const movimentacao = await Caixa.create({
       valor,
       id_lider,
       tipo,
       tipo_pag,
-      data: format(new Date(), 'yyyy-MM-dd'), 
+      data,
       descricao,
       motivo
     }, { transaction });
@@ -21,9 +20,6 @@ export const criarMovimentacaoCaixa = async (valor: number, id_lider: number, ti
     throw error;
   }
 };
-
-
-
 
 
 export const listarMovimentacoesCaixa = async () => {
@@ -61,8 +57,6 @@ export const listarMovimentacoesCaixa = async () => {
       };
     });
       
-    
-
     return movimentacoesFormatadas;
     
   } catch (error: any) {

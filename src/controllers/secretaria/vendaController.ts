@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { Venda } from '../../models/Secretaria/Venda';
 import { sequelize } from '../../instances/mysql';
 import { Venda_Material_Ass } from '../../models/Secretaria/VendaMaterial';
-import { format } from 'date-fns';
 import { Pessoa } from '../../models/Pessoa/Pessoa';
 import { pegarInfosVenda } from '../../services/fincaneiro/serviceVendas';
 import { retirarEstoque } from '../../services/secretaria/serviceSecretaria';
@@ -12,16 +11,16 @@ export const registrarVenda = async (req: Request, res: Response) => {
   const transaction = await sequelize.transaction();
   const id_lider = req.user?.id_lider;
 
-  const { id_pessoa, valor_total, descricao, materiais } = req.body;
+  const { id_pessoa, valor_total, descricao, data, materiais } = req.body;
 
   try {
     const venda = await Venda.create({
       id_pessoa,
       id_lider,
       valor_total,
-      data: format(new Date, 'yyyy-MM-dd'),
+      data,
       descricao,
-      status_pag: 'Pendente'
+      status_pag: valor_total==0? 'Pago' : 'Pendente'
     }, { transaction });
 
     // Iterar sobre a lista de materiais
