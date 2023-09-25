@@ -20,7 +20,7 @@ export const validaSchema = (schema: any) => async (
     const match = regex.exec(errorMessage);
    
     if (match && match.length > 1) {
-      return res.json('O valor do campo ' + match[1] + ' está incorreto');
+      return res.json({ error: 'O valor do campo ' + match[1] + ' está incorreto' });
     }
     else{
       return res.json(error);

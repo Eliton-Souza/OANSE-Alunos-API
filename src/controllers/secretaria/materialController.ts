@@ -5,13 +5,13 @@ import { Clube } from '../../models/Clube';
 
 export const criarMaterial = async (req: Request, res: Response) => {
    
-    const { nome, id_clube, preco } = req.body;
+    const { nome, id_clube, quantidade, preco } = req.body;
 
     try {        
         const material = await Material.create({
             nome,
             id_clube,
-            quantidade: 0,
+            quantidade,
             preco,
         });
       
