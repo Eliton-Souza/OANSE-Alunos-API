@@ -39,6 +39,10 @@ export const Material = sequelize.define<MaterialInstace>('Material', {
         defaultValue: 0,
     },
 }, {
+    indexes: [{
+      unique: true,
+      fields: ['nome', 'id_clube']
+    }],
     tableName: 'Material',
     timestamps: false
 });
