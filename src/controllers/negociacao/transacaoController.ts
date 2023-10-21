@@ -20,12 +20,12 @@ export const listarTransacoes = async (req: Request, res: Response) => {
     try {
         const transacoes = await Transacao.findAll({
             include: [
-                {
+              {
                 model: Aluno,
                 attributes: [],
                 include: [{
                       model: Pessoa,
-                      attributes: ['nome']
+                      attributes: ['nome', 'sobrenome']
                     },
                     {
                       model: Material,
@@ -37,16 +37,8 @@ export const listarTransacoes = async (req: Request, res: Response) => {
                         }
                       ]
                     }
-                  ],
-                },
-                {
-                model: Lider,
-                attributes: [],
-                include: [{
-                        model: Pessoa,
-                        attributes: ['nome'] 
-                    }]
-                },
+                ],
+              },
             ],
             where: whereClause, // Aplica a cláusula where dinamicamente
             attributes: ['tipo','valor', 'id_transacao', 'data'],
@@ -59,8 +51,8 @@ export const listarTransacoes = async (req: Request, res: Response) => {
             id_transacao: transacao.id_transacao,
             tipo: transacao.tipo,
             valor: transacao.valor,
-            nome_lider: transacao['Lider.Pessoa.nome'],
-            nome_aluno: transacao['Aluno.Pessoa.nome'],
+            data: transacao.data,
+            nome_aluno: transacao['Aluno.Pessoa.nome'] +' '+ transacao['Aluno.Pessoa.sobrenome'],
             };
         });
         return res.json({ transacoes: transacaoFormatada });
