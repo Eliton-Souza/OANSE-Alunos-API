@@ -57,8 +57,7 @@ export const listarLideres = async (req: Request, res: Response) => {
     const lideres = await Lider.findAll({
       include: [
           {
-            model: Pessoa,
-            attributes: ['nome', 'sobrenome']
+            model: Pessoa,            
           },
           {
             model: Clube,
@@ -77,6 +76,8 @@ export const listarLideres = async (req: Request, res: Response) => {
         id_pessoa: lider.id_pessoa,
         nome: lider['Pessoa.nome'],
         sobrenome: lider['Pessoa.sobrenome'],
+        nascimento: lider['Pessoa.nascimento'],
+        gereno: lider['Pessoa.genero'],
         clube: lider['Clube.nome'],
         id_clube: lider.id_clube
       };
