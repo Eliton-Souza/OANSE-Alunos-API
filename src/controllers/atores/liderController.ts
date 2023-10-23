@@ -77,7 +77,7 @@ export const listarLideres = async (req: Request, res: Response) => {
         nome: lider['Pessoa.nome'],
         sobrenome: lider['Pessoa.sobrenome'],
         nascimento: lider['Pessoa.nascimento'],
-        gereno: lider['Pessoa.genero'],
+        genero: lider['Pessoa.genero'],
         clube: lider['Clube.nome'],
         id_clube: lider.id_clube
       };
