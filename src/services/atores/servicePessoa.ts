@@ -3,12 +3,15 @@ import { Pessoa, PessoaInstace } from '../../models/Pessoa/Pessoa';
 import { AlunoInstace } from '../../models/Pessoa/Aluno';
 import { LiderInstace } from '../../models/Pessoa/Lider';
 import { ResponsavelInstace, } from '../../models/Pessoa/Responsavel';
-import _ from 'lodash';
+
 
 const palavraPadronizado = (nome: string) => {
-  const nomeFormatado = _.startCase(_.toLower(nome));
-
-  return nomeFormatado;
+  return nome
+  .split(' ')
+  .map((palavra) => {
+    return palavra.charAt(0).toUpperCase() + palavra.slice(1).toLowerCase();
+  })
+  .join(' ');
 }
 
 
