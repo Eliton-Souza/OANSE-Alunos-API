@@ -26,7 +26,7 @@ const jwtStrategy = new JWTStrategy(options, async (payload: dadosUsuario, done)
 
     const lider= await Lider.findByPk(payload.id_lider);
 
-    if (tokenExp < currentTimestamp && !lider) {
+    if (tokenExp < currentTimestamp || !lider) {
         // O token está expirado ou lider nao encontrado
         return done(null, false);
     }
