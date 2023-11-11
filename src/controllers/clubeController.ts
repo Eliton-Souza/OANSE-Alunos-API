@@ -5,13 +5,7 @@ import { Op } from 'sequelize';
 
 
 export const listarClubes = async (req: Request, res: Response) => {
-  const clubes = await Clube.findAll({
-    where: {
-      id_clube: {
-        [Op.lte]: 6
-      }
-    }
-  });
+  const clubes = await Clube.findAll();
 
   return res.json({ clubes });
 };
