@@ -132,7 +132,7 @@ export const atualizarResponsavel = async (req: Request, res: Response) => {
     // Recuperar dados do responsavel do banco
     const responsavel = await Responsavel.findByPk(id);
     if (responsavel) {
-        responsavel.contato= contato;
+        responsavel.contato= contato? contato : null;
     }
     else{
       return res.json({ error: 'Responsavel não encontrado' });
