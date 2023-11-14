@@ -38,4 +38,6 @@ export const updateResponsavel = pessoaSchema("optional").concat(responsavelbase
 //Lider
 export const lider = pessoaSchema("required").concat(liderBase);          //criar
 export const updateLider = pessoaSchema("optional").concat(liderBase);    //atualizar
-
+export const clube = Joi.object({
+  id_clube: Joi.number().integer().min(0).required(),
+});

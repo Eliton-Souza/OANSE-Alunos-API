@@ -35,7 +35,8 @@ router.post('/lider', verificarToken, valida.lider, LiderController.criarLider);
 router.get('/lideres', verificarToken, LiderController.listarLideres);
 router.get('/lider/:id', verificarToken, LiderController.pegarLider);
 router.get('/meusDadoslider', verificarToken, LiderController.meusDadosLider);
-router.put('/lider/:id', verificarToken, valida.updateLider, LiderController.atualizarLider);
+router.put('/perfil/:id', verificarToken, valida.updateLider, LiderController.atualizarPerfilLider);
+router.put('/lider/:id', verificarToken, valida.updateClubeLider, LiderController.atualizarClubeLider);
 router.delete('/lider/:id', verificarToken, LiderController.deletarLider);
 
 //CRUD Carteira

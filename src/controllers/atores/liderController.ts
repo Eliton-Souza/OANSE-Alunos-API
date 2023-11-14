@@ -208,9 +208,7 @@ export const pegarLider = async (req: Request, res: Response) => {
   }
 }
 
-
-
-export const atualizarLider = async (req: Request, res: Response) => {
+const updateLiderFull = async (req: Request, res: Response) => {
   const id = req.params.id;
   
   try {
@@ -248,6 +246,80 @@ export const atualizarLider = async (req: Request, res: Response) => {
       return res.json({error:  novaStr + ' já está cadastrado(a) no sistema'});
     }
     return res.json({ error: 'Erro ao atualizar o lider'});
+  }
+};
+
+export const atualizarPerfilLider = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  
+  try {
+    const { nome, sobrenome, genero, nascimento} = req.body;
+
+    // Recuperar dados do lider do banco
+    const lider = await Lider.findByPk(id);
+    if (!lider) {
+      return res.json({ error: 'Lider não encontrado' });
+    }
+
+    // Recuperar dados da pessoa lider do banco
+    const pessoaLider = await Pessoa.findByPk(lider.id_pessoa);
+    if (pessoaLider) {
+      atualizarPessoa(pessoaLider, nome, sobrenome, genero, nascimento);
+    }
+    else{
+      return res.json({ error: 'Lider não encontrado' });
+    }
+
+    // Salvar as alterações no banco de dados
+    await pessoaLider.save();
+    
+    return res.json({ lider: lider.id_lider });
+  } catch (error:any) {
+    if (error.name === 'SequelizeUniqueConstraintError') {
+      const str = error.errors[0].value;
+      const novaStr = str.replace(/-/g, ' ');
+    
+      return res.json({error:  novaStr + ' já está cadastrado(a) no sistema'});
+    }
+    return res.json({ error: 'Erro ao atualizar o lider'});
+  }
+};
+
+
+export const atualizarClubeLider = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const id_clube_secretario = req.user?.id_clube;
+  const id_lider = req.user?.id_lider;
+
+  if(id_clube_secretario==8){
+
+    if(id !== id_lider?.toString()){
+      try {
+        const { id_clube } = req.body;
+  
+        // Recuperar dados do lider do banco
+        const lider = await Lider.findByPk(id);
+  
+        if (lider) {
+          lider.id_clube= id_clube ?? lider.id_clube;
+        }
+        else{
+          return res.json({ error: 'Lider não encontrado' });
+        }
+  
+        // Salvar as alterações no banco de dados
+        await lider.save();
+        
+        return res.json({ lider: lider.id_lider });
+      } catch (error:any) {
+        return res.json({ error: 'Erro ao atualizar o lider'});
+      }
+    }else{
+      return res.json({ error: 'Você não pode alterar seu próprio clube'});
+    }    
+  }
+  else{
+    return res.json({ error: 'Você não tem autorização' });
   }
 };
   
