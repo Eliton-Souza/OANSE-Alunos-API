@@ -34,8 +34,7 @@ export const alterarSaldo = async (id_carteira: string, valor: number, tipo: str
             throw new Error("Carteira não encontrada");
         }
         
-    } catch (error) {
-        await transaction.rollback();
-        throw error;
+    } catch (error: any) {
+        throw error.message;
     }
 };
