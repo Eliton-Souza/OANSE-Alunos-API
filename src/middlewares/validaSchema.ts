@@ -40,6 +40,7 @@ export const updateResponsavel = validaSchema(atorSchema.updateResponsavel);
 export const lider = validaSchema(atorSchema.lider);
 export const updateLider = validaSchema(atorSchema.updateLider);
 export const updateClubeLider = validaSchema(atorSchema.clube);
+export const acessoLider = validaSchema(atorSchema.acesso);
 
 
 //NEGOCIACAO

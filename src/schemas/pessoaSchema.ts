@@ -38,6 +38,14 @@ export const updateResponsavel = pessoaSchema("optional").concat(responsavelbase
 //Lider
 export const lider = pessoaSchema("required").concat(liderBase);          //criar
 export const updateLider = pessoaSchema("optional").concat(liderBase);    //atualizar
+
+export const acesso = Joi.object({
+  login: Joi.string().required(),
+  senha: Joi.string().required(),
+  novoLogin: Joi.string().pattern(/^\d{11}$/).required(),
+  novaSenha: Joi.string().min(6).max(30).regex(/^(?=.*[a-zA-Z])(?=.*\d)/).required()
+});
+
 export const clube = Joi.object({
   id_clube: Joi.number().integer().min(0).required(),
 });

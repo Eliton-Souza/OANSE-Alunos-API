@@ -30,13 +30,14 @@ router.put('/responsavel/:id', verificarToken, valida.updateResponsavel, Respons
 router.delete('/responsavel/:id', verificarToken, ResponsavelController.deletarResponsavel);
 
 //CRUD LIDER
-router.post('/login',  LiderController.login);
+router.post('/login', LiderController.login);
 router.post('/lider', verificarToken, valida.lider, LiderController.criarLider);
 router.get('/lideres', verificarToken, LiderController.listarLideres);
 router.get('/lider/:id', verificarToken, LiderController.pegarLider);
 router.get('/meusDadoslider', verificarToken, LiderController.meusDadosLider);
 router.put('/perfil/:id', verificarToken, valida.updateLider, LiderController.atualizarPerfilLider);
 router.put('/lider/:id', verificarToken, valida.updateClubeLider, LiderController.atualizarClubeLider);
+router.put('/acesso', verificarToken, valida.acessoLider, LiderController.alterarAcesso);
 router.delete('/lider/:id', verificarToken, LiderController.deletarLider);
 
 //CRUD Carteira

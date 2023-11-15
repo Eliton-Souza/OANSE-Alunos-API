@@ -249,6 +249,35 @@ const updateLiderFull = async (req: Request, res: Response) => {
   }
 };
 
+export const alterarAcesso = async (req: Request, res: Response) => {
+  const id = req.user?.id_lider;
+  
+  try {
+    const { login, senha, novoLogin, novaSenha } = req.body;
+
+    // Recuperar dados do lider do banco
+    const lider = await Lider.findOne({ where: { login } });
+    if (!lider) {
+      return res.json({ error: "Login ou senha incorretos" });
+    }
+
+    const match = await bcrypt.compare(senha, lider.senha);
+    if (!match) {
+      return res.json({ error: "Login ou senha incorretos" });
+    }
+   
+    lider.login= novoLogin ?? lider.login,
+    lider.senha= novaSenha? await bcrypt.hash(novaSenha, 10) : lider.senha
+  
+    // Salvar as alterações no banco de dados
+    await lider.save();
+    
+    return res.json({ lider: id });
+  } catch (error:any) {
+    return res.json({ error: 'Erro ao atualizar o lider'});
+  }
+};
+
 export const atualizarPerfilLider = async (req: Request, res: Response) => {
   const id = req.params.id;
   
