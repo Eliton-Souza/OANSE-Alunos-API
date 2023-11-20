@@ -33,10 +33,10 @@ export const novoSalvo = async (req: Request, res: Response) => {
   const transaction = await sequelize.transaction(); 
 
   try {
-    const { valor, tipo, id_aluno, descricao } = req.body;
+    const { valor, tipo, id_aluno, data, descricao } = req.body;
 
     const novoSaldo= await alterarSaldo(id_carteira, valor, tipo, transaction);
-    const transacao= criarTransacao(id_lider, tipo, valor, descricao, id_aluno, novoSaldo, transaction);
+    const transacao= criarTransacao(id_lider, tipo, valor, descricao, id_aluno, data, novoSaldo, transaction);
 
     await Promise.all([novoSaldo, transacao]);
     await transaction.commit();

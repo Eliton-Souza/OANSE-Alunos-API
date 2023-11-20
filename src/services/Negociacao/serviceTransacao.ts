@@ -1,7 +1,6 @@
 import { Transacao } from '../../models/Negociacao/Transacao';
-import { format } from 'date-fns'
 
-export const criarTransacao = async (id_lider:number, tipo: string, valor: number, descricao: string, id_aluno: number, novo_saldo: number, transaction: any) => {
+export const criarTransacao = async (id_lider:number, tipo: string, valor: number, descricao: string, id_aluno: number, data: Date, novo_saldo: number, transaction: any) => {
 
     try {
         const transacao = await Transacao.create({
@@ -10,7 +9,7 @@ export const criarTransacao = async (id_lider:number, tipo: string, valor: numbe
             valor,
             descricao,
             id_aluno,
-            data: format(new Date, 'yyyy-MM-dd'),
+            data,
             novo_saldo,
         }, { transaction });
     
