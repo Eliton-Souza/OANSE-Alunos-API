@@ -8,6 +8,7 @@ import { atualizarPessoa, criarPessoa, salvarPessoa } from '../../services/atore
 import { Carteira } from '../../models/Negociacao/Carteira';
 import { criarCarteira } from '../../services/Negociacao/serviceCarteira';
 import { Material } from '../../models/Secretaria/Material';
+import { Transacao } from '../../models/Negociacao/Transacao';
 
 export const criarAluno = async (req: Request, res: Response) => {
 
@@ -293,27 +294,33 @@ export const atualizarAluno = async (req: Request, res: Response) => {
 
 export const deletarAluno = async (req: Request, res: Response) => {
 
+  const id_clube = req.user?.id_clube;
   const id_aluno= req.params.id;
 
-  try {
-    const aluno= await Aluno.findByPk(id_aluno);
+  if(id_clube == 8){
+    try {      
+      const aluno= await Aluno.findByPk(id_aluno);
 
-    if(aluno){
-      const id_pessoa= aluno.id_pessoa;
-      const id_carteira= aluno.id_carteira;
-      
-      await Pessoa.destroy({where:{ id_pessoa }});
-      await Aluno.destroy({where:{id_aluno}});
-  
-      await Carteira.destroy({ where: { id_carteira }});
-  
-      return res.json({sucesso: "Aluno excluído com sucesso"});
-    }
-    else{
-      return res.json({ error: 'Aluno não encontrado'});
-    }
+      if(aluno){
+        const id_pessoa= aluno.id_pessoa;
+        const id_carteira= aluno.id_carteira;
+        
+        await Transacao.destroy({where: {id_aluno}});  
+        await Carteira.destroy({ where: { id_carteira }});
+        await Pessoa.destroy({where: { id_pessoa }});
+        await Aluno.destroy({where: {id_aluno}});
     
-  } catch (error) {
-    return res.json({ error: 'Erro ao excluir Aluno'});
+        return res.json({sucesso: "Aluno excluído com sucesso"});
+      }
+      else{
+        return res.json({ error: 'Aluno não encontrado'});
+      }
+      
+    } catch (error) {
+      return res.json({ error: 'Erro ao excluir Aluno'});
+    }
+  }
+  else{
+    return res.json({ error: 'Você não tem autorização'});
   }
 };
