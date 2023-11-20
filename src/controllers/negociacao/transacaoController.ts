@@ -9,53 +9,45 @@ import { Material } from '../../models/Secretaria/Material';
 
 export const listarTransacoes = async (req: Request, res: Response) => {
 
-  const id_clube = req.user?.id_clube;
-
-  let whereClause = {}; // Cláusula where inicial vazia
-
-  if (id_clube !== 8) {
-    whereClause = { '$Aluno.Material.Clube.id_clube$': id_clube }; // Filtra os alunos pelo id_clube
-  }
-
-    try {
-        const transacoes = await Transacao.findAll({
-            include: [
-              {
-                model: Aluno,
-                attributes: [],
-                include: [{
-                      model: Pessoa,
-                      attributes: ['nome', 'sobrenome']
-                    },
+  try {
+      const transacoes = await Transacao.findAll({
+        include: [
+          {
+            model: Aluno,
+            attributes: [],
+            include: [{
+                  model: Pessoa,
+                  attributes: ['nome', 'sobrenome']
+                },
+                {
+                  model: Material,
+                  attributes: ['nome'],
+                  include: [
                     {
-                      model: Material,
-                      attributes: ['nome'],
-                      include: [
-                        {
-                          model: Clube,
-                          attributes: ['id_clube']
-                        }
-                      ]
+                      model: Clube,
+                      attributes: ['id_clube']
                     }
-                ],
-              },
+                  ]
+                }
             ],
-            where: whereClause, // Aplica a cláusula where dinamicamente
-            attributes: ['tipo','valor', 'id_transacao', 'data'],
-            order: [['id_transacao', 'DESC']],
-            raw: true
-        });
+          },
+        ],
+        
+        attributes: ['tipo','valor', 'id_transacao', 'data'],
+        order: [['id_transacao', 'DESC']],
+        raw: true
+      });
 
-        const transacaoFormatada = transacoes.map((transacao: any) => {
-            return {
-            id_transacao: transacao.id_transacao,
-            tipo: transacao.tipo,
-            valor: transacao.valor,
-            data: transacao.data,
-            nome_aluno: transacao['Aluno.Pessoa.nome'] +' '+ transacao['Aluno.Pessoa.sobrenome'],
-            };
-        });
-        return res.json({ transacoes: transacaoFormatada });
+      const transacaoFormatada = transacoes.map((transacao: any) => {
+        return {
+          id_transacao: transacao.id_transacao,
+          tipo: transacao.tipo,
+          valor: transacao.valor,
+          data: transacao.data,
+          nome_aluno: transacao['Aluno.Pessoa.nome'] +' '+ transacao['Aluno.Pessoa.sobrenome'],
+        };
+      });
+      return res.json({ transacoes: transacaoFormatada });
       
     } catch (error) {
       return res.json({error: "Erro ao encontrar transacoes"});
